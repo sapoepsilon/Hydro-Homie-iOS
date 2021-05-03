@@ -1,0 +1,421 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */; };
+		9965D7CF2637955400672D2E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9965D7CE2637955400672D2E /* ContentView.swift */; };
+		9965D7D12637955500672D2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D02637955500672D2E /* Assets.xcassets */; };
+		9965D7D42637955500672D2E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D32637955500672D2E /* Preview Assets.xcassets */; };
+		9965D7DD263795FD00672D2E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7DC263795FD00672D2E /* GoogleService-Info.plist */; };
+		99D3A2B02640A51300A21617 /* WaterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D3A2AF2640A51300A21617 /* WaterRepository.swift */; };
+		99E786D02639131100D13EC5 /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E786CF2639131100D13EC5 /* Dashboard.swift */; };
+		CA332F36BB5AD08E5E1DA166 /* Pods_Hydro_Homie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E0C9BDD77F893CCC79E8AA /* Pods_Hydro_Homie.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3D206EB60C5765616F2B9335 /* Pods-Hydro Homie.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hydro Homie.release.xcconfig"; path = "Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie.release.xcconfig"; sourceTree = "<group>"; };
+		9965D7C92637955400672D2E /* Hydro Homie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hydro Homie.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hydro_HomieApp.swift; sourceTree = "<group>"; };
+		9965D7CE2637955400672D2E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		9965D7D02637955500672D2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9965D7D32637955500672D2E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		9965D7D52637955500672D2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9965D7DC263795FD00672D2E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		99D3A2AF2640A51300A21617 /* WaterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterRepository.swift; sourceTree = "<group>"; };
+		99E786CF2639131100D13EC5 /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
+		D144B36A88A18245B7647A70 /* Pods-Hydro Homie.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hydro Homie.debug.xcconfig"; path = "Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie.debug.xcconfig"; sourceTree = "<group>"; };
+		E8E0C9BDD77F893CCC79E8AA /* Pods_Hydro_Homie.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hydro_Homie.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9965D7C62637955400672D2E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA332F36BB5AD08E5E1DA166 /* Pods_Hydro_Homie.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		43B8B21D244BCAFEC6E430A9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E8E0C9BDD77F893CCC79E8AA /* Pods_Hydro_Homie.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6888DF9C8DC3CBF7F1388675 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D144B36A88A18245B7647A70 /* Pods-Hydro Homie.debug.xcconfig */,
+				3D206EB60C5765616F2B9335 /* Pods-Hydro Homie.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		9965D7C02637955400672D2E = {
+			isa = PBXGroup;
+			children = (
+				9965D7CB2637955400672D2E /* Hydro Homie */,
+				9965D7CA2637955400672D2E /* Products */,
+				6888DF9C8DC3CBF7F1388675 /* Pods */,
+				43B8B21D244BCAFEC6E430A9 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		9965D7CA2637955400672D2E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9965D7C92637955400672D2E /* Hydro Homie.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9965D7CB2637955400672D2E /* Hydro Homie */ = {
+			isa = PBXGroup;
+			children = (
+				99D3A2AE2640A4FC00A21617 /* Repositories */,
+				9965D7DC263795FD00672D2E /* GoogleService-Info.plist */,
+				9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */,
+				9965D7CE2637955400672D2E /* ContentView.swift */,
+				9965D7D02637955500672D2E /* Assets.xcassets */,
+				9965D7D52637955500672D2E /* Info.plist */,
+				9965D7D22637955500672D2E /* Preview Content */,
+				99E786CF2639131100D13EC5 /* Dashboard.swift */,
+			);
+			path = "Hydro Homie";
+			sourceTree = "<group>";
+		};
+		9965D7D22637955500672D2E /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				9965D7D32637955500672D2E /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		99D3A2AE2640A4FC00A21617 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				99D3A2AF2640A51300A21617 /* WaterRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9965D7C82637955400672D2E /* Hydro Homie */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9965D7D82637955500672D2E /* Build configuration list for PBXNativeTarget "Hydro Homie" */;
+			buildPhases = (
+				F60FC7496901E8DE23602E5D /* [CP] Check Pods Manifest.lock */,
+				9965D7C52637955400672D2E /* Sources */,
+				9965D7C62637955400672D2E /* Frameworks */,
+				9965D7C72637955400672D2E /* Resources */,
+				EB7A710736CF2F4A9F18547D /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Hydro Homie";
+			productName = "Hydro Homie";
+			productReference = 9965D7C92637955400672D2E /* Hydro Homie.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9965D7C12637955400672D2E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					9965D7C82637955400672D2E = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = 9965D7C42637955400672D2E /* Build configuration list for PBXProject "Hydro Homie" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9965D7C02637955400672D2E;
+			productRefGroup = 9965D7CA2637955400672D2E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9965D7C82637955400672D2E /* Hydro Homie */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9965D7C72637955400672D2E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9965D7D42637955500672D2E /* Preview Assets.xcassets in Resources */,
+				9965D7D12637955500672D2E /* Assets.xcassets in Resources */,
+				9965D7DD263795FD00672D2E /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EB7A710736CF2F4A9F18547D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F60FC7496901E8DE23602E5D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Hydro Homie-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9965D7C52637955400672D2E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9965D7CF2637955400672D2E /* ContentView.swift in Sources */,
+				99E786D02639131100D13EC5 /* Dashboard.swift in Sources */,
+				9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */,
+				99D3A2B02640A51300A21617 /* WaterRepository.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9965D7D62637955500672D2E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		9965D7D72637955500672D2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9965D7D92637955500672D2E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D144B36A88A18245B7647A70 /* Pods-Hydro Homie.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"Hydro Homie/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Hydro Homie/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9965D7DA2637955500672D2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3D206EB60C5765616F2B9335 /* Pods-Hydro Homie.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"Hydro Homie/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Hydro Homie/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9965D7C42637955400672D2E /* Build configuration list for PBXProject "Hydro Homie" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9965D7D62637955500672D2E /* Debug */,
+				9965D7D72637955500672D2E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9965D7D82637955500672D2E /* Build configuration list for PBXNativeTarget "Hydro Homie" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9965D7D92637955500672D2E /* Debug */,
+				9965D7DA2637955500672D2E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9965D7C12637955400672D2E /* Project object */;
+}
