@@ -7,18 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		994096BD266D4BFE00830829 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994096BC266D4BFE00830829 /* UserRepository.swift */; };
+		994096BF266D4C8700830829 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994096BE266D4C8700830829 /* UserModel.swift */; };
+		995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AEBF9266D752300FAD0CB /* WaterView.swift */; };
 		9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */; };
 		9965D7CF2637955400672D2E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9965D7CE2637955400672D2E /* ContentView.swift */; };
 		9965D7D12637955500672D2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D02637955500672D2E /* Assets.xcassets */; };
 		9965D7D42637955500672D2E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D32637955500672D2E /* Preview Assets.xcassets */; };
 		9965D7DD263795FD00672D2E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7DC263795FD00672D2E /* GoogleService-Info.plist */; };
-		99D3A2B02640A51300A21617 /* WaterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D3A2AF2640A51300A21617 /* WaterRepository.swift */; };
+		99DE64D7266DBF1D0017015A /* hydration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64D6266DBF1D0017015A /* hydration.swift */; };
 		99E786D02639131100D13EC5 /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E786CF2639131100D13EC5 /* Dashboard.swift */; };
 		CA332F36BB5AD08E5E1DA166 /* Pods_Hydro_Homie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E0C9BDD77F893CCC79E8AA /* Pods_Hydro_Homie.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3D206EB60C5765616F2B9335 /* Pods-Hydro Homie.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hydro Homie.release.xcconfig"; path = "Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie.release.xcconfig"; sourceTree = "<group>"; };
+		994096BC266D4BFE00830829 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
+		994096BE266D4C8700830829 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		995AEBF9266D752300FAD0CB /* WaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterView.swift; sourceTree = "<group>"; };
 		9965D7C92637955400672D2E /* Hydro Homie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hydro Homie.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hydro_HomieApp.swift; sourceTree = "<group>"; };
 		9965D7CE2637955400672D2E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -26,7 +32,7 @@
 		9965D7D32637955500672D2E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9965D7D52637955500672D2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9965D7DC263795FD00672D2E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		99D3A2AF2640A51300A21617 /* WaterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterRepository.swift; sourceTree = "<group>"; };
+		99DE64D6266DBF1D0017015A /* hydration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = hydration.swift; sourceTree = "<group>"; };
 		99E786CF2639131100D13EC5 /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
 		D144B36A88A18245B7647A70 /* Pods-Hydro Homie.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hydro Homie.debug.xcconfig"; path = "Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie.debug.xcconfig"; sourceTree = "<group>"; };
 		E8E0C9BDD77F893CCC79E8AA /* Pods_Hydro_Homie.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hydro_Homie.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +67,23 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		994096BB266D4BEB00830829 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				994096BC266D4BFE00830829 /* UserRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		994096C1266D4C9D00830829 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				994096BE266D4C8700830829 /* UserModel.swift */,
+				99DE64D6266DBF1D0017015A /* hydration.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		9965D7C02637955400672D2E = {
 			isa = PBXGroup;
 			children = (
@@ -82,7 +105,8 @@
 		9965D7CB2637955400672D2E /* Hydro Homie */ = {
 			isa = PBXGroup;
 			children = (
-				99D3A2AE2640A4FC00A21617 /* Repositories */,
+				994096C1266D4C9D00830829 /* Model */,
+				994096BB266D4BEB00830829 /* Repository */,
 				9965D7DC263795FD00672D2E /* GoogleService-Info.plist */,
 				9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */,
 				9965D7CE2637955400672D2E /* ContentView.swift */,
@@ -90,6 +114,7 @@
 				9965D7D52637955500672D2E /* Info.plist */,
 				9965D7D22637955500672D2E /* Preview Content */,
 				99E786CF2639131100D13EC5 /* Dashboard.swift */,
+				995AEBF9266D752300FAD0CB /* WaterView.swift */,
 			);
 			path = "Hydro Homie";
 			sourceTree = "<group>";
@@ -100,14 +125,6 @@
 				9965D7D32637955500672D2E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		99D3A2AE2640A4FC00A21617 /* Repositories */ = {
-			isa = PBXGroup;
-			children = (
-				99D3A2AF2640A51300A21617 /* WaterRepository.swift */,
-			);
-			path = Repositories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -226,8 +243,11 @@
 			files = (
 				9965D7CF2637955400672D2E /* ContentView.swift in Sources */,
 				99E786D02639131100D13EC5 /* Dashboard.swift in Sources */,
+				994096BD266D4BFE00830829 /* UserRepository.swift in Sources */,
+				994096BF266D4C8700830829 /* UserModel.swift in Sources */,
+				995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */,
 				9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */,
-				99D3A2B02640A51300A21617 /* WaterRepository.swift in Sources */,
+				99DE64D7266DBF1D0017015A /* hydration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,7 @@ var newDate: Bool = false
 let db = Firestore.firestore()
 let cupsDate = Date()
 let format = DateFormatter()
+var arrayOfCups: [(Int, String)] = []
 
 struct Dashboard: View {
     
@@ -20,8 +21,8 @@ struct Dashboard: View {
     var cupsArray: Array<Int> = Array()
     var body: some View {
         
-        var userID = Auth.auth().currentUser?.uid
-        let docRef = db.collection("users").document(userID)
+        let userID = Auth.auth().currentUser?.uid
+        let docRef = db.collection("users").document(userID!)
         VStack{
             if(enough == false){
                 Text("You have drank \(cups) today")
@@ -39,15 +40,31 @@ struct Dashboard: View {
                 cups += 1
                 if(cups >= 8) {
                     enough = true
+                    format.dateFormat = "yyyy-MM-dd"
+                    let today = format.string(from: cupsDate)
+                    
+                    let docData: [String: Any] = [
+                        "hydration": [cups, today],
+                    ]
+
+
+                    
+                    do {
+                        try docRef.setData([   "hydration": FieldValue.arrayUnion([
+                                docData
+                            ])
+                        ], merge: true
+                        )} catch let error {
+                        print("Error writing city to Firestore: \(error)")
+                    }
+                    
+        
+                    
                 }
-                
-                if newDate {
-                    docRef.updateData([
-                                        "lastUpdated" : FieldValue.serverTimestamp(),
-                                        "cups" : FieldValue.arrayUnion([cups]) ])
-                }
+                   
             }, label: {
-                Image("water")
+            
+                WaterView(percent: (10) * cups)
                 
             })
             
@@ -87,3 +104,5 @@ struct Dashboard: View {
         
     }
 }
+
+
