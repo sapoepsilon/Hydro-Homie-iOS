@@ -68,25 +68,22 @@ struct WaterView: View {
     
     var body: some View {
         
-        GeometryReader { geo in
-            ZStack {
+            VStack {
                 Cup()
                     .stroke(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5), lineWidth: /*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/)
                     .foregroundColor(.clear)
                     .scaleEffect(0.92)
                     .overlay(
-                        Wave(offset: Angle(degrees: self.waveOffset.degrees), percent: Double(percent)/100)
+                       Wave(offset: Angle(degrees: self.waveOffset.degrees), percent: Double(percent)/100)
                             .fill(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
                             .clipShape(Cup().scale(0.92))
+                        
                     )
-            }
-        }
-        .aspectRatio(1, contentMode: .fit)
-        .onAppear {
-            withAnimation(Animation.linear(duration: 1).repeatForever(autoreverses: false)) {
+                    .animation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: false))
+            }.onAppear{
                 self.waveOffset = Angle(degrees: 360)
             }
-        }
-     }
+            .aspectRatio(1, contentMode: .fit)
+    }
 }
 

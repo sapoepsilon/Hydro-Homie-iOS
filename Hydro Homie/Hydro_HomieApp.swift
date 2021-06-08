@@ -21,10 +21,8 @@
                     .environmentObject(UserRepository())
             }
         }
-        
     }
-    
-    
+
     extension Hydro_HomieApp {
       private func setupAuthentication() {
         FirebaseApp.configure()

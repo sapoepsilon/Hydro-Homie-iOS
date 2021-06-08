@@ -15,7 +15,7 @@ class UserRepository: ObservableObject {
     
     func checkUser() {
         Auth.auth().addStateDidChangeListener { auth, user in
-          if let user = user {
+            if user != nil {
             self.loggedIn = true
           } else {
             self.loggedIn = false

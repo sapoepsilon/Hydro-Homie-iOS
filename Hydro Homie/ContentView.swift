@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var error: String = ""
     @State private var timeRemaining = 0
     @State private var borderColor: Color = Color.gray
+    @State private var registerView: Bool = false
     
     let timer = Timer.publish(every: 0.3, on: .main, in: .common).autoconnect()
     
@@ -27,64 +28,68 @@ struct ContentView: View {
     
     var body: some View {
         
-            
+        
         GeometryReader { geomtry in
-            if(user.loggedIn == false) {
-
             VStack{
-                Text("Hydro Homie")
-                    .font(.system(size: geomtry.size.height * 0.09))
-                    .foregroundColor(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
-                
-                VStack{
-                    WaterView(percent: self.timeRemaining)
-                }
-                .frame( height: geomtry.size
-                            .height * 0.4, alignment: .center)
-                .onReceive(timer) { time in
-                    if self.timeRemaining < 100 {
-                        self.timeRemaining += 1
-                    }
-                }
-                .padding()
-                    
+                if(user.loggedIn == false) {
                     VStack{
-                        TextField("Username", text: self.$email)
-                            .padding()
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
-                            )
-                            .padding()
-                        SecureField("Password", text: self.$password)
-                            .padding()
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2)
-                            )
-                            .padding()
-                        
-                        Button(action: {
-                            
-                            user.signInUser(email: email, password: password, onSucces: {
-                            }, onError: {error in
-                                self.signIn = true
-                                self.error = error.description
+                        Text("Hydro Homie")
+                            .font(.system(size: geomtry.size.height * 0.09))
+                            .foregroundColor(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
+                        VStack{
+                            WaterView(percent: self.timeRemaining)
+                        }
+                        .frame( height: geomtry.size
+                                    .height * 0.4, alignment: .center)
+                        .onReceive(timer) { time in
+                            if self.timeRemaining < 100 {
+                                self.timeRemaining += 1
+                            }
+                        }
+                        .padding()
+                        VStack{
+                            TextField("Username", text: self.$email)
+                                .padding()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
+                                )
+                                .padding(.horizontal, 10)
+                            SecureField("Password", text: self.$password)
+                                .padding()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2)
+                                )
+                                .padding(.horizontal, 10)
+                            Button(action: {
+                                user.signInUser(email: email, password: password, onSucces: {
+                                }, onError: {error in
+                                    self.signIn = true
+                                    self.error = error.description
+                                })
+                                
+                            }, label: {
+                                Text("Sign In")
+                                    .foregroundColor(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
+                            }).alert(isPresented: self.$signIn, content: {
+                                Alert(title: Text("error"), message: Text(error.description), dismissButton: .default(Text("OK")))
+                            })
+                            Button(action: {
+                                registerView = true
+                            }, label: {
+                                Text("Do not have an account? ")
                             })
                             
-                        }, label: {
-                            Text("Sign In")
-                                .foregroundColor(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
-                        }).alert(isPresented: self.$signIn, content: {
-                            Alert(title: Text("error"), message: Text(error.description), dismissButton: .default(Text("OK")))
-                        })
-                        
-                    }.frame(width: geomtry.size.width , height: geomtry.size.height / 2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                }
+                        }.frame(width: geomtry.size.width , height: geomtry.size.height / 2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    }
+                    
                 } else {
-                    Dashboard()
-              
-            }
+                    Dashboard().environmentObject(HydrationDocument())
+                }
+            }.sheet(isPresented: self.$registerView, content: {
+                RegisterView()
+            })
             
         }
         .onAppear{
