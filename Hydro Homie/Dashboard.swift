@@ -13,49 +13,55 @@ import Firebase
 struct Dashboard: View {
     
     @EnvironmentObject var hydration: HydrationDocument
-    @State var cups = 0
+    @EnvironmentObject var user: UserRepository
+    @ObservedObject var userDocument: UserDocument
+    @State var cups: Int = 0
+    @State private var cupsLeft: Double = 0
     var cupsArray: Array<Int> = Array()
+    @State var percentageWater: Double = 0
+    let formatter = NumberFormatter()
     var body: some View {
         
-        VStack{
-
-                Text("You have drank \(cups) today")
-                    .foregroundColor(.black)
-                    .font(.title2)
-            }
-            
-            Spacer().frame(height: 250)
-        
-            Button(action: {
-                cups += 1
-                if(cups >= 8) {
-                    hydration.updateHydration(cups: cups)
-                }
-                   
-            }, label: {
-                WaterView(percent: 10 *  self.cups)
-            })
-            
-            
-            NavigationView{
-                NavigationLink(destination: ContentView()){
-                    Text("Sign out")
-                        
+            GeometryReader { reader in
+                VStack{
+                    Text("Hello \(userDocument.user.name) you need to drink daily \( formatter.string(from: NSNumber(value: userDocument.user.waterIntake))!) ounces")
+                    Text("You have drank \(cups) cups today")
+                        .foregroundColor(.black)
+                        .font(.title2)
+                    
+                    WaterView(factor: self.$percentageWater)
+                        .frame(height: reader.size.height / 2)
                         .onTapGesture {
-                            try! Auth.auth().signOut()
+                            cups += 1
+                            percentageWater = percentageWater + Double(100 / (userDocument.user.waterIntake / 8))
+                            print(percentageWater)
+                            if(cups >= 8) {
+                                hydration.updateHydration(cups: cups)
+                            }
                         }
                     
+                    Text("cups left today: \(formatter.string(from: NSNumber(value: (userDocument.user.waterIntake / 8) - Double(cups)))!) ")
+                    Spacer(minLength: reader.size.height / 3)
+                        Text("Sign out")
+                                .onTapGesture {
+                                    user.signOut()
+                                }
+                        .foregroundColor(.black)
+                        .padding(.vertical)
+                        .frame(width: UIScreen.main.bounds.width - 50)
+                        .cornerRadius(23)
                 }
-                .foregroundColor(.black)
-                .padding(.vertical)
-                .frame(width: UIScreen.main.bounds.width - 50)
-            }.background(Color.black)
-            .cornerRadius(23)
-            .padding(.top, 23)
-            
-        }
-        
+            }.onAppear{
+                userDocument.fetchData()
+            }
     }
+    
+}
 
+struct SwiftUIView_Previews: PreviewProvider {
+    static var previews: some View {
+        Dashboard(userDocument: UserDocument())
+    }
+}
 
 

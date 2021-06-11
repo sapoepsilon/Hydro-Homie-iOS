@@ -16,7 +16,7 @@ struct ContentView: View {
     @EnvironmentObject var user: UserRepository
     @State private var signIn: Bool
     @State private var error: String = ""
-    @State private var timeRemaining = 0
+    @State private var timeRemaining : Double = 0
     @State private var borderColor: Color = Color.gray
     @State private var registerView: Bool = false
     
@@ -25,9 +25,7 @@ struct ContentView: View {
     init() {
         self.signIn = UserRepository().loggedIn
     }
-    
     var body: some View {
-        
         
         GeometryReader { geomtry in
             VStack{
@@ -37,8 +35,7 @@ struct ContentView: View {
                             .font(.system(size: geomtry.size.height * 0.09))
                             .foregroundColor(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
                         VStack{
-                            WaterView(percent: self.timeRemaining)
-                        }
+                            WaterView(factor: self.$timeRemaining)}
                         .frame( height: geomtry.size
                                     .height * 0.4, alignment: .center)
                         .onReceive(timer) { time in
@@ -47,7 +44,8 @@ struct ContentView: View {
                             }
                         }
                         .padding()
-                        VStack{
+                        VStack(alignment: .leading){
+                            VStack(){
                             TextField("Username", text: self.$email)
                                 .padding()
                                 .overlay(
@@ -59,16 +57,13 @@ struct ContentView: View {
                                 .padding()
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 16)
-                                        .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2)
-                                )
+                                        .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2))
                                 .padding(.horizontal, 10)
                             Button(action: {
-                                user.signInUser(email: email, password: password, onSucces: {
+                                user.signInUser( email: email, password: password, onSucces: {
                                 }, onError: {error in
                                     self.signIn = true
-                                    self.error = error.description
-                                })
-                                
+                                    self.error = error.description })
                             }, label: {
                                 Text("Sign In")
                                     .foregroundColor(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
@@ -80,24 +75,25 @@ struct ContentView: View {
                             }, label: {
                                 Text("Do not have an account? ")
                             })
-                            
+                            }
                         }.frame(width: geomtry.size.width , height: geomtry.size.height / 2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                     }
-                    
                 } else {
-                    Dashboard().environmentObject(HydrationDocument())
+                    Dashboard(userDocument: UserDocument()).environmentObject(HydrationDocument())
                 }
             }.sheet(isPresented: self.$registerView, content: {
-                RegisterView()
+                RegisterView(Dashboard: $user.loggedIn, registerView: self.$registerView)
+                    .environmentObject(UserRepository())
             })
-            
+            .onChange(of: user.loggedIn, perform: {newValue in
+                print("signIn \(signIn)")
+                    self.registerView = false
+            })
+
         }
+
         .onAppear{
             user.checkUser()
         }
-        
     }
-    
-    
-    
 }

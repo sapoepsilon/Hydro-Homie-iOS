@@ -2,20 +2,18 @@
 //  UserModel.swift
 //  Hydro Homie
 //
-//  Created by Ismatulla Mansurov on 6/6/21.
+//  Created by Ismatulla Mansurov on 6/9/21.
 //
 
 import Foundation
-
-struct UserModel {
+struct User {
     
-    var email: String
-    var password: String
     var name: String
     var height: Int
-    var weight: Int
-    var gender: String
+    var weight: Double
+    var metric: Bool
+    var waterIntake: Double
+    //    var hydration: [Date: [Int]]
     
-    
-
 }
+

@@ -18,7 +18,6 @@ struct HeightPicker: View {
     @Binding var metric: Bool
     @Binding var height: Double
     
-    
     var feet = [Int](0..<10)
     var inches = [Int](0..<12)
     var meters = [Int](0..<3)
@@ -27,27 +26,21 @@ struct HeightPicker: View {
     var body: some View{
         VStack{
             GeometryReader() { geometry in
-                
                 HStack {
-                    
-                    if !metric {    // <---
-                        
+                    if !metric {
                         Picker(selection: self.$foot, label: Text("")) {
                             ForEach(0 ..< self.feet.count){ index in
                                 Text("\(self.feet[index])").tag(self.feet[index])
                             }
                         }
+                        
                         .onChange(of: foot) { _ in
                             self.height = Double(self.foot * 12 + self.inch)
-                            print("--> height: \(height)")
                         }
                         .frame(width: geometry.size.width/4,height: geometry.size.height, alignment: .center)
                         .clipped()
                         .scaleEffect(CGSize(width: 1.0, height: 1.0))
-                        .pickerStyle(WheelPickerStyle())
                         .scaledToFit()
-                        .background(Color.white)
-                        
                         Text("\"")
                         
                         Picker(selection: self.$inch, label: Text("")) {
@@ -61,12 +54,8 @@ struct HeightPicker: View {
                         .frame(width: geometry.size.width/4,height: geometry.size.height, alignment: .center)
                         .clipped()
                         .scaleEffect(CGSize(width: 1.0, height: 1.0))
-                        .pickerStyle(WheelPickerStyle())
                         .scaledToFit()
-                        .background(Color.white)
-                        
                         Text("'")
-                        
                     } else {
                         Picker(selection: self.$meter, label: Text("")) {
                             ForEach(0 ..< self.meters.count){ index in
@@ -75,14 +64,11 @@ struct HeightPicker: View {
                         }
                         .onChange(of: self.meter) { _ in
                             self.height = Double(self.meter * 100 + self.cm)
-                            print("--> height: \(height)")
                         }
                         .frame(width: geometry.size.width/4, height: geometry.size.height, alignment: .center)
                         .scaleEffect(CGSize(width: 1.0, height: 1.0))
                         .clipped()
-                        .pickerStyle(WheelPickerStyle())
                         .scaledToFit()
-                        .background(Color.white)
                         
                         Text("m")
                         
@@ -93,14 +79,11 @@ struct HeightPicker: View {
                         }
                         .onChange(of: self.cm) { _ in
                             self.height = Double(self.meter * 100 + self.cm)
-                            print("--> height: \(height)")
                         }
                         .frame(width: geometry.size.width/4,height: geometry.size.height, alignment: .center)
                         .clipped()
                         .scaleEffect(CGSize(width: 1.0, height: 1.0))
-                        .pickerStyle(WheelPickerStyle())
                         .scaledToFit()
-                        .background(Color.white)
                         
                         Text("cm")
                     }
@@ -112,3 +95,4 @@ struct HeightPicker: View {
         .padding(.bottom, 5)
     }
 }
+

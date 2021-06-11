@@ -32,13 +32,11 @@ struct HydrationModel {
                     docData
                 ]),
                 "userID": UserDefaults.standard.object(forKey: "userID") as! String
-             ])
+             ], merge: true)
         print("document wrriten")
     }
     
-    func getUserID() -> String {
-        UserDefaults.standard.set(Auth.auth().currentUser?.uid, forKey: "userID")
-        
+    func getUserID() -> String {        
         let user =  UserDefaults.standard.object(forKey: "userID") as! String
         
         print(user)

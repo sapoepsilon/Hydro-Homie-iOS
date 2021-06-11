@@ -7,8 +7,8 @@
 
 import SwiftUI
 
+
 struct Wave: Shape {
-    
     var offset: Angle
     var percent: Double
     
@@ -22,8 +22,8 @@ struct Wave: Shape {
         
         // empirically determined values for wave to be seen
         // at 0 and 100 percent
-        let lowfudge = 0.02
-        let highfudge = 0.98
+        let lowfudge = 0.0001
+        let highfudge = 0.99
         
         let newpercent = lowfudge + (highfudge - lowfudge) * percent
         let waveHeight = 0.015 * rect.height
@@ -32,6 +32,7 @@ struct Wave: Shape {
         let endAngle = offset + Angle(degrees: 360)
         
         p.move(to: CGPoint(x: 0, y: yoffset + waveHeight * CGFloat(sin(offset.radians))))
+        
         
         for angle in stride(from: startAngle.degrees, through: endAngle.degrees, by: 5) {
             let x = CGFloat((angle - startAngle.degrees) / 360) * rect.width
@@ -45,45 +46,42 @@ struct Wave: Shape {
         return p
     }
 }
+    struct Cup: Shape {
+        func path(in rect: CGRect) -> Path {
+            var path = Path()
+            
+            path.move(to: CGPoint(x: rect.midX, y: rect.minX))
+            
+            path.addQuadCurve(to: CGPoint(x: rect.size.width/2, y: rect.size.height), control: CGPoint(x: rect.size.width, y: rect.size.height))
+            path.addQuadCurve(to: CGPoint(x: rect.size.width/2, y: 0), control: CGPoint(x: 0, y: rect.size.height))
+            
+            return path
+        }
+    }
+        struct WaterView: View {
+        
+        @State var offset: Angle  = Angle(degrees: 0)
+        @Binding var factor: Double
+        
+        var body: some View {
+            GeometryReader { proxy in
+                ZStack {
+                               Cup()
+                                .stroke(Color.blue, lineWidth: 0.0025 * min(proxy.size.width, proxy.size.height))
+                               .overlay(
+                                Wave(offset: self.offset, percent: self.factor / 100)
+                                       .fill(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
+                                       .clipShape(Cup()))
+                                .onAppear{
+                                    withAnimation(Animation.linear(duration: 1).repeatForever(autoreverses: false)) {
+                                        self.offset = Angle(degrees: 360)
+                                    }
+                                }
+                }
+            }        .aspectRatio(1, contentMode: .fit)
 
-struct Cup: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        
-        path.move(to: CGPoint(x: rect.midX, y: rect.minX))
-        
-        path.addQuadCurve(to: CGPoint(x: rect.size.width/2, y: rect.size.height), control: CGPoint(x: rect.size.width, y: rect.size.height))
-        path.addQuadCurve(to: CGPoint(x: rect.size.width/2, y: 0), control: CGPoint(x: 0, y: rect.size.height))
-        
-        return path
+        }
+
     }
     
-    
-}
-
-struct WaterView: View {
-    
-    @State private var waveOffset = Angle(degrees: 0)
-    let percent: Int
-    
-    var body: some View {
-        
-            VStack {
-                Cup()
-                    .stroke(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5), lineWidth: /*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/)
-                    .foregroundColor(.clear)
-                    .scaleEffect(0.92)
-                    .overlay(
-                       Wave(offset: Angle(degrees: self.waveOffset.degrees), percent: Double(percent)/100)
-                            .fill(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
-                            .clipShape(Cup().scale(0.92))
-                        
-                    )
-                    .animation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: false))
-            }.onAppear{
-                self.waveOffset = Angle(degrees: 360)
-            }
-            .aspectRatio(1, contentMode: .fit)
-    }
-}
 

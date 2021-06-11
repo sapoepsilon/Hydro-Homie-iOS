@@ -9,8 +9,10 @@
     import Firebase
     import UIKit
 
+    
     @main
     struct Hydro_HomieApp: App {
+        
 
         init() {
             setupAuthentication()
@@ -19,12 +21,13 @@
             WindowGroup {
                 ContentView()
                     .environmentObject(UserRepository())
+                
             }
         }
     }
-
+    
     extension Hydro_HomieApp {
-      private func setupAuthentication() {
-        FirebaseApp.configure()
-      }
+        private func setupAuthentication() {
+            FirebaseApp.configure()
+        }
     }
