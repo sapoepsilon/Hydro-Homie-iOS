@@ -84,7 +84,7 @@ class UserRepository: ObservableObject {
             "metric": metric,
             "waterIntake": waterIntake
         ])
-        
-        
     }
+    
+
 }

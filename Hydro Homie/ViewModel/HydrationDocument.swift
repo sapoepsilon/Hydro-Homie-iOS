@@ -12,6 +12,7 @@ class HydrationDocument: ObservableObject {
     @Published var document: HydrationModel = HydrationModel()
     
     func updateHydration(cups: Int) {
-        document.countCups(cups: cups)
+        document.uploadCups(cups: cups)
     }
 }
+

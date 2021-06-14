@@ -89,9 +89,7 @@ struct ContentView: View {
                 print("signIn \(signIn)")
                     self.registerView = false
             })
-
         }
-
         .onAppear{
             user.checkUser()
         }

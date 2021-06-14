@@ -18,28 +18,30 @@ var arrayOfCups: [(Int, String)] = []
 
 struct HydrationModel {
     
-    func countCups(cups: Int) {
+    func uploadCups(cups: Int) {
         enough = true
         format.dateFormat = "yyyy-MM-dd"
-        let today = format.string(from: cupsDate)
-        let docData: [String: Any] = [
-            "hydration": [cups, today]
-        ]
+            let today = format.string(from: cupsDate)
+        let hydrationByDay = [today: cups]
+        print("users date: \(UserDefaults.standard.object(forKey: "today") as! String)")
+        print("today's date: \(today)")
 
-         
-             db.collection("users").document(getUserID()).setData([
+        if(UserDefaults.standard.object(forKey: "today") as! String != today) {
+            print("users date: \(UserDefaults.standard.object(forKey: "today") as! String)")
+            print("today's date: \(today)")
+
+             db.collection("users").document(getUserID()).updateData([
                 "hydration": FieldValue.arrayUnion([
-                    docData
-                ]),
-                "userID": UserDefaults.standard.object(forKey: "userID") as! String
-             ], merge: true)
-        print("document wrriten")
+                    hydrationByDay
+                ])
+             ])
+        }
     }
+    
+
     
     func getUserID() -> String {        
         let user =  UserDefaults.standard.object(forKey: "userID") as! String
-        
-        print(user)
         return user
     }
     

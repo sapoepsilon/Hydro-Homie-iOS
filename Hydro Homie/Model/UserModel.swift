@@ -13,7 +13,7 @@ struct User {
     var weight: Double
     var metric: Bool
     var waterIntake: Double
-    //    var hydration: [Date: [Int]]
+    var hydration: [[String: Int]]
     
 }
 

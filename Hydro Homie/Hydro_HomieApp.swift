@@ -15,7 +15,7 @@
         
 
         init() {
-            setupAuthentication()
+                setupAuthentication()
         }
         var body: some Scene {
             WindowGroup {
