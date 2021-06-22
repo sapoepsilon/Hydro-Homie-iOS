@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Firebase
+import FirebaseFirestore
 import FirebaseAuth
 
 class UserDocument: ObservableObject {
@@ -54,6 +54,24 @@ class UserDocument: ObservableObject {
         }
         return currentDate
     }
+//    
+//    func getAllCups() -> [Int] {
+//        var cupsArray: [Int] = []
+//        
+//        for (_, cups) in  user.hydration {
+//            cupsArray.append(cups)
+//        }
+//        return cupsArray
+//    }
+//    
+//    func getAllDates() -> [String] {
+//        var datesArray: [String] = []
+//        
+//        for (hydration) in  user.hydration {
+//            datesArray.append(date)
+//        }
+//        return datesArray
+//    }
     
     
     func waterPercentageCalculator(hydrationDictionary: [String: Int]) -> Int{

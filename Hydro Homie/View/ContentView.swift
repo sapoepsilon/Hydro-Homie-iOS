@@ -41,11 +41,6 @@ struct ContentView: View {
                             WaterView(factor: self.$timeRemaining, waterColor: self.$waterColor)}
                         .frame( height: geomtry.size
                                     .height * 0.4, alignment: .center)
-                        .onReceive(timer) { time in
-                            if self.timeRemaining < 100 {
-                                self.timeRemaining += 1
-                            }
-                        }
                         .padding()
                         VStack(alignment: .leading){
                             VStack(){

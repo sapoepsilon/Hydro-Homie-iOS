@@ -52,7 +52,7 @@ struct Dashboard: View {
                 HStack{
                     if actionView{
                         VStack{
-                            ActionView() //display the ActionView when the user swipes right
+                            ActionView().environmentObject(userDocument) //display the ActionView when the user swipes right
                                 .onTapGesture {
                                     withAnimation(.easeOut(duration: 2.2)) {
                                         waterViewOpacity = 2
@@ -84,7 +84,7 @@ struct Dashboard: View {
                                     }
                                     .onEnded { _ in
                                         if offset.height < -80 {
-                                            offset.height = 130
+                                            offset.height = 230
                                             offset.width = 0
                                             withAnimation(.easeInOut(duration: 0.75)) {
                                                 waterViewOpacity = 0 // if the user swipes right waterView disappears
