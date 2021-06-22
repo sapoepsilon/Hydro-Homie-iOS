@@ -3,10 +3,22 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9902334B268242AC00FACE04 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99ACBA1D268180E00005A151 /* WidgetKit.framework */; };
+		9902334C268242AC00FACE04 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99ACBA1F268180E00005A151 /* SwiftUI.framework */; };
+		9902334F268242AC00FACE04 /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9902334E268242AC00FACE04 /* WaterView.swift */; };
+		99023352268242AD00FACE04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99023351268242AD00FACE04 /* Assets.xcassets */; };
+		99023354268242AD00FACE04 /* WaterView.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 99023350268242AC00FACE04 /* WaterView.intentdefinition */; };
+		99023355268242AD00FACE04 /* WaterView.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 99023350268242AC00FACE04 /* WaterView.intentdefinition */; };
+		99023358268242AD00FACE04 /* WaterViewExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9902334A268242AC00FACE04 /* WaterViewExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9902335D2682478500FACE04 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B82267124D600EE106B /* UserModel.swift */; };
+		9902335E268247D400FACE04 /* UserDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B842671255D00EE106B /* UserDocument.swift */; };
+		99023361268248A200FACE04 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 99023360268248A200FACE04 /* FirebaseAuth */; };
+		99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 99023362268248A200FACE04 /* FirebaseFirestore */; };
+		991ED8A6267A902100AE129A /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991ED8A5267A902100AE129A /* Persistance.swift */; };
 		994096BD266D4BFE00830829 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994096BC266D4BFE00830829 /* UserRepository.swift */; };
 		995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AEBF9266D752300FAD0CB /* WaterView.swift */; };
 		995D4110266EFC5600916F5C /* HeightPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995D410F266EFC5600916F5C /* HeightPicker.swift */; };
@@ -15,17 +27,46 @@
 		9965D7D12637955500672D2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D02637955500672D2E /* Assets.xcassets */; };
 		9965D7D42637955500672D2E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D32637955500672D2E /* Preview Assets.xcassets */; };
 		9965D7DD263795FD00672D2E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7DC263795FD00672D2E /* GoogleService-Info.plist */; };
+		99ACBA1726816BFD0005A151 /* ActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99ACBA1626816BFD0005A151 /* ActionView.swift */; };
 		99D60B83267124D600EE106B /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B82267124D600EE106B /* UserModel.swift */; };
 		99D60B852671255D00EE106B /* UserDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B842671255D00EE106B /* UserDocument.swift */; };
 		99DE64D7266DBF1D0017015A /* Hydration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64D6266DBF1D0017015A /* Hydration.swift */; };
 		99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64D9266DC4510017015A /* HydrationDocument.swift */; };
 		99DE64DC266E7C8A0017015A /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64DB266E7C8A0017015A /* RegisterView.swift */; };
 		99E786D02639131100D13EC5 /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E786CF2639131100D13EC5 /* Dashboard.swift */; };
-		CA332F36BB5AD08E5E1DA166 /* Pods_Hydro_Homie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E0C9BDD77F893CCC79E8AA /* Pods_Hydro_Homie.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		99023356268242AD00FACE04 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9965D7C12637955400672D2E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 99023349268242AC00FACE04;
+			remoteInfo = WaterViewExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		99ACBA30268180E10005A151 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				99023358268242AD00FACE04 /* WaterViewExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		3D206EB60C5765616F2B9335 /* Pods-Hydro Homie.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hydro Homie.release.xcconfig"; path = "Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie.release.xcconfig"; sourceTree = "<group>"; };
+		9902334A268242AC00FACE04 /* WaterViewExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WaterViewExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9902334E268242AC00FACE04 /* WaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterView.swift; sourceTree = "<group>"; };
+		99023350268242AC00FACE04 /* WaterView.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WaterView.intentdefinition; sourceTree = "<group>"; };
+		99023351268242AD00FACE04 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		99023353268242AD00FACE04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		991ED8A5267A902100AE129A /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
 		994096BC266D4BFE00830829 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		995AEBF9266D752300FAD0CB /* WaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterView.swift; sourceTree = "<group>"; };
 		995D410F266EFC5600916F5C /* HeightPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightPicker.swift; sourceTree = "<group>"; };
@@ -36,22 +77,33 @@
 		9965D7D32637955500672D2E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9965D7D52637955500672D2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9965D7DC263795FD00672D2E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		99ACBA1626816BFD0005A151 /* ActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionView.swift; sourceTree = "<group>"; };
+		99ACBA1D268180E00005A151 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		99ACBA1F268180E00005A151 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		99D60B82267124D600EE106B /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		99D60B842671255D00EE106B /* UserDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDocument.swift; sourceTree = "<group>"; };
 		99DE64D6266DBF1D0017015A /* Hydration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hydration.swift; sourceTree = "<group>"; };
 		99DE64D9266DC4510017015A /* HydrationDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationDocument.swift; sourceTree = "<group>"; };
-		99DE64DB266E7C8A0017015A /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = SOURCE_ROOT; };
+		99DE64DB266E7C8A0017015A /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RegisterView.swift; path = "Hydro Homie/View/RegisterView.swift"; sourceTree = SOURCE_ROOT; };
 		99E786CF2639131100D13EC5 /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
-		D144B36A88A18245B7647A70 /* Pods-Hydro Homie.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hydro Homie.debug.xcconfig"; path = "Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie.debug.xcconfig"; sourceTree = "<group>"; };
-		E8E0C9BDD77F893CCC79E8AA /* Pods_Hydro_Homie.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hydro_Homie.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		99023347268242AC00FACE04 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9902334C268242AC00FACE04 /* SwiftUI.framework in Frameworks */,
+				9902334B268242AC00FACE04 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9965D7C62637955400672D2E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA332F36BB5AD08E5E1DA166 /* Pods_Hydro_Homie.framework in Frameworks */,
+				99023361268248A200FACE04 /* FirebaseAuth in Frameworks */,
+				99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,24 +113,28 @@
 		43B8B21D244BCAFEC6E430A9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E8E0C9BDD77F893CCC79E8AA /* Pods_Hydro_Homie.framework */,
+				99ACBA1D268180E00005A151 /* WidgetKit.framework */,
+				99ACBA1F268180E00005A151 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		6888DF9C8DC3CBF7F1388675 /* Pods */ = {
+		9902334D268242AC00FACE04 /* WaterView */ = {
 			isa = PBXGroup;
 			children = (
-				D144B36A88A18245B7647A70 /* Pods-Hydro Homie.debug.xcconfig */,
-				3D206EB60C5765616F2B9335 /* Pods-Hydro Homie.release.xcconfig */,
+				9902334E268242AC00FACE04 /* WaterView.swift */,
+				99023350268242AC00FACE04 /* WaterView.intentdefinition */,
+				99023351268242AD00FACE04 /* Assets.xcassets */,
+				99023353268242AD00FACE04 /* Info.plist */,
 			);
-			path = Pods;
+			path = WaterView;
 			sourceTree = "<group>";
 		};
 		994096BB266D4BEB00830829 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
 				994096BC266D4BFE00830829 /* UserRepository.swift */,
+				991ED8A5267A902100AE129A /* Persistance.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -96,8 +152,8 @@
 			isa = PBXGroup;
 			children = (
 				9965D7CB2637955400672D2E /* Hydro Homie */,
+				9902334D268242AC00FACE04 /* WaterView */,
 				9965D7CA2637955400672D2E /* Products */,
-				6888DF9C8DC3CBF7F1388675 /* Pods */,
 				43B8B21D244BCAFEC6E430A9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -106,6 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				9965D7C92637955400672D2E /* Hydro Homie.app */,
+				9902334A268242AC00FACE04 /* WaterViewExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -113,19 +170,15 @@
 		9965D7CB2637955400672D2E /* Hydro Homie */ = {
 			isa = PBXGroup;
 			children = (
-				995D410F266EFC5600916F5C /* HeightPicker.swift */,
-				99DE64DB266E7C8A0017015A /* RegisterView.swift */,
+				99ACBA1526816B8F0005A151 /* View */,
 				99DE64D8266DC4270017015A /* ViewModel */,
 				994096C1266D4C9D00830829 /* Model */,
 				994096BB266D4BEB00830829 /* Repository */,
 				9965D7DC263795FD00672D2E /* GoogleService-Info.plist */,
 				9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */,
-				9965D7CE2637955400672D2E /* ContentView.swift */,
 				9965D7D02637955500672D2E /* Assets.xcassets */,
 				9965D7D52637955500672D2E /* Info.plist */,
 				9965D7D22637955500672D2E /* Preview Content */,
-				99E786CF2639131100D13EC5 /* Dashboard.swift */,
-				995AEBF9266D752300FAD0CB /* WaterView.swift */,
 			);
 			path = "Hydro Homie";
 			sourceTree = "<group>";
@@ -136,6 +189,19 @@
 				9965D7D32637955500672D2E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		99ACBA1526816B8F0005A151 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				995D410F266EFC5600916F5C /* HeightPicker.swift */,
+				99DE64DB266E7C8A0017015A /* RegisterView.swift */,
+				9965D7CE2637955400672D2E /* ContentView.swift */,
+				995AEBF9266D752300FAD0CB /* WaterView.swift */,
+				99E786CF2639131100D13EC5 /* Dashboard.swift */,
+				99ACBA1626816BFD0005A151 /* ActionView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		99DE64D8266DC4270017015A /* ViewModel */ = {
@@ -150,21 +216,42 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9965D7C82637955400672D2E /* Hydro Homie */ = {
+		99023349268242AC00FACE04 /* WaterViewExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9965D7D82637955500672D2E /* Build configuration list for PBXNativeTarget "Hydro Homie" */;
+			buildConfigurationList = 99023359268242AD00FACE04 /* Build configuration list for PBXNativeTarget "WaterViewExtension" */;
 			buildPhases = (
-				F60FC7496901E8DE23602E5D /* [CP] Check Pods Manifest.lock */,
-				9965D7C52637955400672D2E /* Sources */,
-				9965D7C62637955400672D2E /* Frameworks */,
-				9965D7C72637955400672D2E /* Resources */,
-				EB7A710736CF2F4A9F18547D /* [CP] Embed Pods Frameworks */,
+				99023346268242AC00FACE04 /* Sources */,
+				99023347268242AC00FACE04 /* Frameworks */,
+				99023348268242AC00FACE04 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
+			name = WaterViewExtension;
+			productName = WaterViewExtension;
+			productReference = 9902334A268242AC00FACE04 /* WaterViewExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		9965D7C82637955400672D2E /* Hydro Homie */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9965D7D82637955500672D2E /* Build configuration list for PBXNativeTarget "Hydro Homie" */;
+			buildPhases = (
+				9965D7C52637955400672D2E /* Sources */,
+				9965D7C62637955400672D2E /* Frameworks */,
+				9965D7C72637955400672D2E /* Resources */,
+				99ACBA30268180E10005A151 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				99023357268242AD00FACE04 /* PBXTargetDependency */,
+			);
 			name = "Hydro Homie";
+			packageProductDependencies = (
+				99023360268248A200FACE04 /* FirebaseAuth */,
+				99023362268248A200FACE04 /* FirebaseFirestore */,
+			);
 			productName = "Hydro Homie";
 			productReference = 9965D7C92637955400672D2E /* Hydro Homie.app */;
 			productType = "com.apple.product-type.application";
@@ -175,9 +262,12 @@
 		9965D7C12637955400672D2E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
+				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
+					99023349268242AC00FACE04 = {
+						CreatedOnToolsVersion = 12.5;
+					};
 					9965D7C82637955400672D2E = {
 						CreatedOnToolsVersion = 12.4;
 					};
@@ -192,16 +282,28 @@
 				Base,
 			);
 			mainGroup = 9965D7C02637955400672D2E;
+			packageReferences = (
+				9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 9965D7CA2637955400672D2E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				9965D7C82637955400672D2E /* Hydro Homie */,
+				99023349268242AC00FACE04 /* WaterViewExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		99023348268242AC00FACE04 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99023352268242AD00FACE04 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9965D7C72637955400672D2E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -214,62 +316,34 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		EB7A710736CF2F4A9F18547D /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Hydro Homie/Pods-Hydro Homie-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F60FC7496901E8DE23602E5D /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Hydro Homie-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
+		99023346268242AC00FACE04 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9902334F268242AC00FACE04 /* WaterView.swift in Sources */,
+				9902335D2682478500FACE04 /* UserModel.swift in Sources */,
+				99023354268242AD00FACE04 /* WaterView.intentdefinition in Sources */,
+				9902335E268247D400FACE04 /* UserDocument.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9965D7C52637955400672D2E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99ACBA1726816BFD0005A151 /* ActionView.swift in Sources */,
 				99DE64DC266E7C8A0017015A /* RegisterView.swift in Sources */,
 				9965D7CF2637955400672D2E /* ContentView.swift in Sources */,
 				99E786D02639131100D13EC5 /* Dashboard.swift in Sources */,
 				994096BD266D4BFE00830829 /* UserRepository.swift in Sources */,
 				99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */,
+				991ED8A6267A902100AE129A /* Persistance.swift in Sources */,
 				99D60B852671255D00EE106B /* UserDocument.swift in Sources */,
 				995D4110266EFC5600916F5C /* HeightPicker.swift in Sources */,
 				995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */,
 				9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */,
+				99023355268242AD00FACE04 /* WaterView.intentdefinition in Sources */,
 				99D60B83267124D600EE106B /* UserModel.swift in Sources */,
 				99DE64D7266DBF1D0017015A /* Hydration.swift in Sources */,
 			);
@@ -277,7 +351,61 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		99023357268242AD00FACE04 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 99023349268242AC00FACE04 /* WaterViewExtension */;
+			targetProxy = 99023356268242AD00FACE04 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		9902335A268242AD00FACE04 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NK28QT38A3;
+				INFOPLIST_FILE = WaterView/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie.WaterView";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9902335B268242AD00FACE04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NK28QT38A3;
+				INFOPLIST_FILE = WaterView/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie.WaterView";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		9965D7D62637955500672D2E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -396,8 +524,8 @@
 		};
 		9965D7D92637955500672D2E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D144B36A88A18245B7647A70 /* Pods-Hydro Homie.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -421,8 +549,8 @@
 		};
 		9965D7DA2637955500672D2E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3D206EB60C5765616F2B9335 /* Pods-Hydro Homie.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -447,6 +575,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		99023359268242AD00FACE04 /* Build configuration list for PBXNativeTarget "WaterViewExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9902335A268242AD00FACE04 /* Debug */,
+				9902335B268242AD00FACE04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		9965D7C42637955400672D2E /* Build configuration list for PBXProject "Hydro Homie" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -466,6 +603,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		99023360268248A200FACE04 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		99023362268248A200FACE04 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9965D7C12637955400672D2E /* Project object */;
 }

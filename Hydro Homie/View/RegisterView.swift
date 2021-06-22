@@ -40,9 +40,8 @@ struct RegisterView: View {
                 HStack{
                     Spacer()
                     Button(action: {
-                        let waterIntake = ((Double(self.weight)!) / 100) * 67
+                        let waterIntake = ((Double(self.weight)!) / 100) * waterIntakeCalculator()
                         registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, waterIntake: waterIntake )
-                        print("button pressed \(self.name) \(self.email)  \(self.password) \(self.passwordMatch)  \(self.height) \(self.weight)")
                     }, label: {
                         Text("Next")
                     }).padding()
@@ -172,9 +171,19 @@ struct RegisterView: View {
             }
         } else {
             self.borderColor = Color.red
-            print("something is nil")
             
         }
+    }
+    
+    func waterIntakeCalculator() -> Double {
+        var waterIntakeCalculator: Double = 0
+        
+        if metric {
+            waterIntakeCalculator = 4300.5
+        } else {
+            waterIntakeCalculator = 67
+        }
+        return waterIntakeCalculator
     }
 
 }

@@ -6,35 +6,36 @@
 //
 
 import Foundation
-import FirebaseFirestore
+import Firebase
 import FirebaseAuth
 
 class UserDocument: ObservableObject {
     
+    
     let db = Firestore.firestore()
+    let today = Date()
     
     @Published var user: User = User(name: "", height: 1, weight: 1, metric: false, waterIntake: 1,  hydration:  [["": 1]])
     
     func fetchData() {
+        
+        
         let currentUserID = Auth.auth().currentUser?.uid
-        
+
         db.collection("users").document(currentUserID!).addSnapshotListener { (querySnapshot, error) in
-            guard let document = querySnapshot?.data()
-            else {
-                print("No documents")
+            if (error != nil) {
+                print(error!.localizedDescription)
                 return
+            }   else if(querySnapshot!.data() != nil) {
+                let document = querySnapshot!.data()
+                self.user.name = document!["name"] as? String ?? ""
+                self.user.height = document!["height"] as? Int ?? 1
+                self.user.weight = document!["Weight"] as? Double ?? 1
+                self.user.metric = document!["metric"] as? Bool ?? false
+                self.user.waterIntake = document!["waterIntake"] as? Double ?? 1
+                self.user.hydration = document!["hydration"] as? [[String: Int]] ??  [["": 1]]
             }
-            let name = document["name"] as? String ?? ""
-            let height = document["height"] as? Int ?? 1
-            let weight = document["Weight"] as? Double ?? 1
-            let metric = document["metric"] as? Bool ?? false
-            let waterIntake = document["waterIntake"] as? Double ?? 1
-            let hydration = document["hydration"] as? [[String: Int]] ??  [["": 1]]
-            
-            self.user = User(name: name , height: height, weight: weight, metric: metric, waterIntake: waterIntake, hydration: hydration )
-            print(self.user.metric)
         }
-        
     }
     
     func getUser() -> User {
@@ -56,9 +57,9 @@ class UserDocument: ObservableObject {
     
     
     func waterPercentageCalculator(hydrationDictionary: [String: Int]) -> Int{
-        let currentHydration = user.hydration.last
+        let currentHydration = hydrationDictionary
         var currentCups: Int = 1
-        for (_, cups) in  currentHydration! {
+        for (_, cups) in  currentHydration {
             currentCups = cups
         }
         return currentCups
@@ -76,12 +77,10 @@ class UserDocument: ObservableObject {
                     return previousDate
                 } else {
                     previousDate =  user.hydration[arrayElementNumber-1]
-                    print("previousDate \(previousDate)")
                     return previousDate
                 }
             }
             arrayElementNumber += 1
-
         }
         return previousDate
         
@@ -92,7 +91,6 @@ class UserDocument: ObservableObject {
         var arrayElementNumber: Int = 0
         
         for element in user.hydration {
-            
             if element == hydrationArray {
                 if (element == user.hydration.last) {
                     previousDate  = element

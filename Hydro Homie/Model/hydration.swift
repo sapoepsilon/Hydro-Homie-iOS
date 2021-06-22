@@ -23,18 +23,16 @@ struct HydrationModel {
         format.dateFormat = "yyyy-MM-dd"
             let today = format.string(from: cupsDate)
         let hydrationByDay = [today: cups]
-        print("users date: \(UserDefaults.standard.object(forKey: "today") as! String)")
-        print("today's date: \(today)")
-
+   
         if(UserDefaults.standard.object(forKey: "today") as! String != today) {
             print("users date: \(UserDefaults.standard.object(forKey: "today") as! String)")
             print("today's date: \(today)")
 
-             db.collection("users").document(getUserID()).updateData([
+             db.collection("users").document(getUserID()).setData([
                 "hydration": FieldValue.arrayUnion([
                     hydrationByDay
                 ])
-             ])
+             ], merge: true)
         }
     }
     

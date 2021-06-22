@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import Combine
+import CoreData
 
 struct ContentView: View {
     
@@ -19,6 +20,8 @@ struct ContentView: View {
     @State private var timeRemaining : Double = 0
     @State private var borderColor: Color = Color.gray
     @State private var registerView: Bool = false
+    @State private var waterColor: Color = Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5)
+
     
     let timer = Timer.publish(every: 0.3, on: .main, in: .common).autoconnect()
     
@@ -35,7 +38,7 @@ struct ContentView: View {
                             .font(.system(size: geomtry.size.height * 0.09))
                             .foregroundColor(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
                         VStack{
-                            WaterView(factor: self.$timeRemaining)}
+                            WaterView(factor: self.$timeRemaining, waterColor: self.$waterColor)}
                         .frame( height: geomtry.size
                                     .height * 0.4, alignment: .center)
                         .onReceive(timer) { time in
@@ -79,7 +82,8 @@ struct ContentView: View {
                         }.frame(width: geomtry.size.width , height: geomtry.size.height / 2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                     }
                 } else {
-                    Dashboard(userDocument: UserDocument()).environmentObject(HydrationDocument())
+                    Dashboard(userDocument: UserDocument())
+                        .environmentObject(HydrationDocument())
                 }
             }.sheet(isPresented: self.$registerView, content: {
                 RegisterView(Dashboard: $user.loggedIn, registerView: self.$registerView)

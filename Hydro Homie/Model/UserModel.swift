@@ -14,6 +14,5 @@ struct User {
     var metric: Bool
     var waterIntake: Double
     var hydration: [[String: Int]]
-    
 }
 

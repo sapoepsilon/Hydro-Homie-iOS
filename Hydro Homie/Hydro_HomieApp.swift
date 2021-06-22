@@ -12,11 +12,11 @@
     
     @main
     struct Hydro_HomieApp: App {
-        
-
-        init() {
+         init() {
                 setupAuthentication()
         }
+        let context = PersistanceController.shared
+
         var body: some Scene {
             WindowGroup {
                 ContentView()
@@ -31,3 +31,4 @@
             FirebaseApp.configure()
         }
     }
+
