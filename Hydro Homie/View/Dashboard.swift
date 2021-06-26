@@ -26,6 +26,7 @@ struct Dashboard: View {
     @State var isCurrentHydration: Bool = true
     @State var waterViewOpacity: Double = 2
     @State var actionView: Bool = false
+    @State private var actionOffset = CGSize.zero
     
     // MARK: User information
     @State var userName: String = ""
@@ -36,6 +37,7 @@ struct Dashboard: View {
     @State var volumeMetric: String = "oz"
     @State var isMetric: Bool = false
     
+    @ViewBuilder
     var body: some View {
         
         GeometryReader { reader in
@@ -46,21 +48,40 @@ struct Dashboard: View {
                 Text("You have drank \(cups) \(cup()) today: \(hydrationDate)")
                     .foregroundColor(.black)
                     .font(.title3)
-        
+                
                 Spacer(minLength: reader.size.height / 9)
                 
                 HStack{
                     if actionView{
                         VStack{
-                            ActionView().environmentObject(userDocument) //display the ActionView when the user swipes right
-                                .onTapGesture {
-                                    withAnimation(.easeOut(duration: 2.2)) {
-                                        waterViewOpacity = 2
+                            
+                            ActionView()//display the ActionView when the user swipes up
+                                .offset(x: actionOffset.width * 5, y: actionOffset.height * 5)
+                                .environmentObject(userDocument)
+                                .gesture(
+                                    DragGesture()
+                                        .onChanged { gesture in
+                                            self.actionOffset.width = gesture.translation.width / 3
+                                            self.actionOffset.height = gesture.translation.height / 3
+                                            print(self.$actionOffset)
+                                        }
+                                        .onEnded { _ in
+                                            if actionOffset.height < -30 {
+                                                actionOffset.height = 230
+                                                actionOffset.width = 0
+                                                withAnimation(.easeInOut(duration: 0.75)) {
+                                                    waterViewOpacity = 1 // if the user swipes right waterView disappears
+                                                    actionView.toggle()
+                                                }
+                                            }
+                                            
+                                        })
+                                .onReceive(timer, perform: {time in
+                                    if actionOffset.height > 1 {
+                                        actionOffset.height -= 0.5
                                     }
-                                    actionView.toggle()
-
+                                })
                                 }
-                        }
                     } else {
                         WaterView(factor: self.$percentageWater, waterColor: $waterColor)
                             .frame(height: reader.size.height / 2)
@@ -83,14 +104,16 @@ struct Dashboard: View {
                                         
                                     }
                                     .onEnded { _ in
-                                        if offset.height < -80 {
+                                        if offset.height < -30 {
                                             offset.height = 230
                                             offset.width = 0
+                                            actionOffset.height = 230
+                                            actionOffset.width = 0
                                             withAnimation(.easeInOut(duration: 0.75)) {
                                                 waterViewOpacity = 0 // if the user swipes right waterView disappears
                                                 actionView = true
                                             }
-
+                                            
                                         } else if self.offset.width > 50 {
                                             self.currentHydrationDictionary = userDocument.previousDate(hydrationArray: self.currentHydrationDictionary)
                                             offset.width = -89.5
@@ -140,7 +163,7 @@ struct Dashboard: View {
             }
         }.onAppear{
             userDocument.fetchData()
-//            print(context)
+            //            print(context)
         }
         .onDisappear{
             UserDefaults.standard.setValue(cups, forKey: "cups")
@@ -153,7 +176,8 @@ struct Dashboard: View {
             self.waterIntake = userDocument.getUser().waterIntake
             self.hydrationDate = userDocument.getTheLatestDate()
             self.calculatedPercentage = userDocument.waterPercentageCalculator(hydrationDictionary: currentHydrationDictionary)
-            self.cupsLeft = Int(waterIntake) / (cupConverter() - self.cups)
+
+            self.cupsLeft = Int(waterIntake) / (cupConverter())
             self.cupsLeft -= self.cups
             _ = ((100 / (Int(waterIntake) / cupConverter())) * calculatedPercentage)
             if(userDocument.user.metric == true) {
@@ -168,47 +192,47 @@ struct Dashboard: View {
             if (self.currentHydrationDictionary != userDocument.user.hydration.last) {
                 waterColor = Color(red: 103 / 255, green: 146 / 255, blue: 103 / 255, opacity: 0.5)
             } else {
-                waterColor = Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5)
-            }
-            if currentHydrationDictionary != userDocument.user.hydration.last {
-                isCurrentHydration = false
+                    waterColor = Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5)
+                }
+                if currentHydrationDictionary != userDocument.user.hydration.last {
+                    isCurrentHydration = false
+                } else {
+                    isCurrentHydration = true
+                }
+                
+                self.cups = userDocument.waterPercentageCalculator(hydrationDictionary: currentHydrationDictionary)
+                self.calculatedPercentage = userDocument.waterPercentageCalculator(hydrationDictionary: currentHydrationDictionary)
+                let percentageWaterMultiply = ((100 / (Int(waterIntake) / cupConverter())) * calculatedPercentage)
+                percentageWater = Double(percentageWaterMultiply)
+                
+            })
+            
+        }
+        
+        func cupConverter() -> Int {
+            var cupConverter:Int = 1
+            if isMetric {
+                cupConverter = 237
             } else {
-                isCurrentHydration = true
+                cupConverter = 8
             }
-            
-            self.cups = userDocument.waterPercentageCalculator(hydrationDictionary: currentHydrationDictionary)
-            self.calculatedPercentage = userDocument.waterPercentageCalculator(hydrationDictionary: currentHydrationDictionary)
-            let percentageWaterMultiply = ((100 / (Int(waterIntake) / cupConverter())) * calculatedPercentage)
-            percentageWater = Double(percentageWaterMultiply)
-            
-        })
+            return cupConverter
+        }
+        
+        func cup() -> String {
+            if self.cups == 1 || self.cups == 0 {
+                return "cup"
+            } else {
+                return "cups"
+            }
+        }
         
     }
-    
-    func cupConverter() -> Int {
-        var cupConverter:Int = 1
-        if isMetric {
-            cupConverter = 237
-        } else {
-            cupConverter = 8
-        }
-        return cupConverter
-    }
-    
-    func cup() -> String {
-        if self.cups == 1 || self.cups == 0 {
-            return "cup"
-        } else {
-            return "cups"
-        }
-    }
-    
-}
 
-//struct SwiftUIView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        Dashboard(userDocument: UserDocument(), context: <#Environment<DataStore>#>)
-//    }
-//}
+    //struct SwiftUIView_Previews: PreviewProvider {
+    //    static var previews: some View {
+    //        Dashboard(userDocument: UserDocument(), context: <#Environment<DataStore>#>)
+    //    }
+    //}
 
 

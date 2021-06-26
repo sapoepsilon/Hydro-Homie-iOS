@@ -12,6 +12,7 @@
 		991ED8A6267A902100AE129A /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991ED8A5267A902100AE129A /* Persistance.swift */; };
 		994096BD266D4BFE00830829 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994096BC266D4BFE00830829 /* UserRepository.swift */; };
 		994F86142682822A00E38099 /* BarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F86132682822A00E38099 /* BarChart.swift */; };
+		994F8617268293FF00E38099 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 994F8616268293FF00E38099 /* SwiftUICharts */; };
 		995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AEBF9266D752300FAD0CB /* WaterView.swift */; };
 		995D4110266EFC5600916F5C /* HeightPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995D410F266EFC5600916F5C /* HeightPicker.swift */; };
 		9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */; };
@@ -95,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				994F8617268293FF00E38099 /* SwiftUICharts in Frameworks */,
 				99023361268248A200FACE04 /* FirebaseAuth in Frameworks */,
 				99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */,
 			);
@@ -238,6 +240,7 @@
 			packageProductDependencies = (
 				99023360268248A200FACE04 /* FirebaseAuth */,
 				99023362268248A200FACE04 /* FirebaseFirestore */,
+				994F8616268293FF00E38099 /* SwiftUICharts */,
 			);
 			productName = "Hydro Homie";
 			productReference = 9965D7C92637955400672D2E /* Hydro Homie.app */;
@@ -288,6 +291,7 @@
 			mainGroup = 9965D7C02637955400672D2E;
 			packageReferences = (
 				9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				994F8615268293FF00E38099 /* XCRemoteSwiftPackageReference "ChartView" */,
 			);
 			productRefGroup = 9965D7CA2637955400672D2E /* Products */;
 			projectDirPath = "";
@@ -619,6 +623,14 @@
 				minimumVersion = 8.1.1;
 			};
 		};
+		994F8615268293FF00E38099 /* XCRemoteSwiftPackageReference "ChartView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppPear/ChartView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -631,6 +643,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		994F8616268293FF00E38099 /* SwiftUICharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 994F8615268293FF00E38099 /* XCRemoteSwiftPackageReference "ChartView" */;
+			productName = SwiftUICharts;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

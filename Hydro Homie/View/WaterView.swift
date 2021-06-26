@@ -72,6 +72,8 @@ struct WaterView: View {
                     .overlay(
                         Wave(offset: self.offset, percent: self.factor / 100)
                             .fill(waterColor)
+                            .opacity(0.6)
+                            .blur(radius: 1.5, opaque: false)
                             .clipShape(Cup()))
                     .onAppear{
                         withAnimation(Animation.linear(duration: 1).repeatForever(autoreverses: false)) {

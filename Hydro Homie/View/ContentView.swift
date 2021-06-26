@@ -23,7 +23,7 @@ struct ContentView: View {
     @State private var waterColor: Color = Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5)
 
     
-    let timer = Timer.publish(every: 0.3, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 0.4, on: .main, in: .common).autoconnect()
     
     init() {
         self.signIn = UserRepository().loggedIn
@@ -38,7 +38,9 @@ struct ContentView: View {
                             .font(.system(size: geomtry.size.height * 0.09))
                             .foregroundColor(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
                         VStack{
-                            WaterView(factor: self.$timeRemaining, waterColor: self.$waterColor)}
+                            WaterView(factor: self.$timeRemaining, waterColor: self.$waterColor)
+                            
+                        }
                         .frame( height: geomtry.size
                                     .height * 0.4, alignment: .center)
                         .padding()
@@ -87,6 +89,11 @@ struct ContentView: View {
             .onChange(of: user.loggedIn, perform: {newValue in
                 print("signIn \(signIn)")
                     self.registerView = false
+            })
+            .onReceive(timer, perform: { _ in
+                if self.timeRemaining < 100 {
+                    self.timeRemaining += 1 
+                }
             })
         }
         .onAppear{

@@ -14,58 +14,85 @@ struct ActionView: View {
     @EnvironmentObject var user: UserDocument
     @State private var userName: String = ""
     @State private var userHeight: String = ""
-
+    
     var body: some View {
-        VStack(alignment: .leading){
-                HStack{
-                    Text("Stats                                          ").fontWeight(.heavy)
-                    Image(systemName: "chart.bar").foregroundColor(.green).font(.subheadline)
+        
+        GeometryReader{ geometry in
+            ZStack{
+                Rectangle().foregroundColor(.white)
+                VStack(alignment: .leading){
+                    HStack{
+                        Button(action: {
+                            isStats = true
+                        }, label: {
+                            Text("Stats                                                    ")
+                                .foregroundColor(.black)
+                                .font(.system(size: geometry.size.height / 17))
+                            Image(systemName: "chart.bar").foregroundColor(.green)
+                                .scaleEffect(CGSize(width: 1.5, height: 1.5))
+
+                        })
+                    }
+                    .padding()
+                    //                .border(Color.green)
+                    Text(" ")
+                    HStack{
+                        Button(action: {
+                            isControl = true
+                        }, label: {
+                            Text("Precise control of hydration        ")
+                                .foregroundColor(.black)
+                                .font(.system(size: geometry.size.height / 17))
+                            Image(systemName: "switch.2").foregroundColor(.blue)
+                                .scaleEffect(CGSize(width: 1.5, height: 1.5))
+
+                        })
+                    }
+                    .padding()
+                    //                .border(Color.blue)
+                    Text(" ")
+                    HStack {
+                        Button(action: {
+                            isEdit = true
+                        }, label: {
+                            Text("Edit your Info                                    ")
+                                .foregroundColor(.black)
+                                .font(.system(size: geometry.size.height / 17))
+                            Image(systemName: "pencil")
+                                .foregroundColor(.blue)
+                                .scaleEffect(CGSize(width: 1.5, height: 1.5))
+                        })
+                    }
+                    .padding()
+                    //                .border(Color.blue)
+                    
+                    Text(" ")
+                    HStack{
+                        Button(action: {
+                            
+                        }, label: {
+                            Text("How hydration is calculated       ")
+                                .font(.system(size: geometry.size.height / 17))
+                                .foregroundColor(.black)
+                            Image(systemName: "info").foregroundColor(.blue)
+                                .scaleEffect(CGSize(width: 1.5, height: 1.5))
+                        })
+                        
+                    }
+                    .padding()
+                    //                .border(Color.blue)
                 }
-                .padding()
-                .onTapGesture {
-                    isStats = true
-                    print(isStats)
-                }
-//                .border(Color.green)
-                Text(" ")
-                HStack{
-                    Text("Precise control of hydration")
-                    Image(systemName: "switch.2").foregroundColor(.blue)
-                }
-                .padding()
-                .onTapGesture {
-                    isStats = true
-                    print(isStats)
-                }
-//                .border(Color.blue)
-                Text(" ")
-                
-                HStack {
-                    Text("Edit your Info                          ")
-                    Image(systemName: "pencil")
-                        .foregroundColor(.blue)
-                }
-                .padding()
-//                .border(Color.blue)
-                .onTapGesture {
-                    isEdit = true
-                    print(isStats)
-                }
-                Text(" ")
-                HStack{
-                    Text("How hydration is calculated ")
-                    Image(systemName: "info").foregroundColor(.blue)
-                }
-                .padding()
-//                .border(Color.blue)
-            
-        }.sheet(isPresented: self.$isEdit, content: {
-            TextField(user.user.name, text: self.$userName)
-            TextField(String(user.user.height), text: self.$userHeight)
-        })
-        .sheet(isPresented: self.$isStats, content: {
-            BarView().environmentObject(user)
-        })
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
+            .sheet(isPresented: self.$isEdit, content: {
+                TextField(user.user.name, text: self.$userName)
+                TextField(String(user.user.height), text: self.$userHeight)
+            }
+            )
+            .sheet(isPresented: self.$isStats, content: {
+                BarView().environmentObject(user)
+            })
+        }
     }
 }
 
