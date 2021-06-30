@@ -8,13 +8,14 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseAuth
+import CoreLocation
 
 class UserDocument: ObservableObject {
     
     
     let db = Firestore.firestore()
     let today = Date()
-    
+    var locationManager: CLLocationManager?
     @Published var user: User = User(name: "", height: 1, weight: 1, metric: false, waterIntake: 1,  hydration:  [["": 1]])
     
     func fetchData() {
@@ -54,26 +55,8 @@ class UserDocument: ObservableObject {
         }
         return currentDate
     }
-//    
-//    func getAllCups() -> [Int] {
-//        var cupsArray: [Int] = []
-//        
-//        for (_, cups) in  user.hydration {
-//            cupsArray.append(cups)
-//        }
-//        return cupsArray
-//    }
-//    
-//    func getAllDates() -> [String] {
-//        var datesArray: [String] = []
-//        
-//        for (hydration) in  user.hydration {
-//            datesArray.append(date)
-//        }
-//        return datesArray
-//    }
-    
-    
+
+
     func waterPercentageCalculator(hydrationDictionary: [String: Int]) -> Int{
         let currentHydration = hydrationDictionary
         var currentCups: Int = 1

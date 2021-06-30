@@ -13,6 +13,7 @@ struct Wave: Shape {
     var percent: Double
     
     var animatableData: Double {
+        
         get { offset.degrees }
         set { offset = Angle(degrees: newValue) }
     }
@@ -60,30 +61,50 @@ struct Cup: Shape {
 }
 struct WaterView: View {
     
+    @State private var show: Bool = false
     @State var offset: Angle  = Angle(degrees: 0)
     @Binding var factor: Double
     @Binding var waterColor: Color
-    
+    @Environment(\.colorScheme) var colorScheme
+    @State private var percent: Double = 0
+    let timer = Timer.publish(every: 0.005, on: .main, in: .common).autoconnect()
+
     var body: some View {
         GeometryReader { proxy in
             ZStack {
                 Cup()
-                    .stroke(Color.blue, lineWidth: 0.0025 * min(proxy.size.width, proxy.size.height))
+                    .stroke(colorScheme == .light ? Color.white : Color.black , lineWidth: 0.0025 * min(proxy.size.width, proxy.size.height))
                     .overlay(
-                        Wave(offset: self.offset, percent: self.factor / 100)
+                        Wave( offset: self.offset, percent: percent / 100 )
                             .fill(waterColor)
                             .opacity(0.6)
                             .blur(radius: 1.5, opaque: false)
-                            .clipShape(Cup()))
+                            .clipShape(Cup())
+                            
+                    )
+                    
+                    
+                    
                     .onAppear{
-                        withAnimation(Animation.linear(duration: 1).repeatForever(autoreverses: false)) {
-                            self.offset = Angle(degrees: 360)
+                            show = true
+                        }                    }
+                    .onReceive(timer, perform: { _ in
+                        if self.offset.degrees < 360 {
+                            self.offset.degrees += 0.5
+                        } else {
+                            self.offset.degrees = 0
                         }
-                    }
-            }
+                        
+                        if percent < factor {
+                            percent += 0.1
+                        } else if (percent > factor) {
+                            percent -= 0.1
+                            }
+                        }
+                    )
         }        .aspectRatio(1, contentMode: .fit)
-        
     }
+  
     
 }
 

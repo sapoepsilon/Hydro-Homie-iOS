@@ -9,27 +9,25 @@ import SwiftUI
 import Firebase
 import Combine
 import CoreData
+import CoreLocation
 
 struct ContentView: View {
     
     @State private var email: String = ""
     @State private var password: String = ""
     @EnvironmentObject var user: UserRepository
-    @State private var signIn: Bool
+    @Environment(\.colorScheme) var colorScheme
+    @State private var signIn: Bool = UserRepository().loggedIn
     @State private var error: String = ""
     @State private var timeRemaining : Double = 0
     @State private var borderColor: Color = Color.gray
     @State private var registerView: Bool = false
     @State private var waterColor: Color = Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5)
+    
+    let timer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
 
-    
-    let timer = Timer.publish(every: 0.4, on: .main, in: .common).autoconnect()
-    
-    init() {
-        self.signIn = UserRepository().loggedIn
-    }
     var body: some View {
-        
+
         GeometryReader { geomtry in
             VStack{
                 if(user.loggedIn == false) {
@@ -39,7 +37,7 @@ struct ContentView: View {
                             .foregroundColor(Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5))
                         VStack{
                             WaterView(factor: self.$timeRemaining, waterColor: self.$waterColor)
-                            
+                             
                         }
                         .frame( height: geomtry.size
                                     .height * 0.4, alignment: .center)
@@ -92,11 +90,16 @@ struct ContentView: View {
             })
             .onReceive(timer, perform: { _ in
                 if self.timeRemaining < 100 {
-                    self.timeRemaining += 1 
+                    self.timeRemaining += 0.1
                 }
             })
         }
         .onAppear{
+            if colorScheme == .dark {
+                    waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 0.5)
+                } else {
+                    waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 0.5)
+                }
             user.checkUser()
         }
     }

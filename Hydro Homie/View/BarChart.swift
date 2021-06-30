@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftUICharts
+import CoreLocation
 
 struct BarView: View {
     @EnvironmentObject var user : UserDocument
@@ -20,19 +21,25 @@ struct BarView: View {
     @State private var amountOfDays: Int = 0
     @State private var barData: [(String, Double)] = []
     @State private var barDataName: [String] = []
-    @State private var barWidth: CGSize = CGSize(width: 400, height: 500) //delete later
+    @State private var barWidth: CGSize = CGSize(width: 400, height: 500)
+    @State private var month: String = "January"
+    @Environment(\.colorScheme) var colorScheme
+
     
     var currentLoop: Int = 0
     
     var style: ChartStyle {
         let st = Styles.barChartMidnightGreenLight
-        st.textColor = .white
+        st.textColor = .gray
         st.backgroundColor = Color.white.opacity(0.6)
-        st.darkModeStyle = Styles.barChartMidnightGreenDark
+        st.darkModeStyle = Styles.barChartStyleNeonBlueDark
+        st.gradientColor = GradientColor(start: waterColor, end: Color(red: 0, green: 0.5, blue: 0.85, opacity: 1))
+        print(Styles.barChartMidnightGreenDark)
         st.darkModeStyle?.legendTextColor = Color.gray
-//        st.darkModeStyle?.textColor = Color.white
-//        st.darkModeStyle?.backgroundColor = waterColor
-
+        st.darkModeStyle?.backgroundColor = Color.clear
+        st.darkModeStyle?.gradientColor = GradientColor(start: Color.white.opacity(0.3), end: Color.white.opacity(1))
+        print(st.darkModeStyle?.accentColor.description as Any)
+    
         return st
     }
     
@@ -48,47 +55,47 @@ struct BarView: View {
                 VStack{
                     HStack(spacing: 0) {
                         Picker(selection: $pickerSelectedItem, label: Text("")) {
-                            //TODO: Loop through each picker and determine the exact dates, and show the amount of cups drunken for that period. Optional: Add somekind of chart representation where the user can see the result by gliding.
                             Text("Last 7 days").tag(0)
-                            Text("Last 30 days").tag(1)
+                            Text(month).tag(1)
                             Text("Last 365 days").tag(2)
                         }
-                        .onChange(of: pickerSelectedItem) {picker in
-                            self.cups = 0
-                            var counter: Int = 0
-                            self.barData.removeAll()
-                            //after hovering the picker to equalize all the variables to zero
-                            if picker == 0 {
-                                weekly = true
-                                monthly = false
-                                
-                                for hydration in user.user.hydration {
-                                    //get the weekly report
-                                    if (counter < 7 ) {
-                                        self.amountOfDays = counter
-                                        self.cups += getCups(hydration: hydration)
-                                        barData.append(getDates(hydration: hydration))
-                                        //                                            barDataName.append(getDates(hydration: hydration))
+                        .onChange(of: pickerSelectedItem) { picker in
+                                self.cups = 0
+                                var counter: Int = 0
+                                self.barData.removeAll()
+                                if picker == 0 {
+                                    weekly = true
+                                    monthly = false
+                                    
+                                    for hydration in user.user.hydration {
+                                        if (counter < 7 ) {
+                                            withAnimation(.easeInOut) {
+                                                self.amountOfDays = counter
+                                                self.cups += getCups(hydration: hydration)
+
+                                                barData.append(getDates(hydration: hydration))
+                                            }
+                                        }
+                                        counter += 1
                                     }
-                                    counter += 1
-                                }
-                            }  else if picker == 1 {
-                                weekly = false
-                                monthly = true
-                                //get the monthly report
-                                for hydration in user.user.hydration {
-                                    if (counter < 30 ) {
-                                        self.amountOfDays = counter
-                                        self.cups += getCups(hydration: hydration)
-                                        barData.append(getDates(hydration: hydration))
-                                        //                                            barDataName.append(getDates(hydration: hydration))
+                                }  else if picker == 1 {
+                                    weekly = false
+                                    monthly = true
+                                    for hydration in user.user.hydration {
+                                        if (counter < 30 ) {
+                                            withAnimation(.easeInOut) {
+                                                self.amountOfDays = counter
+                                                self.cups += getCups(hydration: hydration)
+                                                barData.append(getDates(hydration: hydration))
+                                            }
+                                        }
+                                        counter += 1
                                     }
-                                    counter += 1
+                                } else {
+                                    monthly = false
+                                    weekly = false
                                 }
-                            } else {
-                                monthly = false
-                                weekly = false
-                            }
+                            
                         }
                         .pickerStyle(SegmentedPickerStyle())
                         .padding(.horizontal, 24)
@@ -97,22 +104,30 @@ struct BarView: View {
                     .animation(.default)
                     HStack{
                         Text("Total cups: \(self.cups)")
-                            .foregroundColor(.white)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
                             .padding()
                         Spacer()
                     }
                     .padding()
                     
                     HStack{
-                        Text("Total days: \(self.amountOfDays)")
-                            .foregroundColor(.white)
+                        Text("Total days: \(self.amountOfDays + 1)")
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
                             .padding()
                         Spacer()
                         
                     }
                     .padding()
                     Section {
-                        BarChartView(data: ChartData(values: barData), title: "Daily chart",legend: "Legendary", style: style,  form: CGSize(width: geo.size.width - 10, height: geo.size.height / 2), dropShadow: true, animatedToBack: true)
+                        // MARK: Barchart
+                        ZStack {
+                            Rectangle()
+                                .frame(width: geo.size.width - 10, height: geo.size.height / 2)
+                                .foregroundColor(waterColor.opacity(0.4))
+                                .blur(radius: 3)
+                                .shadow(color: colorScheme == .dark ? Color.white : Color.black, radius: 10)
+                            BarChartView(data: ChartData(values: barData), title: "Daily chart",legend: "Quarterely", style: style,  form: CGSize(width: geo.size.width - 10, height: geo.size.height / 2), dropShadow: true, animatedToBack: true)
+                        }
                     }
                     Spacer()
                 }
@@ -131,6 +146,8 @@ struct BarView: View {
                     counter += 1
                 }
             }
+            let monthInt = Calendar.current.component(.month, from: Date())
+            month = Calendar.current.monthSymbols[monthInt - 1]
         }
         
     }
@@ -138,7 +155,7 @@ struct BarView: View {
     func getCups(hydration: [String: Int]) -> Int {
         
         var cup: Int = 0
-        for (dates,cups) in hydration {
+        for (_,cups) in hydration {
             cup += cups
         }
         return cup
@@ -155,10 +172,3 @@ struct BarView: View {
     }
     
 }
-struct SwiftUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        BarView()
-    }
-}
-
-

@@ -25,6 +25,7 @@ struct RegisterView: View {
     @State private var metric: Bool = false
     @State private var error: String = ""
     @State private var alert: Bool = false
+    @State private var isCoffeeDrinker: Bool = false
 
 
     
