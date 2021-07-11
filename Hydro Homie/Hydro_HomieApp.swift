@@ -8,7 +8,8 @@
     import SwiftUI
     import Firebase
     import UIKit
-
+    import CoreLocation
+    import GoogleSignIn
     
     @main
     struct Hydro_HomieApp: App {
@@ -25,7 +26,7 @@
             }
         }
     }
-    
+
     extension Hydro_HomieApp {
         private func setupAuthentication() {
             FirebaseApp.configure()

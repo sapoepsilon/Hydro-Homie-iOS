@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "water 2x.png",
+      "filename" : "outline_coffee_white_48pt_1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "water 3x.png",
+      "filename" : "outline_coffee_white_48pt_2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "water 600x600.png",
+      "filename" : "outline_coffee_white_48pt_3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

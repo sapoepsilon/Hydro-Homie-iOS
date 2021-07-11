@@ -67,6 +67,7 @@ struct WaterView: View {
     @Binding var waterColor: Color
     @Environment(\.colorScheme) var colorScheme
     @State private var percent: Double = 0
+    @State private var backgroundColor = Color.black
     let timer = Timer.publish(every: 0.005, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -75,18 +76,22 @@ struct WaterView: View {
                 Cup()
                     .stroke(colorScheme == .light ? Color.white : Color.black , lineWidth: 0.0025 * min(proxy.size.width, proxy.size.height))
                     .overlay(
+                        backgroundColor
+                            .clipShape(Cup())
+                    )
+                    .overlay(
                         Wave( offset: self.offset, percent: percent / 100 )
                             .fill(waterColor)
                             .opacity(0.6)
                             .blur(radius: 1.5, opaque: false)
                             .clipShape(Cup())
-                            
                     )
-                    
-                    
-                    
-                    .onAppear{
-                            show = true
+              
+                    .onAppear {
+                        if(colorScheme == .light) {
+                            backgroundColor = Color.white
+                        }
+                        show = true
                         }                    }
                     .onReceive(timer, perform: { _ in
                         if self.offset.degrees < 360 {

@@ -33,6 +33,7 @@ struct Dashboard: View {
     @State  private var previosColor: Color = Color(red: 103 / 255, green: 146 / 255, blue: 103 / 255, opacity: 0.5)
     @State private var formattedFloat : String = ""
     @State private var addCustomAmount: Bool = false
+    @State private var waterScaleEffect: CGFloat = 1
 
     // MARK: User information
     @State var userName: String = ""
@@ -97,13 +98,28 @@ struct Dashboard: View {
                         } else {
                             WaterView(factor: self.$percentageWater, waterColor: $waterColor)
                                 .frame(height: reader.size.height / 2)
+                                .scaleEffect(waterScaleEffect)
                                 .onTapGesture {
-                                    if isCurrentHydration{
-                                            cups += 1
+                                    if waterScaleEffect == 1.5 {
+                                        waterScaleEffect = 1
+                                        let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                                                   impactHeavy.impactOccurred()
+                                    } else {
+                                        if isCurrentHydration{
+                                            let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                                                       impactHeavy.impactOccurred()
+                                            isDiuretic = true
+    //                                            cups += 1
+                                        }
                                     }
                                 }
                                 .onLongPressGesture {
-                                    isDiuretic = true
+                                    let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                                               impactHeavy.impactOccurred()
+                                    withAnimation {
+                                        waterScaleEffect = 1.5
+                                    }
+                                    
                                 }
                                 .shadow(color: colorScheme == .dark ? .white : .black, radius: 6)
                                 .offset(x: offset.width * 5, y: offset.height * 5)
@@ -112,9 +128,14 @@ struct Dashboard: View {
                                     DragGesture()
                                         .onChanged { gesture in
                                             print ( gesture.translation.height / 3)
-                                            self.offset.width = gesture.translation.width / 3
-                                            self.offset.height = gesture.translation.height / 3
                                             
+                                            //if the user long presses change the water level, else show the context menu
+                                            if waterScaleEffect == 1 {
+                                                self.offset.width = gesture.translation.width / 3
+                                                self.offset.height = gesture.translation.height / 3
+                                            } else {
+                                                self.cups = Double((-gesture.translation.height / 50))
+                                            }
                                         }
                                         .onEnded { _ in
                                             if offset.height < -30 {
@@ -235,13 +256,15 @@ struct Dashboard: View {
             
         })
         .sheet(isPresented: $popUp, content: {
-            PopUp(active: $popUp, cups: $cups)
+            PopUp(active: $popUp, cups: $cups, waterColor: $waterColor)
                 .environmentObject(user)
+                .environmentObject(userDocument)
                 .font(.title)
         })
 
         .sheet(isPresented: $isDiuretic, content: {
-            DiureticView(popUp: $popUp, cups: $cups, isDiuretic: $isDiuretic)
+            DiureticView(popUp: $popUp, cups: $cups, isDiuretic: $isDiuretic, waterColor: $waterColor)
+                .clearModalBackground()
         })
         .onChange(of: self.currentHydrationDictionary, perform: { newValue in
             for (date,_) in currentHydrationDictionary {
@@ -298,20 +321,21 @@ struct Dashboard: View {
             return "cups"
         }
     }
-    
 }
 
 struct PopUp: View {
     @Binding var active: Bool
     @Binding var cups: Double
     @EnvironmentObject var user: UserRepository
+    @EnvironmentObject var userDocument: UserDocument
     @State private var isDiuretic = false
     @State private var isPrecise = false
     @Environment(\.colorScheme) var colorScheme
+    @Binding var waterColor: Color
     
     
     var body: some View {
-        ZStack{
+        NavigationView{
             VStack {
                 HStack{
                     Spacer()
@@ -322,11 +346,23 @@ struct PopUp: View {
                     }).scaleEffect(0.75)
                 }
                 
-                Image(systemName: "figure.walk")
-                    .padding()
-                    .onTapGesture {
-                        isPrecise.toggle()
-                    }
+                
+                NavigationLink(
+                    destination: ActionView().environmentObject(userDocument),
+                    label: {
+                        Text("Action Control")
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                    })
+
+                HStack {
+                    Text("Precise Control")
+                    Image(systemName: "figure.walk")
+                        .padding()
+                }
+                .onTapGesture {
+                    isPrecise.toggle()
+                }
+                
                 Text("Log diuretic")
                     .onTapGesture {
                         withAnimation() {
@@ -335,9 +371,6 @@ struct PopUp: View {
                     }
                 if isPrecise {
                     PreciseControl()
-                }
-                if isDiuretic {
-                    DiureticView(popUp: $active, cups: $cups, isDiuretic:  $isDiuretic)
                 }
                 
                 Text("Sign out")
@@ -351,6 +384,9 @@ struct PopUp: View {
                 
                 Spacer()
             }
+            .sheet(isPresented: $isDiuretic, content: {
+                DiureticView(popUp: $active, cups: $cups, isDiuretic:  $isDiuretic, waterColor: $waterColor)
+            })
         }
     }
 }

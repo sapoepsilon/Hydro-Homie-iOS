@@ -31,7 +31,7 @@ struct ActionView: View {
                             Button(action: {
                                 isStats = true
                             }, label: {
-                                Text("Stats                                                    ")
+                                Text("Stats                                                 ")
                                     .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
                                     .font(.system(size: geometry.size.height / 17))
                                 Image(systemName: "chart.bar").foregroundColor(.green)
@@ -93,6 +93,7 @@ struct ActionView: View {
             )
             .sheet(isPresented: self.$isStats, content: {
                 BarView().environmentObject(user)
+                    .clearModalBackground()
             })
             .alert(isPresented: $isLocation, content: {
                 Alert(title: Text("Turn precise control on ?"), message: Text("By clicking ok, you will grant the location access, and allow the app to give you better contol"), primaryButton: .default(Text("OK"), action: {
