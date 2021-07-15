@@ -12,15 +12,13 @@ import CoreLocation
 
 class UserDocument: ObservableObject {
     
-    
     let db = Firestore.firestore()
     let today = Date()
     var locationManager: CLLocationManager?
     @Published var user: User = User(name: "", height: 1, weight: 1, metric: false, waterIntake: 1,  hydration:  [["": 1]])
     
+    
     func fetchData() {
-        
-        
         let currentUserID = Auth.auth().currentUser?.uid
 
         db.collection("users").document(currentUserID!).addSnapshotListener { (querySnapshot, error) in
@@ -65,13 +63,12 @@ class UserDocument: ObservableObject {
         }
         return currentCups
     }
-    
+
+
     func previousDate(hydrationArray: [String: Int]) -> [String: Int] {
         var previousDate: [String: Int] = ["":0]
         var arrayElementNumber: Int = 0
-        
         for element in user.hydration {
-            
             if element == hydrationArray {
                 if (element == user.hydration.first) {
                     previousDate  = element
@@ -84,9 +81,7 @@ class UserDocument: ObservableObject {
             arrayElementNumber += 1
         }
         return previousDate
-        
     }
-    
     func nextDate(hydrationArray: [String: Int]) -> [String: Int] {
         var previousDate: [String: Int] = ["":0]
         var arrayElementNumber: Int = 0

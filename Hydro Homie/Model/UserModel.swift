@@ -7,7 +7,6 @@
 
 import Foundation
 struct User {
-    
     var name: String
     var height: Int
     var weight: Double

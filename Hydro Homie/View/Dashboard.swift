@@ -34,7 +34,7 @@ struct Dashboard: View {
     @State private var formattedFloat : String = ""
     @State private var addCustomAmount: Bool = false
     @State private var waterScaleEffect: CGFloat = 1
-
+    
     // MARK: User information
     @State var userName: String = ""
     @State var waterIntake: Double = 1
@@ -103,19 +103,20 @@ struct Dashboard: View {
                                     if waterScaleEffect == 1.5 {
                                         waterScaleEffect = 1
                                         let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
-                                                   impactHeavy.impactOccurred()
+                                        impactHeavy.impactOccurred()
                                     } else {
                                         if isCurrentHydration{
                                             let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
-                                                       impactHeavy.impactOccurred()
+                                            impactHeavy.impactOccurred()
                                             isDiuretic = true
-    //                                            cups += 1
+                                                
+                                            //                                            cups += 1
                                         }
                                     }
                                 }
                                 .onLongPressGesture {
                                     let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
-                                               impactHeavy.impactOccurred()
+                                    impactHeavy.impactOccurred()
                                     withAnimation {
                                         waterScaleEffect = 1.5
                                     }
@@ -235,9 +236,6 @@ struct Dashboard: View {
             userDocument.fetchData()
             
         }
-        .onDisappear{
-            UserDefaults.standard.setValue(cups, forKey: "cups")
-        }
         .onChange(of: userDocument.user.name, perform: { newValue in
             self.isMetric = userDocument.user.metric
             self.currentHydrationDictionary = userDocument.user.hydration.last!
@@ -260,11 +258,11 @@ struct Dashboard: View {
                 .environmentObject(user)
                 .environmentObject(userDocument)
                 .font(.title)
-        })
-
-        .sheet(isPresented: $isDiuretic, content: {
-            DiureticView(popUp: $popUp, cups: $cups, isDiuretic: $isDiuretic, waterColor: $waterColor)
                 .clearModalBackground()
+        })
+        
+        .sheet(isPresented: $isDiuretic, content: {
+            DiureticView(popUp: $popUp, cups: $cups, isDiuretic: $isDiuretic,  customDrinkDocument: CustomDrinkViewModel(), waterColor: $waterColor)
         })
         .onChange(of: self.currentHydrationDictionary, perform: { newValue in
             for (date,_) in currentHydrationDictionary {
@@ -324,19 +322,18 @@ struct Dashboard: View {
 }
 
 struct PopUp: View {
-    @Binding var active: Bool
-    @Binding var cups: Double
-    @EnvironmentObject var user: UserRepository
-    @EnvironmentObject var userDocument: UserDocument
-    @State private var isDiuretic = false
-    @State private var isPrecise = false
-    @Environment(\.colorScheme) var colorScheme
-    @Binding var waterColor: Color
-    
-    
+@Binding var active: Bool
+@Binding var cups: Double
+@EnvironmentObject var user: UserRepository
+@EnvironmentObject var userDocument: UserDocument
+@State private var isDiuretic = false
+@State private var isPrecise = false
+@Environment(\.colorScheme) var colorScheme
+@Binding var waterColor: Color
     var body: some View {
-        NavigationView{
-            VStack {
+        NavigationView {
+            ZStack {
+                VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light)).ignoresSafeArea(.all)
                 HStack{
                     Spacer()
                     Button(action: {
@@ -346,47 +343,48 @@ struct PopUp: View {
                     }).scaleEffect(0.75)
                 }
                 
-                
-                NavigationLink(
-                    destination: ActionView().environmentObject(userDocument),
-                    label: {
-                        Text("Action Control")
-                            .foregroundColor(colorScheme == .dark ? .white : .black)
-                    })
+                VStack {
+                    NavigationLink(
+                        destination: ActionView().environmentObject(userDocument),
+                        label: {
+                            Text("Action Control")
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
+                        })
 
-                HStack {
-                    Text("Precise Control")
-                    Image(systemName: "figure.walk")
-                        .padding()
-                }
-                .onTapGesture {
-                    isPrecise.toggle()
-                }
-                
-                Text("Log diuretic")
+                    HStack {
+                        Text("Precise Control")
+                        Image(systemName: "figure.walk")
+                            .padding()
+                    }
                     .onTapGesture {
-                        withAnimation() {
-                            isDiuretic.toggle()
+                        isPrecise.toggle()
+                    }
+                    
+                    Text("Log diuretic")
+                        .onTapGesture {
+                            withAnimation() {
+                                isDiuretic.toggle()
+                            }
                         }
+                    if isPrecise {
+                        PreciseControl()
                     }
-                if isPrecise {
-                    PreciseControl()
+                    
+                    Text("Sign out")
+                        .onTapGesture {
+                            user.signOut()
+                        }
+                        .padding(.vertical)
+                        .frame(width: UIScreen.main.bounds.width - 50)
+                        .cornerRadius(23)
+                    
+                    Spacer()
                 }
-                
-                Text("Sign out")
-                    .onTapGesture {
-                        user.signOut()
-                    }
-                    .padding(.vertical)
-                    .frame(width: UIScreen.main.bounds.width - 50)
-                    .cornerRadius(23)
-                
-                
-                Spacer()
             }
             .sheet(isPresented: $isDiuretic, content: {
-                DiureticView(popUp: $active, cups: $cups, isDiuretic:  $isDiuretic, waterColor: $waterColor)
-            })
+                DiureticView(popUp: $active, cups: self.$cups, isDiuretic: $isDiuretic, customDrinkDocument: CustomDrinkViewModel(), waterColor: self.$waterColor)
+                    .frame( height: UIScreen.main.bounds.height / 2, alignment: .center)
+                })
         }
     }
 }

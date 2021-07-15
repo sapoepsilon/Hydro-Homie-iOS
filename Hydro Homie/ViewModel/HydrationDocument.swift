@@ -14,5 +14,9 @@ class HydrationDocument: ObservableObject {
     func updateHydration(cups: Int) {
         document.uploadCups(cups: cups)
     }
+    
+    func userID() -> String {
+        document.getUserID()
+    }
 }
 

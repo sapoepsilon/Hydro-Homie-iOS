@@ -30,7 +30,8 @@ struct BarView: View {
     
     var style: ChartStyle {
         let st = Styles.barChartMidnightGreenLight
-        st.textColor = .gray
+        st.textColor = .white
+//                      st.textColor = .white
         st.backgroundColor = Color.white.opacity(0.6)
         st.darkModeStyle = Styles.barChartStyleNeonBlueDark
         st.gradientColor = GradientColor(start: waterColor, end: Color(red: 0, green: 0.5, blue: 0.85, opacity: 1))
@@ -42,22 +43,32 @@ struct BarView: View {
     
         return st
     }
-    
+    init() {
+    UISegmentedControl.appearance().selectedSegmentTintColor = .white
+       UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.gray], for: .selected)
+       UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
+    }
     var body: some View {
         ZStack {
             GeometryReader { geo in
-                ZStack{
-                    waterColor
-                        .opacity(0.8)
+//                ZStack{
+//                    waterColor
+//                        .opacity(0.8)
+//                }
+                ZStack {
+                    VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
+                        .edgesIgnoringSafeArea(.all )
+                        waterColor.opacity(0.4)
                 }
-                .blur(radius: 8, opaque: false)
                 
                 VStack{
                     HStack(spacing: 0) {
                         Picker(selection: $pickerSelectedItem, label: Text("")) {
-                            Text("Last 7 days").tag(0)
+                        
+                            Text("Last 7 days").foregroundColor(.white).tag(0)
                             Text(month).tag(1)
                             Text("Last 365 days").tag(2)
+
                         }
                         .onChange(of: pickerSelectedItem) { picker in
                                 self.cups = 0
@@ -104,7 +115,7 @@ struct BarView: View {
                     .animation(.default)
                     HStack{
                         Text("Total cups: \(self.cups)")
-                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .foregroundColor(colorScheme == .dark ? .white : .white)
                             .padding()
                         Spacer()
                     }
@@ -112,7 +123,7 @@ struct BarView: View {
                     
                     HStack{
                         Text("Total days: \(self.amountOfDays + 1)")
-                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .foregroundColor(colorScheme == .dark ? .white : .white)
                             .padding()
                         Spacer()
                         
@@ -121,11 +132,11 @@ struct BarView: View {
                     Section {
                         // MARK: Barchart
                         ZStack {
-                            Rectangle()
-                                .frame(width: geo.size.width - 10, height: geo.size.height / 2)
-                                .foregroundColor(waterColor.opacity(0.4))
-                                .blur(radius: 3)
-                                .shadow(color: colorScheme == .dark ? Color.white : Color.black, radius: 10)
+//                            Rectangle()
+//                                .frame(width: geo.size.width - 10, height: geo.size.height / 2)
+//                                .foregroundColor(waterColor.opacity(0.4))
+//                                .blur(radius: 3)
+//                                .shadow(color: colorScheme == .dark ? Color.white : Color.black, radius: 10)
                             BarChartView(data: ChartData(values: barData), title: "Daily chart",legend: "Quarterely", style: style,  form: CGSize(width: geo.size.width - 10, height: geo.size.height / 2), dropShadow: true, animatedToBack: true)
                         }
                     }

@@ -11,7 +11,9 @@
 		99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 99023362268248A200FACE04 /* FirebaseFirestore */; };
 		991ED8A6267A902100AE129A /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991ED8A5267A902100AE129A /* Persistance.swift */; };
 		99234677269A7B3A00785C7E /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 99234676269A7B3A00785C7E /* GoogleSignIn */; };
-		9936A33F269A40FD006FAF41 /* ClearBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9936A33E269A40FD006FAF41 /* ClearBackground.swift */; };
+		99234679269A8B9400785C7E /* CustomDrinkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99234678269A8B9400785C7E /* CustomDrinkModel.swift */; };
+		9923467B269A8BEC00785C7E /* CustomDrinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */; };
+		9936A33F269A40FD006FAF41 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9936A33E269A40FD006FAF41 /* Extensions.swift */; };
 		994096BD266D4BFE00830829 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994096BC266D4BFE00830829 /* UserRepository.swift */; };
 		994F86142682822A00E38099 /* BarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F86132682822A00E38099 /* BarChart.swift */; };
 		994F8617268293FF00E38099 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 994F8616268293FF00E38099 /* SwiftUICharts */; };
@@ -69,7 +71,9 @@
 
 /* Begin PBXFileReference section */
 		991ED8A5267A902100AE129A /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
-		9936A33E269A40FD006FAF41 /* ClearBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearBackground.swift; sourceTree = "<group>"; };
+		99234678269A8B9400785C7E /* CustomDrinkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrinkModel.swift; sourceTree = "<group>"; };
+		9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrinkViewModel.swift; sourceTree = "<group>"; };
+		9936A33E269A40FD006FAF41 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		994096BC266D4BFE00830829 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		994F86132682822A00E38099 /* BarChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChart.swift; sourceTree = "<group>"; };
 		995AEBF9266D752300FAD0CB /* WaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterView.swift; sourceTree = "<group>"; };
@@ -150,6 +154,7 @@
 				99DE64D6266DBF1D0017015A /* Hydration.swift */,
 				99D60B82267124D600EE106B /* UserModel.swift */,
 				9970190B2689064E007F2935 /* LocationService.swift */,
+				99234678269A8B9400785C7E /* CustomDrinkModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -211,7 +216,7 @@
 				997DC07F268926210018F557 /* PreciseControl.swift */,
 				99C86512268ADCBA006B4802 /* DiureticView.swift */,
 				99AEA095268CF9BE004BD12D /* CustomDrink.swift */,
-				9936A33E269A40FD006FAF41 /* ClearBackground.swift */,
+				9936A33E269A40FD006FAF41 /* Extensions.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -232,6 +237,7 @@
 			children = (
 				99DE64D9266DC4510017015A /* HydrationDocument.swift */,
 				99D60B842671255D00EE106B /* UserDocument.swift */,
+				9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -351,9 +357,10 @@
 				99AEA096268CF9BE004BD12D /* CustomDrink.swift in Sources */,
 				99ACBA1726816BFD0005A151 /* ActionView.swift in Sources */,
 				99DE64DC266E7C8A0017015A /* RegisterView.swift in Sources */,
-				9936A33F269A40FD006FAF41 /* ClearBackground.swift in Sources */,
+				9936A33F269A40FD006FAF41 /* Extensions.swift in Sources */,
 				9965D7CF2637955400672D2E /* ContentView.swift in Sources */,
 				99E786D02639131100D13EC5 /* Dashboard.swift in Sources */,
+				99234679269A8B9400785C7E /* CustomDrinkModel.swift in Sources */,
 				997DC080268926210018F557 /* PreciseControl.swift in Sources */,
 				994096BD266D4BFE00830829 /* UserRepository.swift in Sources */,
 				99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */,
@@ -365,6 +372,7 @@
 				995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */,
 				9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */,
 				99D60B83267124D600EE106B /* UserModel.swift in Sources */,
+				9923467B269A8BEC00785C7E /* CustomDrinkViewModel.swift in Sources */,
 				994F86142682822A00E38099 /* BarChart.swift in Sources */,
 				99DE64D7266DBF1D0017015A /* Hydration.swift in Sources */,
 				99C86513268ADCBA006B4802 /* DiureticView.swift in Sources */,

@@ -9,9 +9,8 @@
     import Firebase
     import UIKit
     import CoreLocation
-    import GoogleSignIn
     
-    @main
+        @main
     struct Hydro_HomieApp: App {
          init() {
                 setupAuthentication()
