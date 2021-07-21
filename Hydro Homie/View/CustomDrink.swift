@@ -16,6 +16,7 @@ struct CustomDrink: View {
     @State private var ErrorTestDeleteLater: String = "Everything seems to be working OK"
     @ObservedObject var CustomDrinkDocument: CustomDrinkViewModel
     @State private var ErrorDetector: Bool = false
+    @Binding var isMetric: Bool
     
     
     // metrics
@@ -39,13 +40,12 @@ struct CustomDrink: View {
     @State private var selectedLiquid = differentLiquids.milk
     
     //alcoholic beverage details
-    @State private var alcoholAmount: String = "" //maybe should make picker out of it
+    @State private var alcoholAmount: Double = 0 //maybe should make picker out of it
     @State private var additionalLiquids: Bool = false
-    @State private var alcoholCupAmount: String = ""
+    @State private var alcoholCupAmount: Double = 0
+    @State private var caffeineAmount: Double = 0
     @State private var customDrinks: [CustomDrinkModel] = []
-    
-    
-    
+        
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -57,7 +57,15 @@ struct CustomDrink: View {
         VStack(alignment: .leading) {
             HStack {
                 Button(action: {
-                    createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount)
+                        drinkAmount = alcoholCupAmount - ((alcoholCupAmount / 100) * alcoholAmount)
+                    
+                    if isMetric {
+                        drinkAmount /= 237
+                    } else {
+                        drinkAmount /= 8
+                    }
+                    print("drink amount \(drinkAmount)")
+                    createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount)
                     ErrorDetector = true
                 }
                 , label: {
@@ -94,7 +102,7 @@ struct CustomDrink: View {
                         
                         TextField("Amount of alcohol", value: $alcoholAmount, formatter: formatter)
                         HStack{
-                            TextField("Cup Amount", text: $alcoholCupAmount)
+                            TextField("Cup Amount", value: $alcoholCupAmount, formatter: formatter)
                             Text(cupMeasurement)
                         }
                         Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
@@ -123,7 +131,7 @@ struct CustomDrink: View {
                             Text("%")
                         }
                         HStack{
-                            TextField("Cup Amount", text: $alcoholCupAmount)
+                            TextField("Cup Amount", value: $alcoholCupAmount, formatter: formatter)
                             Text(cupMeasurement)
                         }
                         Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
@@ -157,9 +165,9 @@ struct CustomDrink: View {
             print("custom drink displayed\(CustomDrinkDocument.customDrinks)")
         }
     }
-    func createCustomDrink(name: String, isAlcohol: Bool, isCaffeine: Bool, amount: Double) {
+    func createCustomDrink(name: String, isAlcohol: Bool, isCaffeine: Bool, amount: Double, alcoholAmount: Double, caffeineAmount: Double) {
         
-        ErrorTestDeleteLater = CustomDrinkDocument.addCustomDrink(newCustomDrink: CustomDrinkModel(id: CustomDrinkDocument.customDrinks.count, name: name, isAlcohol: isAlcohol, isCaffeine: isCaffeine, amount: amount))
+        ErrorTestDeleteLater = CustomDrinkDocument.addCustomDrink(newCustomDrink: CustomDrinkModel(id: CustomDrinkDocument.customDrinks.count, name: name, isAlcohol: isAlcohol, isCaffeine: isCaffeine, amount: amount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount))
     }
     
     

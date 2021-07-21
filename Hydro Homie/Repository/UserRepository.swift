@@ -84,6 +84,25 @@ class UserRepository: ObservableObject {
             "metric": metric,
             "waterIntake": waterIntake
         ])
+        
+        //MARK: USERDEFAULTS: user infromation
+        let userInfo: User = User(name: name, height: Int(height), weight: weight, metric: metric, waterIntake: waterIntake, hydration: [])
+        
+        do {
+            // Create JSON Encoder
+            let encoder = JSONEncoder()
+
+            // Encode Note
+            let data = try encoder.encode(userInfo)
+            
+            print(data)
+            // Write/Set Data
+            UserDefaults.standard.set(data, forKey: "userInformation")
+
+        } catch {
+            print("Unable to Encode Note (\(error))")
+        }
+        // add the user information into UserDefaults
     }
     
 

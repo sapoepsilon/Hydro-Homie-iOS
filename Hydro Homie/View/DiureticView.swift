@@ -25,6 +25,7 @@ struct DiureticView: View {
     @Binding var waterColor: Color
     @State private var isEdit = false
     @State private var editIndent: CGFloat = 0
+    @Binding var isMetric:Bool
     
     //MARK: DELETE LATER
     @State private var deleteDrink: String = "Item that needs to be deleted"
@@ -71,7 +72,6 @@ struct DiureticView: View {
                         Spacer().frame(width: geometry.size.width / 3.2)
                     }
                     
-                    
                     Button(action: {
                         withAnimation() {
                             if isEdit {
@@ -98,8 +98,16 @@ struct DiureticView: View {
                 }
                 VStack {
                     if UIDevice.current.userInterfaceIdiom == .phone {
-                        Spacer().frame(width: geometry.size.width, height: geometry.size.height / 6	, alignment: .center)
-                    }
+                        if showCustomDrink {
+                            
+                        } else if UIDevice.current.modelName == "iPhone8,4" || UIDevice.current.modelName == "iPhone9,1" || UIDevice.current.modelName == "iPhone9,2" || UIDevice.current.modelName == "iPhone10,1" ||  UIDevice.current.modelName == "iPhone10,2" || UIDevice.current.modelName == "iPhone10,5" {
+                            
+                        }
+                        else    {
+                            Spacer().frame(width: geometry.size.width, height: geometry.size.height / 6	, alignment: .center)
+                            }
+                        }
+                    
                     if !isCoffee && !isAlcohol && !isCustomDrink && !showCustomDrink {
                         VStack {
                             VStack {
@@ -171,9 +179,11 @@ struct DiureticView: View {
                             .padding()
                             if UIDevice.current.modelName == "iPhone13,1" || UIDevice.current.modelName == "iPhone13,2" || UIDevice.current.modelName == "iPhone13,3" || UIDevice.current.modelName == "iPhone13,4" {
                                 Spacer().frame(height: geometry.size.height / 4)
-                            } else {
-                                Spacer().frame(height: geometry.size.height / 6)
-                                
+                            } else if UIDevice.current.modelName == "iPhone8,4" || UIDevice.current.model == "iPhone10,1" || UIDevice.current.model == "iPhone10,4" || UIDevice.current.model == "iPhone7,2" || UIDevice.current.model == "iPhone7,1" || UIDevice.current.model == "iPhone8,1" || UIDevice.current.model == "iPhone8,2" {
+                                Spacer().frame(height: geometry.size.height / 14)
+                            }
+                            else {
+                                Spacer().frame(height: geometry.size.height / 9)
                             }
                             HStack {
                                 Text("Add a custom Drink")
@@ -266,23 +276,23 @@ struct DiureticView: View {
                                 isDiuretic = false
                                 popUp = false // close the .sheet and go back to the dashboard
                             }.frame(width: editIndent)
-                        Image(systemName: "minus.circle")
-                            .opacity(isEdit ? 1 : 0)
+                        Text(drinks.id.description)
+                        Button(action: {
+                            customDrinkDocument.deleteCustomDrink(customDrink: drinks)
+                        }, label: {
+                            Image(systemName: "minus.circle")	
+                        }).opacity(isEdit ? 1 : 0)
                             .foregroundColor(.red)
-                            .onTapGesture {
-                            }
                     }
                 }
                 .onAppear {
-                    customDrinkDocument.getAllDrinks()
                     if UIDevice.current.userInterfaceIdiom == .pad {
-                        editIndent = geometry.size.width  - geometry.size.width / 2.8
+                        editIndent = geometry.size.width  - geometry.size.width / 2.4
                     } else  {
-                        editIndent = geometry.size.width  - 20
+                        editIndent = geometry.size.width  - 40
                     }
                 }
                 .opacity(showCustomDrink ? 1 : 0)
-                
             }
             .frame(width: geometry.size.width - 10)
         }
@@ -295,7 +305,7 @@ struct DiureticView: View {
         }
         
         .sheet(isPresented: $isCustomDrink, content: {
-            CustomDrink(CustomDrinkDocument: CustomDrinkViewModel())
+            CustomDrink(CustomDrinkDocument: CustomDrinkViewModel(), isMetric: $isMetric)
         })
         .sheet(isPresented: $isCustomCoffee, content: {
             TextField("Name of the coffee", text:

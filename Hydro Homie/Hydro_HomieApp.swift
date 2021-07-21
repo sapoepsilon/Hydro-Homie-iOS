@@ -10,7 +10,7 @@
     import UIKit
     import CoreLocation
     
-        @main
+       @main
     struct Hydro_HomieApp: App {
          init() {
                 setupAuthentication()

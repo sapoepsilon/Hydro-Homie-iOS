@@ -34,6 +34,7 @@ struct Dashboard: View {
     @State private var formattedFloat : String = ""
     @State private var addCustomAmount: Bool = false
     @State private var waterScaleEffect: CGFloat = 1
+    @State private var isTimer: Bool = true
     
     // MARK: User information
     @State var userName: String = ""
@@ -51,6 +52,9 @@ struct Dashboard: View {
         GeometryReader { reader in
             NavigationView {
                 VStack{
+                    if isTimer {
+                        AlcoholTimer(isTimer: self.$isTimer)
+                    }
                     if isCurrentHydration {
                         Text("\(userName), your daily goal: \( formatter.string(from: NSNumber(value: waterIntake))!) \(volumeMetric)")
                             .font(.system(size: reader.size.height / 35, weight: .heavy))
@@ -89,7 +93,7 @@ struct Dashboard: View {
                                                 }
                                                 
                                             })
-                                    .onReceive(timer, perform: {time in
+                                    .onReceive(timer, perform: { time in
                                         if actionOffset.height > 1 {
                                             actionOffset.height -= 1
                                         }
@@ -171,6 +175,7 @@ struct Dashboard: View {
                                         }
                                     }
                                 })
+                        
                         }
                     }
                     if isCurrentHydration {
@@ -254,7 +259,7 @@ struct Dashboard: View {
             
         })
         .sheet(isPresented: $popUp, content: {
-            PopUp(active: $popUp, cups: $cups, waterColor: $waterColor)
+            PopUp(active: $popUp, cups: $cups, waterColor: $waterColor, isMetric: self.$isMetric)
                 .environmentObject(user)
                 .environmentObject(userDocument)
                 .font(.title)
@@ -262,7 +267,8 @@ struct Dashboard: View {
         })
         
         .sheet(isPresented: $isDiuretic, content: {
-            DiureticView(popUp: $popUp, cups: $cups, isDiuretic: $isDiuretic,  customDrinkDocument: CustomDrinkViewModel(), waterColor: $waterColor)
+            DiureticView(popUp: $popUp, cups: $cups, isDiuretic: $isDiuretic,  customDrinkDocument: CustomDrinkViewModel(), waterColor: $waterColor, isMetric: self.$isMetric)
+                .clearModalBackground()
         })
         .onChange(of: self.currentHydrationDictionary, perform: { newValue in
             for (date,_) in currentHydrationDictionary {
@@ -330,6 +336,8 @@ struct PopUp: View {
 @State private var isPrecise = false
 @Environment(\.colorScheme) var colorScheme
 @Binding var waterColor: Color
+@Binding var isMetric: Bool
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -382,7 +390,7 @@ struct PopUp: View {
                 }
             }
             .sheet(isPresented: $isDiuretic, content: {
-                DiureticView(popUp: $active, cups: self.$cups, isDiuretic: $isDiuretic, customDrinkDocument: CustomDrinkViewModel(), waterColor: self.$waterColor)
+                DiureticView(popUp: $active, cups: self.$cups, isDiuretic: $isDiuretic, customDrinkDocument: CustomDrinkViewModel(), waterColor: self.$waterColor, isMetric: self.$isMetric)
                     .frame( height: UIScreen.main.bounds.height / 2, alignment: .center)
                 })
         }

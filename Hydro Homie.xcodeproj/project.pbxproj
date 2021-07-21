@@ -13,6 +13,8 @@
 		99234677269A7B3A00785C7E /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 99234676269A7B3A00785C7E /* GoogleSignIn */; };
 		99234679269A8B9400785C7E /* CustomDrinkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99234678269A8B9400785C7E /* CustomDrinkModel.swift */; };
 		9923467B269A8BEC00785C7E /* CustomDrinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */; };
+		992B733926A7B9050012E34E /* AlcoholTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992B733826A7B9050012E34E /* AlcoholTimer.swift */; };
+		992B733B26A7C51A0012E34E /* TimerBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992B733A26A7C51A0012E34E /* TimerBackground.swift */; };
 		9936A33F269A40FD006FAF41 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9936A33E269A40FD006FAF41 /* Extensions.swift */; };
 		994096BD266D4BFE00830829 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994096BC266D4BFE00830829 /* UserRepository.swift */; };
 		994F86142682822A00E38099 /* BarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F86132682822A00E38099 /* BarChart.swift */; };
@@ -73,6 +75,8 @@
 		991ED8A5267A902100AE129A /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
 		99234678269A8B9400785C7E /* CustomDrinkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrinkModel.swift; sourceTree = "<group>"; };
 		9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrinkViewModel.swift; sourceTree = "<group>"; };
+		992B733826A7B9050012E34E /* AlcoholTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlcoholTimer.swift; sourceTree = "<group>"; };
+		992B733A26A7C51A0012E34E /* TimerBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBackground.swift; sourceTree = "<group>"; };
 		9936A33E269A40FD006FAF41 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		994096BC266D4BFE00830829 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		994F86132682822A00E38099 /* BarChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChart.swift; sourceTree = "<group>"; };
@@ -217,6 +221,7 @@
 				99C86512268ADCBA006B4802 /* DiureticView.swift */,
 				99AEA095268CF9BE004BD12D /* CustomDrink.swift */,
 				9936A33E269A40FD006FAF41 /* Extensions.swift */,
+				992B733826A7B9050012E34E /* AlcoholTimer.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -238,6 +243,7 @@
 				99DE64D9266DC4510017015A /* HydrationDocument.swift */,
 				99D60B842671255D00EE106B /* UserDocument.swift */,
 				9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */,
+				992B733A26A7C51A0012E34E /* TimerBackground.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -368,8 +374,10 @@
 				99D60B852671255D00EE106B /* UserDocument.swift in Sources */,
 				99B09B472682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */,
 				995D4110266EFC5600916F5C /* HeightPicker.swift in Sources */,
+				992B733926A7B9050012E34E /* AlcoholTimer.swift in Sources */,
 				9970190C2689064E007F2935 /* LocationService.swift in Sources */,
 				995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */,
+				992B733B26A7C51A0012E34E /* TimerBackground.swift in Sources */,
 				9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */,
 				99D60B83267124D600EE106B /* UserModel.swift in Sources */,
 				9923467B269A8BEC00785C7E /* CustomDrinkViewModel.swift in Sources */,

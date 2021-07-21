@@ -19,6 +19,11 @@ class UserDocument: ObservableObject {
     
     
     func fetchData() {
+        
+        //check if the user has a new device
+        
+        // if not the return values from UserDefaults
+        
         let currentUserID = Auth.auth().currentUser?.uid
 
         db.collection("users").document(currentUserID!).addSnapshotListener { (querySnapshot, error) in
@@ -36,6 +41,8 @@ class UserDocument: ObservableObject {
             }
         }
     }
+    
+    
     
     func getUser() -> User {
         let user = user

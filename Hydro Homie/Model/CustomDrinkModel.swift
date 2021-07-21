@@ -8,13 +8,23 @@
 import Foundation
 
 struct CustomDrinkModel: Hashable, Codable {
+    
     var id: Int
     var name: String
     var isAlcohol: Bool
     var isCaffeine: Bool
     var amount: Double
-//    var amountOfAlcohol: Double?
-
+    var alcoholAmount: Double
+    var caffeineAmount: Double
+    
+    func matchingID(matching: CustomDrinkModel, array: [CustomDrinkModel]) -> Int? {
+        for index in 0..<array.count {
+            if array[index].id == matching.id {
+                return index
+            }
+        }
+        return nil
+    }
 }
 
 
