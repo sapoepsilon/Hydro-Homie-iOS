@@ -21,7 +21,6 @@ class UserDocument: ObservableObject {
     func fetchData() {
         
         //check if the user has a new device
-        
         // if not the return values from UserDefaults
         
         let currentUserID = Auth.auth().currentUser?.uid

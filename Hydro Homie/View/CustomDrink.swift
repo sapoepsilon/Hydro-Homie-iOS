@@ -40,11 +40,14 @@ struct CustomDrink: View {
     @State private var selectedLiquid = differentLiquids.milk
     
     //alcoholic beverage details
-    @State private var alcoholAmount: Double = 0 //maybe should make picker out of it
+    @State private var alcoholPercentage: Double = 0 //maybe should make picker out of it
+    @State private var alcoholAmount: Double = 0
     @State private var additionalLiquids: Bool = false
     @State private var alcoholCupAmount: Double = 0
     @State private var caffeineAmount: Double = 0
     @State private var customDrinks: [CustomDrinkModel] = []
+    @State private var mlConverter: Double = 29.5735
+    @State private var ethanolDensity: Double = 0.789
         
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -57,15 +60,16 @@ struct CustomDrink: View {
         VStack(alignment: .leading) {
             HStack {
                 Button(action: {
-                        drinkAmount = alcoholCupAmount - ((alcoholCupAmount / 100) * alcoholAmount)
-                    
+                        drinkAmount = alcoholCupAmount - ((alcoholCupAmount / 100) * alcoholPercentage)
+                        alcoholAmount = (alcoholCupAmount * mlConverter) * (alcoholPercentage / 100) * ethanolDensity // get the amount of alcohol in grams
+                
                     if isMetric {
                         drinkAmount /= 237
                     } else {
                         drinkAmount /= 8
                     }
                     print("drink amount \(drinkAmount)")
-                    createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount)
+                    createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount, alcoholPercentage: alcoholPercentage)
                     ErrorDetector = true
                 }
                 , label: {
@@ -100,7 +104,7 @@ struct CustomDrink: View {
                 if isAlcohol {
                     Section(header: Text("Alcoholic beverage: ") ) {
                         
-                        TextField("Amount of alcohol", value: $alcoholAmount, formatter: formatter)
+                        TextField("Amount of alcohol", value: $alcoholPercentage, formatter: formatter)
                         HStack{
                             TextField("Cup Amount", value: $alcoholCupAmount, formatter: formatter)
                             Text(cupMeasurement)
@@ -127,7 +131,7 @@ struct CustomDrink: View {
                 if isCoffee {
                     Section(header: Text("Coffee beverage: ") ) {
                         HStack {
-                            TextField("Amount of alcohol", value: $alcoholAmount, formatter: formatter)
+                            TextField("Amount of alcohol", value: $alcoholPercentage, formatter: formatter)
                             Text("%")
                         }
                         HStack{
@@ -165,9 +169,9 @@ struct CustomDrink: View {
             print("custom drink displayed\(CustomDrinkDocument.customDrinks)")
         }
     }
-    func createCustomDrink(name: String, isAlcohol: Bool, isCaffeine: Bool, amount: Double, alcoholAmount: Double, caffeineAmount: Double) {
+    func createCustomDrink(name: String, isAlcohol: Bool, isCaffeine: Bool, amount: Double, alcoholAmount: Double, caffeineAmount: Double, alcoholPercentage: Double) {
         
-        ErrorTestDeleteLater = CustomDrinkDocument.addCustomDrink(newCustomDrink: CustomDrinkModel(id: CustomDrinkDocument.customDrinks.count, name: name, isAlcohol: isAlcohol, isCaffeine: isCaffeine, amount: amount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount))
+        ErrorTestDeleteLater = CustomDrinkDocument.addCustomDrink(newCustomDrink: CustomDrinkModel(id: CustomDrinkDocument.customDrinks.count, name: name, isAlcohol: isAlcohol, isCaffeine: isCaffeine, amount: amount, alcoholAmount: alcoholAmount, alcoholPercentage: alcoholPercentage, caffeineAmount: caffeineAmount))
     }
     
     

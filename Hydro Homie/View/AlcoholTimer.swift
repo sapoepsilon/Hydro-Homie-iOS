@@ -8,52 +8,33 @@
 import SwiftUI
 
 struct AlcoholTimer: View {
-    @State private var hours: Int = 3
-    @State private var minutes: Int = 59
-    @State private var seconds: Int = 59
-    @State private var timerIsPaused: Bool = true
-    @State private var timer: Timer? = nil
-    @Binding  var isTimer: Bool
+    
+    @Binding var isDiureticMode: Bool
+    @Binding var waterColor: Color
+    @State private var toxicityColor: Color = Color(red: 130 / 255, green: 98 / 255, blue: 222 / 255, opacity: 0.5)
+    @ObservedObject var instoreTimer = timerBackground
+    
+
     var body: some View {
-        VStack {
-            if isTimer {
-                Text("Alcohol period")
-                Text("\(hours):\(minutes):\(seconds)")
+            VStack {
+                Text(timeString(accumulatedTime: instoreTimer.totalAccumulatedTime))
+                    .font(.custom("Times", size: 36))
+                    .foregroundColor(isDiureticMode ? toxicityColor : waterColor)
             }
-        }.onAppear(perform: {
-            if isTimer {
-                startTimer()
+            .onAppear { print("TimerTabView appear")
+                self.instoreTimer.start()
             }
-        })
+            .onDisappear {
+                print("TimerTabView disappear")
+            }
+         
     }
     
-    func startTimer(){
-        timerIsPaused = false
-        // 1. Make a new timer
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ tempTimer in
-            // 2. Check time to add to H:M:S
-            if self.seconds == 0 {
-                self.seconds = 59
-                if self.minutes == 0 {
-                    self.minutes = 59
-                    self.hours = self.hours - 1
-                } else {
-                    self.minutes = self.minutes - 1
-                }
-            } else {
-                self.seconds = self.seconds - 1
-            }
-            
-            if self.seconds == 0 && self.minutes == 0 && self.hours == 0 {
-                self.isTimer = false
-            }
-        }
+    func timeString(accumulatedTime: TimeInterval) -> String {
+        let hours = Int(accumulatedTime) / 3600
+        let minutes = Int(accumulatedTime) / 60 % 60
+        let seconds = Int(accumulatedTime) % 60
+        return String(format:"%02i:%02i:%02i", hours, minutes, seconds)
     }
-    
-    func stopTimer(){
-        timerIsPaused = true
-        timer?.invalidate()
-        timer = nil
-    }
-    
+
 }

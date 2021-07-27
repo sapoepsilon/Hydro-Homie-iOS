@@ -14,8 +14,19 @@ class CustomDrinkViewModel: ObservableObject {
     let today = Date()
     @ObservedObject var hydrationDocument = HydrationDocument()
     @Published var customDrinks: [CustomDrinkModel] = []
-    @Published var customDrinkObject: CustomDrinkModel = CustomDrinkModel(id: 0, name: "name", isAlcohol: false, isCaffeine: false, amount: 23, alcoholAmount: 0, caffeineAmount: 0)
+    @Published var customDrinkObject: CustomDrinkModel = CustomDrinkModel(id: 0, name: "name", isAlcohol: false, isCaffeine: false, amount: 23, alcoholAmount: 0, alcoholPercentage: 0, caffeineAmount: 0)
     
+    var drinksArray: [CustomDrinkModel] = []
+    var customDrinkDictionary: [[String:Any]] = [[
+        "id": 0,
+        "name": "",
+        "isAlcohol": false,
+        "isCaffeine": false,
+        "amount": 0,
+        "alcoholAmount": 0,
+        "alcoholPercentage": 0,
+        "caffeineAmount": 0
+    ]]
     init() {
         getAllDrinks()
     }
@@ -38,6 +49,7 @@ class CustomDrinkViewModel: ObservableObject {
                 "isCaffeine": drink.isCaffeine,
                 "amount": drink.amount,
                 "alcoholAmount": drink.alcoholAmount,
+                "alcoholPercentage": drink.alcoholPercentage,
                 "caffeineAmount": drink.caffeineAmount
             ]
             drinkDictionaryArray.append(customDrinkDictionary)
@@ -78,6 +90,7 @@ class CustomDrinkViewModel: ObservableObject {
             "isCaffeine": newCustomDrink.isCaffeine,
             "amount": newCustomDrink.amount,
             "alcoholAmount": newCustomDrink.alcoholAmount,
+            "alcoholPercentage": newCustomDrink.alcoholPercentage,
             "caffeineAmount": newCustomDrink.caffeineAmount
         ]
         var Error: String = "Written successfully"
@@ -131,66 +144,64 @@ class CustomDrinkViewModel: ObservableObject {
         
         return Error
     }
+    
+    //MARK: Fetch from the Firebase
+    
+    func fetchFromServer() {
+        db.collection("users").document("customDrinks\(self.hydrationDocument.userID())").addSnapshotListener { (querySnapshot, error) in
+            if (error != nil) {
+                print(error!.localizedDescription)
+                return
+            }   else if(querySnapshot!.data() != nil) {
+                self.drinksArray.removeAll()
+                let document = querySnapshot!.data()
+                self.customDrinkDictionary = ((document!["customDrinks"] as? [[String:Any]])!)
+            
+                print("document \(document.debugDescription)")
+                print("dictionary of custom drinks\(self.customDrinkDictionary.debugDescription)")
+                
+                for customDrink in self.customDrinkDictionary {
+                    self.customDrinkObject.id = customDrink["id"] as? Int ?? 0
+                    self.customDrinkObject.name = customDrink["name"] as? String ?? "none"
+                    self.customDrinkObject.amount = customDrink["amount"] as? Double ?? 0
+                    self.customDrinkObject.isCaffeine = customDrink["isCaffeine"] as? Bool ?? false
+                    self.customDrinkObject.isAlcohol = customDrink["isAlcohol"] as? Bool ?? false
+                    self.customDrinkObject.alcoholAmount = customDrink["alcoholAmount"] as? Double ?? 0
+                    self.customDrinkObject.caffeineAmount = customDrink["caffeineAmount"] as? Double ?? 0
+                    self.customDrinkObject.alcoholPercentage = customDrink["alcoholPercentage"] as? Double ?? 0
+                    self.drinksArray.append(self.customDrinkObject)
+                }
+                
+                if self.drinksArray != self.customDrinks {
+                    self.customDrinks.removeAll()
+                    self.customDrinks = self.drinksArray
+                    UserDefaults.standard.set(0, forKey: "fetchCustomDrink")
+                    
+                    do {
+                        // Create JSON Encoder
+                        let encoder = JSONEncoder()
+                        //get the array with the current drinks
+                        // Encode Note
+                        let data = try encoder.encode(self.drinksArray)
+                        UserDefaults.standard.set(data, forKey: "customDrinksArray")
+
+                    } catch {
+                        print("Unable to Encode Note (\(error))")
+                    }
+                }
+                print("custom Drinks array\(self.customDrinks.debugDescription)")
+            } else {
+            print("Document does not exist")
+          }
+        }
+    }
 
     //MARK: Fetch Custom Drinks
     func getAllDrinks() {
-        var drinksArray: [CustomDrinkModel] = []
-        var customDrinkDictionary: [[String:Any]] = [[
-            "id": 0,
-            "name": "",
-            "isAlcohol": false,
-            "isCaffeine": false,
-            "amount": 0
-        ]]
+
         let fetch: Int = UserDefaults.standard.object(forKey: "fetchCustomDrink") as? Int ?? 1
-        
-        if fetch == 1 {
-            db.collection("users").document("customDrinks\(self.hydrationDocument.userID())").addSnapshotListener { (querySnapshot, error) in
-                if (error != nil) {
-                    print(error!.localizedDescription)
-                    return
-                }   else if(querySnapshot!.data() != nil) {
-                    drinksArray.removeAll()
-                    let document = querySnapshot!.data()
-                    customDrinkDictionary = ((document!["customDrinks"] as? [[String:Any]])!)
-                
-                    print("document \(document.debugDescription)")
-                    print("dictionary of custom drinks\(customDrinkDictionary.debugDescription)")
-                    for customDrink in customDrinkDictionary {
-                        self.customDrinkObject.id = customDrink["id"] as? Int ?? 0
-                        self.customDrinkObject.name = customDrink["name"] as? String ?? "none"
-                        self.customDrinkObject.amount = customDrink["amount"] as? Double ?? 0
-                        self.customDrinkObject.isCaffeine = customDrink["isCaffeine"] as? Bool ?? false
-                        self.customDrinkObject.isAlcohol = customDrink["isAlcohol"] as? Bool ?? false
-                        self.customDrinkObject.alcoholAmount = customDrink["alcoholAmount"] as? Double ?? 0
-                        self.customDrinkObject.caffeineAmount = customDrink["caffeineAmount"] as? Double ?? 0
-                        drinksArray.append(self.customDrinkObject)
-                    }
-                    if drinksArray != self.customDrinks {
-                        self.customDrinks.removeAll()
-                        self.customDrinks = drinksArray
-                        UserDefaults.standard.set(0, forKey: "fetchCustomDrink")
-                        
-                        do {
-                            // Create JSON Encoder
-                            let encoder = JSONEncoder()
-
-                            //get the array with the current drinks
-                            // Encode Note
-                            let data = try encoder.encode(drinksArray)
-                            UserDefaults.standard.set(data, forKey: "customDrinksArray")
-
-                        } catch {
-                            print("Unable to Encode Note (\(error))")
-                        }
-                    }
-
-                    print("custom Drinks array\(self.customDrinks.debugDescription)")
-                } else {
-                print("Document does not exist")
-              }
-            }
-        } else { // if the user hasn't changed the current device, and/or the userdefaults still keeps the customDrinks
+        print ("fetch \(fetch)")
+        if fetch == 0 { // if the user hasn't changed the current device, and/or the userdefaults still keeps the customDrinks
             // Read/Get Data
             if let data = UserDefaults.standard.data(forKey: "customDrinksArray") {
                 do {
@@ -198,12 +209,15 @@ class CustomDrinkViewModel: ObservableObject {
                     let decoder = JSONDecoder()
 
                     // Decode Note
-                    drinksArray = try decoder.decode([CustomDrinkModel].self, from: data)
-                    self.customDrinks = drinksArray
+                    self.drinksArray = try decoder.decode([CustomDrinkModel].self, from: data)
+                    self.customDrinks = self.drinksArray
                 } catch {
                     print("Unable to Decode Note (\(error))")
+                    fetchFromServer()
                 }
             }
+        } else if fetch == 1 || self.customDrinks.count < 1 {
+            fetchFromServer()
         }
     }
 }

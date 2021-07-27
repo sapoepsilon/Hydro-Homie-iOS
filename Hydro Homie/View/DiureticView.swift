@@ -27,9 +27,11 @@ struct DiureticView: View {
     @State private var editIndent: CGFloat = 0
     @Binding var isMetric:Bool
     
-    //MARK: DELETE LATER
-    @State private var deleteDrink: String = "Item that needs to be deleted"
-    @State private var isDeleteWorking: Bool = false
+    //alcohol
+    @Binding var isAlcoholConsumed:Bool
+    @Binding var amountOfAccumulatedAlcohol: Double
+    @Binding var percentageOfEachAlcohol: Double
+    @Binding var amountOfEachAlcohol: Double
     
     var body: some View {
         GeometryReader { geometry in
@@ -42,6 +44,7 @@ struct DiureticView: View {
                     Spacer().frame(width: geometry.size.width, height: geometry.size.height / spacerAmount, alignment: .center)
                 }
                 HStack {
+                    
                     Button(action: {
                         isCoffee = false
                         isAlcohol = false
@@ -50,7 +53,6 @@ struct DiureticView: View {
                         isEdit = false
                     }, label: {
                         Image(systemName: "chevron.backward")
-                        
                     })
                     .opacity(isCoffee || isAlcohol || isCustomDrink || showCustomDrink ? 1 : 0)
                     .padding()
@@ -65,12 +67,16 @@ struct DiureticView: View {
                         Image(systemName: "pencil")
                     }).opacity(showCustomDrink == true ? 1 : 0)
                     
+                    Button(action: {
+                        customDrinkDocument.fetchFromServer()
+                    }, label: {
+                        Image(systemName: "arrow.clockwise")
+                            .rotationEffect(Angle(degrees: 90))
+                    })
+                        .opacity(showCustomDrink == true ? 1 : 0)
                     
-                    if UIDevice.current.userInterfaceIdiom == .pad {
-                        Spacer().frame(width: geometry.size.width / 4.1)
-                    } else {
-                        Spacer().frame(width: geometry.size.width / 3.2)
-                    }
+                    Spacer().frame(width: geometry.size.width / spacerCaluclator())
+
                     
                     Button(action: {
                         withAnimation() {
@@ -88,25 +94,19 @@ struct DiureticView: View {
                         }
                     })
                     .padding(.horizontal, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-                    
-                    Button(action: {
-                        print(deleteDrink)
-                        
-                    }, label: {
-                        
-                    })
                 }
                 VStack {
                     if UIDevice.current.userInterfaceIdiom == .phone {
                         if showCustomDrink {
                             
-                        } else if UIDevice.current.modelName == "iPhone8,4" || UIDevice.current.modelName == "iPhone9,1" || UIDevice.current.modelName == "iPhone9,2" || UIDevice.current.modelName == "iPhone10,1" ||  UIDevice.current.modelName == "iPhone10,2" || UIDevice.current.modelName == "iPhone10,5" {
-                            
+                            if UIDevice.current.modelName == "iPhone8,4" || UIDevice.current.modelName == "iPhone9,1" || UIDevice.current.modelName == "iPhone9,2" || UIDevice.current.modelName == "iPhone10,1" ||  UIDevice.current.modelName == "iPhone10,2" || UIDevice.current.modelName == "iPhone10,5" {
+
                         }
-                        else    {
+                        else {
                             Spacer().frame(width: geometry.size.width, height: geometry.size.height / 6	, alignment: .center)
                             }
                         }
+                    }
                     
                     if !isCoffee && !isAlcohol && !isCustomDrink && !showCustomDrink {
                         VStack {
@@ -118,7 +118,7 @@ struct DiureticView: View {
                                 }
                                 .padding()
                                 
-                                Text("Log Water")
+                                Text ("Log Water")
                                     .foregroundColor(colorScheme == .light ? .black : .white)
                             }.onTapGesture {
                                 cups += 1
@@ -162,10 +162,13 @@ struct DiureticView: View {
                                 }
                             }
                             .opacity(!isCoffee || !isAlcohol || !isCustomDrink ? 1 : 0)
-                            
+                            HStack {
+                                Text("Log custom amount of water")
+                                    .foregroundColor(colorScheme == .light ? .black : .white)
+                            }.padding()
                             HStack{
                                 Text("Your custom drinks")
-                                    .fontWeight(.bold  )
+                                    .fontWeight(.bold)
                                     .foregroundColor(colorScheme == .light ? .black : .white)
                             }
                             .onTapGesture {
@@ -177,14 +180,14 @@ struct DiureticView: View {
                                 }
                             }
                             .padding()
-                            if UIDevice.current.modelName == "iPhone13,1" || UIDevice.current.modelName == "iPhone13,2" || UIDevice.current.modelName == "iPhone13,3" || UIDevice.current.modelName == "iPhone13,4" {
-                                Spacer().frame(height: geometry.size.height / 4)
-                            } else if UIDevice.current.modelName == "iPhone8,4" || UIDevice.current.model == "iPhone10,1" || UIDevice.current.model == "iPhone10,4" || UIDevice.current.model == "iPhone7,2" || UIDevice.current.model == "iPhone7,1" || UIDevice.current.model == "iPhone8,1" || UIDevice.current.model == "iPhone8,2" {
-                                Spacer().frame(height: geometry.size.height / 14)
-                            }
-                            else {
-                                Spacer().frame(height: geometry.size.height / 9)
-                            }
+//                            if UIDevice.current.modelName == "iPhone13,1" || UIDevice.current.modelName == "iPhone13,2" || UIDevice.current.modelName == "iPhone13,3" || UIDevice.current.modelName == "iPhone13,4" {
+//                                Spacer().frame(height: geometry.size.height / 6)
+//                            } else if UIDevice.current.modelName == "iPhone8,4" || UIDevice.current.model == "iPhone10,1" || UIDevice.current.model == "iPhone10,4" || UIDevice.current.model == "iPhone7,2" || UIDevice.current.model == "iPhone7,1" || UIDevice.current.model == "iPhone8,1" || UIDevice.current.model == "iPhone8,2" {
+//                                Spacer().frame(height: geometry.size.height / 14)
+//                            }
+//                            else {
+//                                Spacer().frame(height: geometry.size.height / 11)
+//                            }
                             HStack {
                                 Text("Add a custom Drink")
                                     .fontWeight(.bold  )
@@ -265,20 +268,34 @@ struct DiureticView: View {
                             .foregroundColor(colorScheme == .light ? .black : .white)
                     }
                 }
-                //                if(customDrinkDocument.customDrinks.count != 0 && showCustomDrink) {
-                ForEach(customDrinkDocument.customDrinks, id: \.self) { drinks in
+                // Show each drink's name and alcohol amount
+                
+                HStack {
+                    Text("Drink's name: ")
+                        .frame(width: editIndent)
+                    Text("Alcohol amount in gm: ")
+                }.opacity(showCustomDrink ? 1 : 0)
+                
+                ForEach(customDrinkDocument.customDrinks, id: \.self) { drink in
                     HStack(alignment: .center) {
-                        Text(drinks.name)
+                        Text(drink.name)
                             .foregroundColor(colorScheme == .light ? .black : .white)
                             .padding()
                             .onTapGesture {
-                                cups += drinks.amount
+                                cups += drink.amount
                                 isDiuretic = false
                                 popUp = false // close the .sheet and go back to the dashboard
-                            }.frame(width: editIndent)
-                        Text(drinks.id.description)
+                                if drink.isAlcohol {
+                                    isAlcoholConsumed = true
+                                    self.amountOfAccumulatedAlcohol += drink.alcoholAmount
+                                    percentageOfEachAlcohol  = drink.alcoholPercentage
+                                }
+                            }
+                            .frame(width: editIndent)
+                        let formattedFloat = String(format: "%.1f", drink.alcoholAmount)
+                        Text(formattedFloat)
                         Button(action: {
-                            customDrinkDocument.deleteCustomDrink(customDrink: drinks)
+                            customDrinkDocument.deleteCustomDrink(customDrink: drink)
                         }, label: {
                             Image(systemName: "minus.circle")	
                         }).opacity(isEdit ? 1 : 0)
@@ -289,7 +306,7 @@ struct DiureticView: View {
                     if UIDevice.current.userInterfaceIdiom == .pad {
                         editIndent = geometry.size.width  - geometry.size.width / 2.4
                     } else  {
-                        editIndent = geometry.size.width  - 40
+                        editIndent = geometry.size.width  - 60
                     }
                 }
                 .opacity(showCustomDrink ? 1 : 0)
@@ -316,9 +333,9 @@ struct DiureticView: View {
     
     func spacerCaluclator() -> CGFloat {
         if UIDevice.current.userInterfaceIdiom == .pad {
-            return 3.8
+            return 4.1
         } else {
-            return 2.9
+            return 3.4
         }
     }
     

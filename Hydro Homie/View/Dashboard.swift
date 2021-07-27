@@ -30,11 +30,20 @@ struct Dashboard: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var popUp: Bool = false
     @State private var isDiuretic: Bool = false
-    @State  private var previosColor: Color = Color(red: 103 / 255, green: 146 / 255, blue: 103 / 255, opacity: 0.5)
+    @State private var previosColor: Color = Color(red: 103 / 255, green: 146 / 255, blue: 103 / 255, opacity: 0.5)
     @State private var formattedFloat : String = ""
     @State private var addCustomAmount: Bool = false
     @State private var waterScaleEffect: CGFloat = 1
-    @State private var isTimer: Bool = true
+    @State private var isInformation: Bool = false
+    
+    //alchol
+    @State private var isAlcoholConsumed: Bool = false
+    @State private var percentageOfAlcohol: Double = 0
+    @State private var percentageOfEachAlcohol: Double = 0
+    @State private var amountOfEachAlcohol: Double = 0
+    @State private var isDiureticMode: Bool = false
+    @State private var amountOfAccumulatedAlcohol: Double = 0
+    
     
     // MARK: User information
     @State var userName: String = ""
@@ -44,19 +53,30 @@ struct Dashboard: View {
     @State var currentHydrationDictionary: [String: Int] = ["": 1]
     @State var volumeMetric: String = "oz"
     @State var isMetric: Bool = false
+        
     
-    
+    @ObservedObject var alcoholTimer = timerBackground
     
     @ViewBuilder
     var body: some View {
         GeometryReader { reader in
             NavigationView {
                 VStack{
-                    if isTimer {
-                        AlcoholTimer(isTimer: self.$isTimer)
+                    if isAlcoholConsumed {
+                        Text(isDiureticMode ? "Diuretic mode is on" : "Alchol mode is on")
+                            .foregroundColor(waterColor)
+                            .font(.system(.headline))
+                        HStack {
+                            AlcoholTimer(isDiureticMode: $isDiureticMode, waterColor: $waterColor)
+                            Button(action:{
+                                isInformation = true
+                            }, label: {
+                                Image(systemName: "info.circle")
+                            })
+                        }
                     }
                     if isCurrentHydration {
-                        Text("\(userName), your daily goal: \( formatter.string(from: NSNumber(value: waterIntake))!) \(volumeMetric)")
+                        Text(LocalizedStringKey("\(userName), your daily goal: \( formatter.string(from: NSNumber(value: waterIntake))!) \(volumeMetric)"))
                             .font(.system(size: reader.size.height / 35, weight: .heavy))
                             .foregroundColor(colorScheme == .dark ? Color.gray : waterColor)
                     } else {
@@ -64,9 +84,7 @@ struct Dashboard: View {
                             .foregroundColor(colorScheme == .dark ? .gray : waterColor)
                             .font(.system(size: reader.size.height / 40, weight: .heavy))
                     }
-                    
-                    Spacer(minLength: reader.size.height / 6)
-                    
+                    Spacer(minLength: reader.size.height / 7) //Space between
                     HStack{
                         if actionView{
                             VStack{
@@ -99,7 +117,8 @@ struct Dashboard: View {
                                         }
                                     })
                             }
-                        } else {
+                        }
+                        else {
                             WaterView(factor: self.$percentageWater, waterColor: $waterColor)
                                 .frame(height: reader.size.height / 2)
                                 .scaleEffect(waterScaleEffect)
@@ -113,8 +132,6 @@ struct Dashboard: View {
                                             let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
                                             impactHeavy.impactOccurred()
                                             isDiuretic = true
-                                                
-                                            //                                            cups += 1
                                         }
                                     }
                                 }
@@ -175,14 +192,15 @@ struct Dashboard: View {
                                         }
                                     }
                                 })
-                        
+                            
                         }
                     }
                     if isCurrentHydration {
                         withAnimation(){
-                            Text("cups left today: \(formattedFloat )")
+                            Text("cups left today: \(formattedFloat)")
                                 .foregroundColor(colorScheme == .dark ? .gray : waterColor)
                                 .opacity(waterViewOpacity)
+                                .padding()
                         }
                         //MARK: Stepper
                         HStack{
@@ -191,7 +209,7 @@ struct Dashboard: View {
                             }, onDecrement: {
                                 cups -= 1
                             }, label: {Text("Cups")})
-                            .labelsHidden()
+                                .labelsHidden()
                         }
                         .opacity(waterViewOpacity)
                     }
@@ -211,7 +229,9 @@ struct Dashboard: View {
                         Button(action: {
                             withAnimation(.easeIn(duration: 1.3)){
                                 isCurrentHydration = true
-                                waterColor = currentWaterColor(colorScheme: colorScheme)
+                                if percentageOfEachAlcohol < 10 || amountOfAccumulatedAlcohol < 30 {
+                                    waterColor = currentWaterColor(colorScheme: colorScheme)
+                                }
                                 actionView = false
                                 hydrationDate = userDocument.getTheLatestDate()
                                 currentHydrationDictionary = userDocument.user.hydration.last!
@@ -220,10 +240,8 @@ struct Dashboard: View {
                         }, label: {
                             Image(systemName: "house")
                         })
-                        
                     }
                     ToolbarItem(placement: .bottomBar) {
-                        
                         Image(systemName: "drop")
                             .scaleEffect(2)
                             .onTapGesture {
@@ -239,9 +257,9 @@ struct Dashboard: View {
             .accentColor(colorScheme == .dark ? .gray : waterColor)
         }.onAppear{
             userDocument.fetchData()
-            
         }
         .onChange(of: userDocument.user.name, perform: { newValue in
+            
             self.isMetric = userDocument.user.metric
             self.currentHydrationDictionary = userDocument.user.hydration.last!
             self.cups = Double(userDocument.waterPercentageCalculator(hydrationDictionary: currentHydrationDictionary))
@@ -249,25 +267,22 @@ struct Dashboard: View {
             self.waterIntake = userDocument.getUser().waterIntake
             self.hydrationDate = userDocument.getTheLatestDate()
             self.calculatedPercentage = userDocument.waterPercentageCalculator(hydrationDictionary: currentHydrationDictionary)
-            
             self.cupsLeft = waterIntake / Double(cupConverter())
             self.cupsLeft -= self.cups
             _ = ((100 / Int((waterIntake)) / cupConverter())) * calculatedPercentage
             if(userDocument.user.metric == true) {
                 volumeMetric = "ml"
             }
-            
         })
         .sheet(isPresented: $popUp, content: {
-            PopUp(active: $popUp, cups: $cups, waterColor: $waterColor, isMetric: self.$isMetric)
+            PopUp(active: $popUp, cups: $cups, waterColor: $waterColor, isMetric: self.$isMetric, isAlcoholConsumed: self.$isAlcoholConsumed, percentageOfAlcohol: self.$percentageOfAlcohol, percentageOfEachAlcohol: self.$percentageOfEachAlcohol, amountOfEachAlcohol: self.$amountOfEachAlcohol, amountOfAccumulatedAlcohol: self.$amountOfEachAlcohol)
                 .environmentObject(user)
                 .environmentObject(userDocument)
                 .font(.title)
                 .clearModalBackground()
         })
-        
         .sheet(isPresented: $isDiuretic, content: {
-            DiureticView(popUp: $popUp, cups: $cups, isDiuretic: $isDiuretic,  customDrinkDocument: CustomDrinkViewModel(), waterColor: $waterColor, isMetric: self.$isMetric)
+            DiureticView(popUp: self.$popUp, cups: self.$cups, isDiuretic: self.$isDiuretic, customDrinkDocument: CustomDrinkViewModel(), waterColor: self.$waterColor, isMetric: self.$isMetric, isAlcoholConsumed: self.$isAlcoholConsumed, amountOfAccumulatedAlcohol: self.$amountOfAccumulatedAlcohol, percentageOfEachAlcohol: self.$percentageOfEachAlcohol, amountOfEachAlcohol: self.$amountOfEachAlcohol)
                 .clearModalBackground()
         })
         .onChange(of: self.currentHydrationDictionary, perform: { newValue in
@@ -288,6 +303,13 @@ struct Dashboard: View {
             percentageWater = Double(percentageWaterMultiply)
             
         })
+        .onChange(of: alcoholTimer.totalAccumulatedTime , perform: { value in
+            if value < 1 {
+                waterColor = currentWaterColor(colorScheme: colorScheme)
+                isAlcoholConsumed = false
+            }
+        })
+        
         .onChange(of: self.cups, perform: { value in
             percentageWater = (100 / ((waterIntake) / Double(cupConverter())) * self.cups)
             hydration.document.uploadCups(cups: Int(cups))
@@ -295,7 +317,27 @@ struct Dashboard: View {
             formattedFloat = String(format: "%.1f", cupsLeft)
         })
         
-        
+        .onChange(of: amountOfAccumulatedAlcohol, perform: { value in
+            if self.percentageOfEachAlcohol > 10 || self.amountOfAccumulatedAlcohol > 30 {
+                self.waterColor = Color(red: 130 / 255, green: 98 / 255, blue: 222 / 255, opacity: 0.5)
+                print("water intake equals: \(waterIntake / Double(cupConverter()))")
+                print("alcohol amount equals: \( self.percentageOfEachAlcohol ) %  ")
+                
+                waterIntake += (waterIntake / 100) * 10
+                isDiureticMode  = true
+            }
+        })
+        .alert(isPresented: self.$isInformation, content: {
+            Alert(title: Text("Diuretic effect"), message:
+                    Text(isDiureticMode ? "Alcohol makes you pee, and dehydrates you if the amount of alcohol exeeds certain amount you start to dehydrate. Don't worry the app takes care of it, just log everything you drink." : "Small amount of alcohol in your drink hydrates your body as much as water does." )
+                  , primaryButton: Alert.Button.default(Text("Learn more"), action: {
+                if isDiureticMode {
+                    UIApplication.shared.open(URL(string: "https://academic.oup.com/alcalc/article/45/4/366/155478?login=true")!)
+                } else {
+                    UIApplication.shared.open(URL(string: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5537780/")!)
+                }
+            }) , secondaryButton: Alert.Button.cancel())
+        })
     }
     
     func currentWaterColor(colorScheme: ColorScheme) -> Color {
@@ -328,15 +370,24 @@ struct Dashboard: View {
 }
 
 struct PopUp: View {
-@Binding var active: Bool
-@Binding var cups: Double
-@EnvironmentObject var user: UserRepository
-@EnvironmentObject var userDocument: UserDocument
-@State private var isDiuretic = false
-@State private var isPrecise = false
-@Environment(\.colorScheme) var colorScheme
-@Binding var waterColor: Color
-@Binding var isMetric: Bool
+    
+    @Binding var active: Bool
+    @Binding var cups: Double
+    @EnvironmentObject var user: UserRepository
+    @EnvironmentObject var userDocument: UserDocument
+    @State private var isDiuretic = false
+    @State private var isPrecise = false
+    @Environment(\.colorScheme) var colorScheme
+    @Binding var waterColor: Color
+    @Binding var isMetric: Bool
+    
+    //Alcohol
+    @Binding var isAlcoholConsumed: Bool
+    @Binding var percentageOfAlcohol: Double
+    @Binding var percentageOfEachAlcohol: Double
+    @Binding var amountOfEachAlcohol: Double
+    @Binding var amountOfAccumulatedAlcohol: Double
+    
     
     var body: some View {
         NavigationView {
@@ -358,7 +409,7 @@ struct PopUp: View {
                             Text("Action Control")
                                 .foregroundColor(colorScheme == .dark ? .white : .black)
                         })
-
+                    
                     HStack {
                         Text("Precise Control")
                         Image(systemName: "figure.walk")
@@ -390,9 +441,9 @@ struct PopUp: View {
                 }
             }
             .sheet(isPresented: $isDiuretic, content: {
-                DiureticView(popUp: $active, cups: self.$cups, isDiuretic: $isDiuretic, customDrinkDocument: CustomDrinkViewModel(), waterColor: self.$waterColor, isMetric: self.$isMetric)
+                DiureticView(popUp: $active, cups: self.$cups, isDiuretic: $isDiuretic, customDrinkDocument: CustomDrinkViewModel(), waterColor: self.$waterColor, isMetric: self.$isMetric, isAlcoholConsumed: self.$isAlcoholConsumed, amountOfAccumulatedAlcohol: self.$amountOfAccumulatedAlcohol, percentageOfEachAlcohol: self.$percentageOfEachAlcohol, amountOfEachAlcohol: self.$amountOfEachAlcohol)
                     .frame( height: UIScreen.main.bounds.height / 2, alignment: .center)
-                })
+            })
         }
     }
 }
