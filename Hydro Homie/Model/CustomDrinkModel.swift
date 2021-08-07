@@ -17,6 +17,7 @@ struct CustomDrinkModel: Hashable, Codable {
     var alcoholAmount: Double
     var alcoholPercentage: Double
     var caffeineAmount: Double
+    var isCustomWater: Bool
     
     func matchingID(matching: CustomDrinkModel, array: [CustomDrinkModel]) -> Int? {
         for index in 0..<array.count {

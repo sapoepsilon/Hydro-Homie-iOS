@@ -17,7 +17,8 @@ struct ActionView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var isLocation: Bool = false
     @State private var isPrecise: Bool = false
-    
+    @State private var fontSize: CGFloat = 23
+    @State private var width: CGFloat? = nil
     
     var body: some View {
         GeometryReader{ geometry in
@@ -26,16 +27,20 @@ struct ActionView: View {
                 if isPrecise {
                     PreciseControl()
                 } else {
-                    VStack(alignment: .leading){
+                    VStack {
                         HStack{
                             Button(action: {
                                 isStats = true
                             }, label: {
-                                Text("Stats                                                 ")
+                                Text("Stats")
+                                    .font(.system(size: fontSize))
                                     .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
-                                    .font(.system(size: geometry.size.height / 17))
+                                    .equalWidth()
+                                    .frame(width: width, alignment: .leading)
                                 Image(systemName: "chart.bar").foregroundColor(.green)
+                                    .equalWidth()
                                     .scaleEffect(CGSize(width: 1.5, height: 1.5))
+                                    
                             })
                         }
                         .padding()
@@ -44,9 +49,11 @@ struct ActionView: View {
                             Button(action: {
                                 isLocation = true
                             }, label: {
-                                Text("Precise control of hydration        ")
-                                    .font(.system(size: geometry.size.height / 17))
+                                Text("Precise control of hydration")
+                                    .font(.system(size: fontSize))
                                     .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
+                                    .equalWidth()
+                                    .frame(width: width, alignment: .leading)
                                 Image(systemName: "switch.2").foregroundColor(.blue)
                                     .scaleEffect(CGSize(width: 1.5, height: 1.5))
                                 
@@ -58,9 +65,11 @@ struct ActionView: View {
                             Button(action: {
                                 isEdit = true
                             }, label: {
-                                Text("Edit your Info                                    ")
-                                    .font(.system(size: geometry.size.height / 17))
+                                Text("Edit your info")
                                     .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
+                                    .equalWidth()
+                                    .frame(width: width, alignment: .leading)
+                                    .font(.system(size: fontSize))
                                 
                                 Image(systemName: "pencil")
                                     .foregroundColor(.blue)
@@ -73,9 +82,11 @@ struct ActionView: View {
                             Button(action: {
                                 
                             }, label: {
-                                Text("How hydration is calculated       ")
-                                    .font(.system(size: geometry.size.height / 17))
+                                Text("How hydration is calculated")
                                     .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
+                                    .equalWidth()
+                                    .font(.system(size: fontSize))
+                                    .frame(width: width, alignment: .leading)
                                 Image(systemName: "info").foregroundColor(.blue)
                                     .scaleEffect(CGSize(width: 1.5, height: 1.5))
                             })
@@ -83,6 +94,11 @@ struct ActionView: View {
                         }
                         .padding()
                     }
+                    .onPreferenceChange(WidthPreferenceKey.self) { widths in
+                                    if let width = widths.max() {
+                                        self.width = width
+                                    }
+                                }
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)

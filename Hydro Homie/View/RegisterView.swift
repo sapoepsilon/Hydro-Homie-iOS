@@ -145,7 +145,8 @@ struct RegisterView: View {
                         }
                         Spacer()
                         
-                    } .overlay(
+                    }
+                    .overlay(
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(self.weight == "" ? borderColor : Color.green, lineWidth: 2))
                 }

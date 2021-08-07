@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		99023361268248A200FACE04 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 99023360268248A200FACE04 /* FirebaseAuth */; };
 		99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 99023362268248A200FACE04 /* FirebaseFirestore */; };
+		99088D0826B223470091339F /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E786CF2639131100D13EC5 /* Dashboard.swift */; };
 		991ED8A6267A902100AE129A /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991ED8A5267A902100AE129A /* Persistance.swift */; };
 		99234677269A7B3A00785C7E /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 99234676269A7B3A00785C7E /* GoogleSignIn */; };
 		99234679269A8B9400785C7E /* CustomDrinkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99234678269A8B9400785C7E /* CustomDrinkModel.swift */; };
@@ -44,7 +45,20 @@
 		99DE64D7266DBF1D0017015A /* Hydration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64D6266DBF1D0017015A /* Hydration.swift */; };
 		99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64D9266DC4510017015A /* HydrationDocument.swift */; };
 		99DE64DC266E7C8A0017015A /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64DB266E7C8A0017015A /* RegisterView.swift */; };
-		99E786D02639131100D13EC5 /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E786CF2639131100D13EC5 /* Dashboard.swift */; };
+		99E8758726B22BEC009AAED9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8758626B22BEC009AAED9 /* ContentView.swift */; };
+		99E8758926B22BEC009AAED9 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8758826B22BEC009AAED9 /* NotificationController.swift */; };
+		99E8758B26B22BEC009AAED9 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8758A26B22BEC009AAED9 /* NotificationView.swift */; };
+		99E8758D26B22BEC009AAED9 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8758C26B22BEC009AAED9 /* ComplicationController.swift */; };
+		99E8758F26B22BEC009AAED9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99E8758E26B22BEC009AAED9 /* Assets.xcassets */; };
+		99E8759226B22BEC009AAED9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99E8759126B22BEC009AAED9 /* Preview Assets.xcassets */; };
+		99E8759F26B22DAE009AAED9 /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AEBF9266D752300FAD0CB /* WaterView.swift */; };
+		99E875A126B22DAE009AAED9 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B82267124D600EE106B /* UserModel.swift */; };
+		99E875A226B22DAE009AAED9 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9970190B2689064E007F2935 /* LocationService.swift */; };
+		99E875A326B22DAE009AAED9 /* AlcoholTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992B733826A7B9050012E34E /* AlcoholTimer.swift */; };
+		99E875A626B22DAE009AAED9 /* TimerBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992B733A26A7C51A0012E34E /* TimerBackground.swift */; };
+		99E875AA26B22DAE009AAED9 /* PreciseControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997DC07F268926210018F557 /* PreciseControl.swift */; };
+		99E875AB26B22DAE009AAED9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D02637955500672D2E /* Assets.xcassets */; };
+		99E875AC26B22DAE009AAED9 /* CustomDrinkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99234678269A8B9400785C7E /* CustomDrinkModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +72,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		99088CFD26B221A60091339F /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		99ACBA30268180E10005A151 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -95,7 +119,6 @@
 		99ACBA1D268180E00005A151 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		99ACBA1F268180E00005A151 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		99AEA095268CF9BE004BD12D /* CustomDrink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrink.swift; sourceTree = "<group>"; };
-		99B09B3526824BD200C15A14 /* Hydro Homie.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Hydro Homie.entitlements"; sourceTree = "<group>"; };
 		99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WaterViewWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B09B402682641800C15A14 /* WaterViewWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterViewWidget.swift; sourceTree = "<group>"; };
 		99B09B422682641800C15A14 /* WaterViewWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WaterViewWidget.intentdefinition; sourceTree = "<group>"; };
@@ -108,6 +131,16 @@
 		99DE64D9266DC4510017015A /* HydrationDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationDocument.swift; sourceTree = "<group>"; };
 		99DE64DB266E7C8A0017015A /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RegisterView.swift; path = "Hydro Homie/View/RegisterView.swift"; sourceTree = SOURCE_ROOT; };
 		99E786CF2639131100D13EC5 /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
+		99E8757926B22BEC009AAED9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		99E8757F26B22BEC009AAED9 /* Watch Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Watch Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		99E8758626B22BEC009AAED9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		99E8758826B22BEC009AAED9 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		99E8758A26B22BEC009AAED9 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
+		99E8758C26B22BEC009AAED9 /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
+		99E8758E26B22BEC009AAED9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		99E8759126B22BEC009AAED9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		99E8759326B22BEC009AAED9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		99E8759426B22BEC009AAED9 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +161,13 @@
 			files = (
 				99B09B3E2682641800C15A14 /* SwiftUI.framework in Frameworks */,
 				99B09B3D2682641800C15A14 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99E8757C26B22BEC009AAED9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,6 +208,8 @@
 			children = (
 				9965D7CB2637955400672D2E /* Hydro Homie */,
 				99B09B3F2682641800C15A14 /* WaterViewWidget */,
+				99E8757826B22BEB009AAED9 /* Watch */,
+				99E8758326B22BEC009AAED9 /* Watch Extension */,
 				9965D7CA2637955400672D2E /* Products */,
 				43B8B21D244BCAFEC6E430A9 /* Frameworks */,
 			);
@@ -178,6 +220,7 @@
 			children = (
 				9965D7C92637955400672D2E /* Hydro Homie.app */,
 				99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */,
+				99E8757F26B22BEC009AAED9 /* Watch Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -185,7 +228,6 @@
 		9965D7CB2637955400672D2E /* Hydro Homie */ = {
 			isa = PBXGroup;
 			children = (
-				99B09B3526824BD200C15A14 /* Hydro Homie.entitlements */,
 				99ACBA1526816B8F0005A151 /* View */,
 				99DE64D8266DC4270017015A /* ViewModel */,
 				994096C1266D4C9D00830829 /* Model */,
@@ -248,6 +290,37 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		99E8757826B22BEB009AAED9 /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				99E8757926B22BEC009AAED9 /* Assets.xcassets */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
+		99E8758326B22BEC009AAED9 /* Watch Extension */ = {
+			isa = PBXGroup;
+			children = (
+				99E8758626B22BEC009AAED9 /* ContentView.swift */,
+				99E8758826B22BEC009AAED9 /* NotificationController.swift */,
+				99E8758A26B22BEC009AAED9 /* NotificationView.swift */,
+				99E8758C26B22BEC009AAED9 /* ComplicationController.swift */,
+				99E8758E26B22BEC009AAED9 /* Assets.xcassets */,
+				99E8759326B22BEC009AAED9 /* Info.plist */,
+				99E8759426B22BEC009AAED9 /* PushNotificationPayload.apns */,
+				99E8759026B22BEC009AAED9 /* Preview Content */,
+			);
+			path = "Watch Extension";
+			sourceTree = "<group>";
+		};
+		99E8759026B22BEC009AAED9 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				99E8759126B22BEC009AAED9 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -259,6 +332,7 @@
 				9965D7C62637955400672D2E /* Frameworks */,
 				9965D7C72637955400672D2E /* Resources */,
 				99ACBA30268180E10005A151 /* Embed App Extensions */,
+				99088CFD26B221A60091339F /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
@@ -293,13 +367,30 @@
 			productReference = 99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		99E8757E26B22BEC009AAED9 /* Watch Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 99E8759826B22BEC009AAED9 /* Build configuration list for PBXNativeTarget "Watch Extension" */;
+			buildPhases = (
+				99E8757B26B22BEC009AAED9 /* Sources */,
+				99E8757C26B22BEC009AAED9 /* Frameworks */,
+				99E8757D26B22BEC009AAED9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Watch Extension";
+			productName = "Watch Extension";
+			productReference = 99E8757F26B22BEC009AAED9 /* Watch Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		9965D7C12637955400672D2E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1250;
+				LastSwiftUpdateCheck = 1300;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					9965D7C82637955400672D2E = {
@@ -307,6 +398,9 @@
 					};
 					99B09B3B2682641800C15A14 = {
 						CreatedOnToolsVersion = 12.5;
+					};
+					99E8757E26B22BEC009AAED9 = {
+						CreatedOnToolsVersion = 13.0;
 					};
 				};
 			};
@@ -331,6 +425,7 @@
 			targets = (
 				9965D7C82637955400672D2E /* Hydro Homie */,
 				99B09B3B2682641800C15A14 /* WaterViewWidgetExtension */,
+				99E8757E26B22BEC009AAED9 /* Watch Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -354,6 +449,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		99E8757D26B22BEC009AAED9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99E8759226B22BEC009AAED9 /* Preview Assets.xcassets in Resources */,
+				99E875AB26B22DAE009AAED9 /* Assets.xcassets in Resources */,
+				99E8758F26B22BEC009AAED9 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -366,12 +471,12 @@
 				99DE64DC266E7C8A0017015A /* RegisterView.swift in Sources */,
 				9936A33F269A40FD006FAF41 /* Extensions.swift in Sources */,
 				9965D7CF2637955400672D2E /* ContentView.swift in Sources */,
-				99E786D02639131100D13EC5 /* Dashboard.swift in Sources */,
 				99234679269A8B9400785C7E /* CustomDrinkModel.swift in Sources */,
 				997DC080268926210018F557 /* PreciseControl.swift in Sources */,
 				994096BD266D4BFE00830829 /* UserRepository.swift in Sources */,
 				99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */,
 				991ED8A6267A902100AE129A /* Persistance.swift in Sources */,
+				99088D0826B223470091339F /* Dashboard.swift in Sources */,
 				99D60B852671255D00EE106B /* UserDocument.swift in Sources */,
 				99B09B472682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */,
 				995D4110266EFC5600916F5C /* HeightPicker.swift in Sources */,
@@ -395,6 +500,24 @@
 				99B09B462682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */,
 				99B09B4E2682642500C15A14 /* WaterView.swift in Sources */,
 				99B09B412682641800C15A14 /* WaterViewWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99E8757B26B22BEC009AAED9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99E8758926B22BEC009AAED9 /* NotificationController.swift in Sources */,
+				99E875A126B22DAE009AAED9 /* UserModel.swift in Sources */,
+				99E875A226B22DAE009AAED9 /* LocationService.swift in Sources */,
+				99E875AC26B22DAE009AAED9 /* CustomDrinkModel.swift in Sources */,
+				99E875A626B22DAE009AAED9 /* TimerBackground.swift in Sources */,
+				99E8758726B22BEC009AAED9 /* ContentView.swift in Sources */,
+				99E875A326B22DAE009AAED9 /* AlcoholTimer.swift in Sources */,
+				99E8758D26B22BEC009AAED9 /* ComplicationController.swift in Sources */,
+				99E875AA26B22DAE009AAED9 /* PreciseControl.swift in Sources */,
+				99E8758B26B22BEC009AAED9 /* NotificationView.swift in Sources */,
+				99E8759F26B22DAE009AAED9 /* WaterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -623,6 +746,70 @@
 			};
 			name = Release;
 		};
+		99E8759926B22BEC009AAED9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Watch Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = NK28QT38A3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Watch Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Watch Extension";
+				INFOPLIST_KEY_CLKComplicationPrincipalClass = "$(PRODUCT_MODULE_NAME).ComplicationController";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Debug;
+		};
+		99E8759A26B22BEC009AAED9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Watch Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = NK28QT38A3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Watch Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Watch Extension";
+				INFOPLIST_KEY_CLKComplicationPrincipalClass = "$(PRODUCT_MODULE_NAME).ComplicationController";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -649,6 +836,15 @@
 			buildConfigurations = (
 				99B09B4C2682641900C15A14 /* Debug */,
 				99B09B4D2682641900C15A14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		99E8759826B22BEC009AAED9 /* Build configuration list for PBXNativeTarget "Watch Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99E8759926B22BEC009AAED9 /* Debug */,
+				99E8759A26B22BEC009AAED9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

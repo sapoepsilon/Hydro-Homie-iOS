@@ -14,7 +14,7 @@ class CustomDrinkViewModel: ObservableObject {
     let today = Date()
     @ObservedObject var hydrationDocument = HydrationDocument()
     @Published var customDrinks: [CustomDrinkModel] = []
-    @Published var customDrinkObject: CustomDrinkModel = CustomDrinkModel(id: 0, name: "name", isAlcohol: false, isCaffeine: false, amount: 23, alcoholAmount: 0, alcoholPercentage: 0, caffeineAmount: 0)
+    @Published var customDrinkObject: CustomDrinkModel = CustomDrinkModel(id: 0, name: "name", isAlcohol: false, isCaffeine: false, amount: 23, alcoholAmount: 0, alcoholPercentage: 0, caffeineAmount: 0, isCustomWater: false)
     
     var drinksArray: [CustomDrinkModel] = []
     var customDrinkDictionary: [[String:Any]] = [[
@@ -22,6 +22,7 @@ class CustomDrinkViewModel: ObservableObject {
         "name": "",
         "isAlcohol": false,
         "isCaffeine": false,
+        "isCustomWater": false,
         "amount": 0,
         "alcoholAmount": 0,
         "alcoholPercentage": 0,
@@ -47,6 +48,7 @@ class CustomDrinkViewModel: ObservableObject {
                 "name": drink.name,
                 "isAlcohol": drink.isAlcohol,
                 "isCaffeine": drink.isCaffeine,
+                "isCustomWater": drink.isCustomWater,
                 "amount": drink.amount,
                 "alcoholAmount": drink.alcoholAmount,
                 "alcoholPercentage": drink.alcoholPercentage,
@@ -88,6 +90,7 @@ class CustomDrinkViewModel: ObservableObject {
             "name": newCustomDrink.name,
             "isAlcohol": newCustomDrink.isAlcohol,
             "isCaffeine": newCustomDrink.isCaffeine,
+            "isCustomWater": newCustomDrink.isCustomWater,
             "amount": newCustomDrink.amount,
             "alcoholAmount": newCustomDrink.alcoholAmount,
             "alcoholPercentage": newCustomDrink.alcoholPercentage,
@@ -166,6 +169,7 @@ class CustomDrinkViewModel: ObservableObject {
                     self.customDrinkObject.amount = customDrink["amount"] as? Double ?? 0
                     self.customDrinkObject.isCaffeine = customDrink["isCaffeine"] as? Bool ?? false
                     self.customDrinkObject.isAlcohol = customDrink["isAlcohol"] as? Bool ?? false
+                    self.customDrinkObject.isCustomWater = customDrink["isCustomWater"] as? Bool ?? false
                     self.customDrinkObject.alcoholAmount = customDrink["alcoholAmount"] as? Double ?? 0
                     self.customDrinkObject.caffeineAmount = customDrink["caffeineAmount"] as? Double ?? 0
                     self.customDrinkObject.alcoholPercentage = customDrink["alcoholPercentage"] as? Double ?? 0

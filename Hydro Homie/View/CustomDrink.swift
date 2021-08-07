@@ -6,19 +6,27 @@
 //
 
 import SwiftUI
+import Combine
 
 struct CustomDrink: View {
+    
     @State private var drinkName: String = ""
     @State private var drinkAmount: Double = 0
     @State private var isAlcohol: Bool = false
     @State private var isCoffee: Bool = false
+    @State private var isWater: Bool = false
     @State private var isMilk: Bool = false
     @State private var ErrorTestDeleteLater: String = "Everything seems to be working OK"
     @ObservedObject var CustomDrinkDocument: CustomDrinkViewModel
     @State private var ErrorDetector: Bool = false
     @Binding var isMetric: Bool
+    @State private var customWaterAmount: String = ""
     
+    //Border Color
+    @State private var borderColor: Color = Color.gray
     
+    @Binding var isCustomDrinkSheet: Bool
+    @Binding var isDiureticSheet: Bool
     // metrics
     //@Binding isMetric: Bool
     //TODO: link to the user's metric system
@@ -48,130 +56,194 @@ struct CustomDrink: View {
     @State private var customDrinks: [CustomDrinkModel] = []
     @State private var mlConverter: Double = 29.5735
     @State private var ethanolDensity: Double = 0.789
-        
+    
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter
     }()
     
-    
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack {
             HStack {
+                Spacer()
                 Button(action: {
-                        drinkAmount = alcoholCupAmount - ((alcoholCupAmount / 100) * alcoholPercentage)
-                        alcoholAmount = (alcoholCupAmount * mlConverter) * (alcoholPercentage / 100) * ethanolDensity // get the amount of alcohol in grams
-                
-                    if isMetric {
-                        drinkAmount /= 237
-                    } else {
-                        drinkAmount /= 8
+                    withAnimation{
+                        isCustomDrinkSheet  = false
                     }
-                    print("drink amount \(drinkAmount)")
-                    createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount, alcoholPercentage: alcoholPercentage)
-                    ErrorDetector = true
-                }
-                , label: {
-                    Text("Add CustomDrink")
+                }, label: {
+                    Text("Cancel")
                 })
             }.padding()
             
             TextField("Name of your drink", text: $drinkName)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-            Form {
-                Section(header: Text("Is it alcohol")) {
-                    Picker("Is it alcohol ?", selection: $isAlcohol.animation(), content: {
-                        Text("Yes") .tag(true)
-                        Text("No").tag(false)
-                    })
-                    .foregroundColor(.white)
-                    .pickerStyle(SegmentedPickerStyle())
-                    .fixedSize()
-                }
-                Section(header: Text("Is it coffeinated beverage")) {
-                    Picker("Is it caffeinated beverage ?", selection: $isCoffee.animation(), content: {
-                        Text("Yes")
-                            .animation(.easeInOut)
-                            .tag(true)
-                        Text("No").tag(false)
-                    })
-                    .fixedSize()
-                    .pickerStyle(SegmentedPickerStyle())
-                }
-                
-                if isAlcohol {
-                    Section(header: Text("Alcoholic beverage: ") ) {
-                        
-                        TextField("Amount of alcohol", value: $alcoholPercentage, formatter: formatter)
-                        HStack{
-                            TextField("Cup Amount", value: $alcoholCupAmount, formatter: formatter)
-                            Text(cupMeasurement)
-                        }
-                        Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
-                            Text("Yes").tag(true)
+            VStack(alignment: .leading, spacing: 0) {
+                Form {
+                    Section(header: Text("Is it pure Water ?")) {
+                        Picker("Is it Water ?", selection: $isWater.animation(), content: {
+                            Text("Yes") .tag(true)
                             Text("No").tag(false)
                         })
-                        .pickerStyle(MenuPickerStyle())
-                        if additionalLiquids {
-                            Picker("Different liquids: ", selection: $selectedLiquid,
-                                   content: {
-                                    Text("Milk").tag(differentLiquids.milk)
-                                    Text("Regular soda").tag(differentLiquids.soda)
-                                    Text("Diet soda").tag(differentLiquids.dietSoda)
-                                    Text("Milk alternatives").tag(differentLiquids.milkAlternatives)
-                                    Text("Regular Juice").tag(differentLiquids.sugaryJuice)
-                                    Text("Freshlly Squeezed Juice").tag(differentLiquids.naturalJuice)
-                                   })
-                                .pickerStyle(WheelPickerStyle())
+                            .fixedSize()
+                            .foregroundColor(.white)
+                            .pickerStyle(SegmentedPickerStyle())
+                    }
+                    
+                    if isWater {
+                        Section(header: Text("Amount")) {
+                            HStack {
+                                TextField("Amount of Water", text: $customWaterAmount)
+                                    .keyboardType(.numberPad)
+                                    .onReceive(Just(customWaterAmount)) { newValue in
+                                        let filtered = newValue.filter { "0123456789.".contains($0) }
+                                        if filtered != newValue {
+                                            customWaterAmount = filtered
+                                        }
+                                    }
+                                Text(cupMeasurement)
+                            }
                         }
                     }
-                }
-                if isCoffee {
-                    Section(header: Text("Coffee beverage: ") ) {
-                        HStack {
-                            TextField("Amount of alcohol", value: $alcoholPercentage, formatter: formatter)
-                            Text("%")
+                    
+                    if !isWater {
+                        Section(header: Text("Is it alcohol")) {
+                            Picker("Is it alcohol ?", selection: $isAlcohol.animation(), content: {
+                                Text("Yes") .tag(true)
+                                Text("No").tag(false)
+                            })
+                                .foregroundColor(.white)
+                                .pickerStyle(SegmentedPickerStyle())
+                                .fixedSize()
                         }
-                        HStack{
-                            TextField("Cup Amount", value: $alcoholCupAmount, formatter: formatter)
-                            Text(cupMeasurement)
+                        
+                        Section(header: Text("Is it coffeinated beverage")) {
+                            Picker("Is it caffeinated beverage ?", selection: $isCoffee.animation(), content: {
+                                Text("Yes")
+                                    .animation(.easeInOut)
+                                    .tag(true)
+                                Text("No").tag(false)
+                            })
+                                .fixedSize()
+                                .pickerStyle(SegmentedPickerStyle())
+                        }.opacity(isWater ? 0 : 1)
+                        
+                        if isAlcohol {
+                            Section(header: Text("Alcoholic beverage: ") ) {
+                                
+                                HStack {
+                                    TextField("Percentage of alcohol", value: $alcoholPercentage, formatter: formatter)
+                                    Text("%")
+                                }
+                                HStack{
+                                    TextField("Cup Amount", value: $alcoholCupAmount, formatter: formatter)
+                                    Text(cupMeasurement)
+                                }
+                                Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
+                                    Text("Yes").tag(true)
+                                    Text("No").tag(false)
+                                })
+                                    .pickerStyle(MenuPickerStyle())
+                                
+                                if additionalLiquids {
+                                    Picker("Different liquids: ", selection: $selectedLiquid,
+                                           content: {
+                                        Text("Milk").tag(differentLiquids.milk)
+                                        Text("Regular soda").tag(differentLiquids.soda)
+                                        Text("Diet soda").tag(differentLiquids.dietSoda)
+                                        Text("Milk alternatives").tag(differentLiquids.milkAlternatives)
+                                        Text("Regular Juice").tag(differentLiquids.sugaryJuice)
+                                        Text("Freshlly Squeezed Juice").tag(differentLiquids.naturalJuice)
+                                    })
+                                        .pickerStyle(WheelPickerStyle())
+                                }
+                            }
                         }
-                        Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
-                            Text("Yes").tag(true)
-                            Text("No").tag(false)
-                        })
-                        .pickerStyle(MenuPickerStyle())
-                        if additionalLiquids {
-                            Picker("Different liquids: ", selection: $selectedLiquid,
-                                   content: {
-                                    Text("Milk").tag(differentLiquids.milk)
-                                    Text("Regular soda").tag(differentLiquids.soda)
-                                    Text("Diet soda").tag(differentLiquids.dietSoda)
-                                    Text("Milk alternatives").tag(differentLiquids.milkAlternatives)
-                                    Text("Regular Juice").tag(differentLiquids.sugaryJuice)
-                                    Text("Freshlly Squeezed Juice").tag(differentLiquids.naturalJuice)
-                                   })
-                                .pickerStyle(WheelPickerStyle())
+                        
+                        if isCoffee {
+                            Section(header: Text("Coffee beverage: ") ) {
+                                HStack {
+                                    TextField("Amount of alcohol", value: $alcoholPercentage, formatter: formatter)
+                                    Text("%")
+                                }
+                                HStack{
+                                    TextField("Cup Amount", value: $alcoholCupAmount, formatter: formatter)
+                                    Text(cupMeasurement)
+                                }
+                                Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
+                                    Text("Yes").tag(true)
+                                    Text("No").tag(false)
+                                })
+                                    .pickerStyle(MenuPickerStyle())
+                                if additionalLiquids {
+                                    Picker("Different liquids: ", selection: $selectedLiquid,
+                                           content: {
+                                        Text("Milk").tag(differentLiquids.milk)
+                                        Text("Regular soda").tag(differentLiquids.soda)
+                                        Text("Diet soda").tag(differentLiquids.dietSoda)
+                                        Text("Milk alternatives").tag(differentLiquids.milkAlternatives)
+                                        Text("Regular Juice").tag(differentLiquids.sugaryJuice)
+                                        Text("Freshlly Squeezed Juice").tag(differentLiquids.naturalJuice)
+                                    })
+                                        .pickerStyle(WheelPickerStyle())
+                                }
+                            }
                         }
-                       
                     }
                 }
             }
+            Button(action: {
+                
+                if !isWater {
+                    drinkAmount = alcoholCupAmount - ((alcoholCupAmount / 100) * alcoholPercentage)
+                    alcoholAmount = (alcoholCupAmount * mlConverter) * (alcoholPercentage / 100) * ethanolDensity // get the amount of alcohol in grams
+                } else {
+                    drinkAmount = Double(customWaterAmount) ?? 0
+                }
+                
+                if isMetric {
+                    drinkAmount /= 237
+                } else {
+                    drinkAmount /= 8
+                }
+                print("drink amount \(drinkAmount)")
+                
+                if drinkAmount != 0 {
+                    createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount, alcoholPercentage: alcoholPercentage, isCustomWater: isWater)
+                    ErrorDetector = true
+                } else {
+                    borderColor = Color.red
+                }
+            }
+                   , label: {
+                Text("Create the custom drink")
+            })
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(drinkAmount == 0 ? borderColor : Color.green, lineWidth: 2))
+                .opacity( customWaterAmount.isEmpty && alcoholCupAmount == 0 ? 0 : 1)
+            
         }
         .alert(isPresented: $ErrorDetector, content: {
-            Alert(title: Text("Error"), message: Text(ErrorTestDeleteLater), dismissButton: .cancel())
+            Alert(title: Text("Alert"), message: Text(ErrorTestDeleteLater), dismissButton: .default(Text("OK"), action: {
+                withAnimation {
+                    isCustomDrinkSheet = false
+                    isDiureticSheet = false
+                }
+            }))
+            
         })
         .onAppear {
-          CustomDrinkDocument.getAllDrinks()
+            cupMeasurement =  isMetric ? "ml" : "oz"
+            CustomDrinkDocument.getAllDrinks()
             self.customDrinks = CustomDrinkDocument.customDrinks
             print("custom drink displayed\(CustomDrinkDocument.customDrinks)")
         }
     }
-    func createCustomDrink(name: String, isAlcohol: Bool, isCaffeine: Bool, amount: Double, alcoholAmount: Double, caffeineAmount: Double, alcoholPercentage: Double) {
+    func createCustomDrink(name: String, isAlcohol: Bool, isCaffeine: Bool, amount: Double, alcoholAmount: Double, caffeineAmount: Double, alcoholPercentage: Double, isCustomWater: Bool) {
         
-        ErrorTestDeleteLater = CustomDrinkDocument.addCustomDrink(newCustomDrink: CustomDrinkModel(id: CustomDrinkDocument.customDrinks.count, name: name, isAlcohol: isAlcohol, isCaffeine: isCaffeine, amount: amount, alcoholAmount: alcoholAmount, alcoholPercentage: alcoholPercentage, caffeineAmount: caffeineAmount))
+        ErrorTestDeleteLater = CustomDrinkDocument.addCustomDrink(newCustomDrink: CustomDrinkModel(id: CustomDrinkDocument.customDrinks.count, name: name, isAlcohol: isAlcohol, isCaffeine: isCaffeine, amount: amount, alcoholAmount: alcoholAmount, alcoholPercentage: alcoholPercentage, caffeineAmount: caffeineAmount, isCustomWater: isCustomWater))
     }
     
     
