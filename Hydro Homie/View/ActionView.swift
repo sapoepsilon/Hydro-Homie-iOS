@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreLocation
 
+
 struct ActionView: View {
     @State private var isStats: Bool = false
     @State private var isEdit: Bool = false
@@ -17,13 +18,21 @@ struct ActionView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var isLocation: Bool = false
     @State private var isPrecise: Bool = false
-    @State private var fontSize: CGFloat = 23
+    @State private var fontSize: CGFloat = 28
     @State private var width: CGFloat? = nil
     
+    
+    init() {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            fontSize = 50
+        }
+    }
     var body: some View {
         GeometryReader{ geometry in
-            ZStack{
-                Rectangle().foregroundColor(colorScheme == .dark ? Color.black : Color.white)
+            ZStack {
+                Rectangle()
+                    .foregroundColor(colorScheme == .dark ?  Color.black.opacity(0.1) : Color.white.opacity(0.1))
+
                 if isPrecise {
                     PreciseControl()
                 } else {
@@ -43,7 +52,7 @@ struct ActionView: View {
                                     
                             })
                         }
-                        .padding()
+                        Spacer()
                         Text(" ")
                         HStack{
                             Button(action: {
@@ -59,7 +68,7 @@ struct ActionView: View {
                                 
                             })
                         }
-                        .padding()
+                        Spacer()
                         Text(" ")
                         HStack {
                             Button(action: {
@@ -76,7 +85,7 @@ struct ActionView: View {
                                     .scaleEffect(CGSize(width: 1.5, height: 1.5))
                             })
                         }
-                        .padding()
+                        Spacer()
                         Text(" ")
                         HStack{
                             Button(action: {
@@ -92,7 +101,6 @@ struct ActionView: View {
                             })
                             
                         }
-                        .padding()
                     }
                     .onPreferenceChange(WidthPreferenceKey.self) { widths in
                                     if let width = widths.max() {

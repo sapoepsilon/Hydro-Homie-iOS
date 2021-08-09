@@ -42,7 +42,7 @@ struct DiureticView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Color.gray.opacity(0.7)
+                Color.gray.opacity(0.2)
                 VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
             }
             ScrollView {
@@ -104,23 +104,14 @@ struct DiureticView: View {
                     .padding(.horizontal, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
                 }
                 VStack {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
-                        //                        if showCustomDrink {
-                        //                            if UIDevice.modelName == "iPhone8,4" || UIDevice.modelName == "iPhone9,1" || UIDevice.modelName == "iPhone9,2" || UIDevice.modelName == "iPhone10,1" ||  UIDevice.modelName == "iPhone10,2" || UIDevice.modelName == "iPhone10,5" {
-                        //                        }
-                        //                        else {
-                        //                            Spacer().frame(width: geometry.size.width, height: geometry.size.height / 6	, alignment: .center)
-                        //                            }
-                        //                        }
-                    }
                     if !isCoffee && !isAlcohol && !isCustomDrink && !showCustomDrink && !isCustomWater {
-                        VStack {
-                            //                            if UIDevice.modelName == "iPhone8,4" || UIDevice.modelName == "iPhone9,1" || UIDevice.modelName == "iPhone9,2" || UIDevice.modelName == "iPhone10,1" ||  UIDevice.modelName == "iPhone10,2" || UIDevice.modelName == "iPhone10,5" || UIDevice.modelName == "iPhone 12 Mini" {
-                            //                                    Spacer().frame(width: geometry.size.width, height: geometry.size.height / 6    , alignment: .center)
-                            //                            } else {
-                            //                                Spacer().frame(width: geometry.size.width, height: geometry.size.height / 6    , alignment: .center)
-                            //
-                            //                            }
+                        if UIDevice.current.userInterfaceIdiom == .phone {
+                            if UIDevice().type == .iPhone8 {
+                                
+                            } else {
+                                
+                            }
+                        }
                             VStack {
                                 HStack {
                                     Image(colorScheme == .dark ? "waterDropDark" : "waterDrop")
@@ -212,7 +203,7 @@ struct DiureticView: View {
                             .padding()
                             
                         }
-                    }
+                    
                     //MARK: Coffee
                     if isCoffee  {
                         Text("Black coffee").padding()
@@ -284,9 +275,10 @@ struct DiureticView: View {
                 //MARK: Custom Water
                 if isCustomWater {
                     showCustomWater()
+                        
                         .onAppear {
                             if UIDevice.current.userInterfaceIdiom == .pad {
-                                editIndent = geometry.size.width  - geometry.size.width / 2.4
+                                editIndent = geometry.size.width  - geometry.size.width / 1.4
                             } else  {
                                 editIndent = geometry.size.width  - geometry.size.width / 2
                             }
@@ -295,7 +287,7 @@ struct DiureticView: View {
                     showCustomDrinks()
                         .onAppear {
                             if UIDevice.current.userInterfaceIdiom == .pad {
-                                editIndent = geometry.size.width  - geometry.size.width / 2.4
+                                editIndent = geometry.size.width  - geometry.size.width / 1.4
                             } else  {
                                 editIndent = geometry.size.width  - geometry.size.width / 2
                             }
@@ -331,16 +323,21 @@ struct DiureticView: View {
     func showCustomDrinks() -> some View {
         VStack(alignment: .leading) {
             HStack() {
+                
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    Spacer().frame(width: 130)
+                } else {
+                    Spacer().frame(width: editIndent)
+                }
                 Text("Drinks: ")
-                    .frame(width: editIndent)
                     .font(Font.body.bold())
                 Text("Alcohol in gm: ")
+                    .frame(width: editIndent)
                     .font(Font.body.bold())
             }.opacity(showCustomDrink ? 1 : 0)
             
             ForEach(customDrinkDocument.customDrinks, id: \.self) { drink in
                 HStack() {
-                    
                     if drink.isAlcohol {
                         Image(colorScheme == .light ?  "alcohol" : "alcoholDark")
                             .renderingMode(.template)
@@ -391,19 +388,26 @@ struct DiureticView: View {
     func showCustomWater() -> some View {
         VStack(alignment: .leading) {
             HStack() {
-                Text("Name: ")
-                    .frame(width: editIndent)
-                    .font(Font.body.bold())
-                Text("Amount: ")
-                    .frame(width: editIndent)
-                    .font(Font.body.bold())
                 
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    Spacer().frame(width: 150)
+                } else {
+//                    padding(.horizontal, 20)
+                }
+                Text("Name: ")
+//                    .frame(width: editIndent)
+                    .font(Font.body.bold())
+                Text("Amount of cups: ")
+                    .frame(width: editIndent)
+                    .font(Font.body.bold())
+            }.onAppear {
+                print("editIndent: \(editIndent)")
             }
             
             ForEach(customDrinkDocument.customDrinks, id: \.self) { drink in
                 if drink.isCustomWater {
                     HStack() {
-                        
+
                         Image(colorScheme == .dark ? "waterDropDark" : "waterDrop")
                             .renderingMode(.template)
                             .foregroundColor(colorScheme == .light ? .white : .white)
@@ -447,7 +451,7 @@ struct DiureticView: View {
     
     func spacerCaluclator() -> CGFloat {
         if UIDevice.current.userInterfaceIdiom == .pad {
-            return 4.1
+            return 4.3
         } else {
             return 5
         }

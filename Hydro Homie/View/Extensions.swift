@@ -413,5 +413,39 @@ struct CustomStepper : View {
     }
 }
 
+
+struct LoginButton : ButtonStyle {
+    @Environment(\.colorScheme) var colorScheme
+    @State private var waterColor: Color =  Color( red: 0, green: 0.5, blue: 0.7, opacity: 0.5)
+
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(width: 220, height: 60)
+            .background(waterColor.currentWaterColor(colorScheme: colorScheme))
+            .foregroundColor(.white)
+            .clipShape(Rectangle())
+            .scaleEffect(configuration.isPressed ? 1.2 : 1)
+            .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+            .cornerRadius(16)
+            .padding()
+        
+    }
+    
+
+}
+
+extension Color {
+    
+    func currentWaterColor(colorScheme: ColorScheme) -> Color {
+        var waterColor: Color = Color( red: 0, green: 0, blue: 0, opacity: 0)
+        if colorScheme == .dark {
+            waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 0.5)
+        } else {
+            waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 0.5)
+        }
+        return waterColor
+    }
+}
 //View as a centering background
 

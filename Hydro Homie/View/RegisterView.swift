@@ -14,6 +14,8 @@ struct RegisterView: View {
     @Binding var Dashboard: Bool
     @Binding var registerView: Bool
     
+    @Environment(\.colorScheme) var colorScheme
+
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var passwordMatch: String = ""
@@ -33,128 +35,138 @@ struct RegisterView: View {
     
     
     var body: some View {
-        VStack(spacing:0) {
-            ZStack{
-                Text("Register").font(.headline)
-                    .bold()
-                    .padding()
-                HStack{
-                    Spacer()
-                    Button(action: {
-                        let waterIntake = ((Double(self.weight)!) / 100) * waterIntakeCalculator()
-                        registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, waterIntake: waterIntake )
-                    }, label: {
-                        Text("Next")
-                    }).padding()
-                }
+        GeometryReader{ geo in
+            ZStack {
+                Color.gray.opacity(0.4)
+                VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
             }
-            VStack{
-                TextField("Name", text: self.$name)
-                    .keyboardType(.emailAddress)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(self.name == "" ? borderColor : Color.green, lineWidth: 2)
-                    )
-                TextField("Email", text: self.$email)
-                    .keyboardType(.emailAddress)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
-                    )
-                SecureField("Password", text: self.$password)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2)
-                    )
-                SecureField("Password Match", text: self.$passwordMatch)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(self.passwordMatch == "" ? borderColor : Color.green, lineWidth: 2)
-                    )
-                Section{
-                    
-                    HStack{
-                        Spacer(minLength: 15)
-                        if(height == 0){
-                            Text("Height").foregroundColor(.gray).opacity(0.6)
-                        }
-                        if !metric {
-                            Text("\(String(format: "%.1f", height)) '")
-                        } else {
-                            Text("\(String(format: "%.1f", height)) cm")
-                        }
-                        Menu {
-                            Button(action:{
-                                if metric {
-                                    self.height = 0.0}
-                                metric = false
-                            }){
-                                Text("Imperic")
-                            }
-                            Button(action:{
-                                if !metric{
-                                    self.height = 0.0}
-                                metric = true
-                            }){
-                                Text("Metric").foregroundColor(.blue)
-                            }
-                        } label: {
-                            if(metric == false){
-                                Text("Imperic")
-                                    .foregroundColor(self.height == 0 ? borderColor : Color.green)
-                                Image(systemName: "ruler").foregroundColor(.blue)
-                                
-                            } else {
-                                Text("Metric ")
-                                    .foregroundColor(self.height == 0 ? borderColor : Color.green)
-                                (Image(systemName: "ruler")).foregroundColor(.blue)
-                            }
-                        }
-                        .foregroundColor(.black)
-                        HeightPicker(metric: $metric, height: $height)
-                    }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(self.height == 0 ? borderColor : Color.green, lineWidth: 2))
+
+            VStack(spacing:0) {
+                ZStack{
+                    Text("Register").font(.headline)
+                        .bold()
+                        .padding()
                 }
-                GeometryReader{ geo in
-                    HStack() {
-                        Text(" ")
-                        TextField("Weight", text: $weight)
-                            .keyboardType(.numberPad)
-                            .onReceive(Just(weight)) { newValue in
-                                let filtered = newValue.filter { "0123456789.".contains($0) }
-                                if filtered != newValue {
-                                    self.weight = filtered
-                                }
-                            }.frame(width: geo.size.width / 6, alignment: .leading)
-                        if metric {
-                            Text("kg")
-                                .foregroundColor(.gray)
-                                .padding()
-                                .opacity(0.6)
-                        } else {
-                            Text("lb")
-                                .foregroundColor(.gray)
-                                .padding()
-                                .opacity(0.6)
-                        }
-                        Spacer()
+                VStack{
+                    TextField("Name", text: self.$name)
+                        .keyboardType(.emailAddress)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(self.name == "" ? borderColor : Color.green, lineWidth: 2)
+                        )
+                    TextField("Email", text: self.$email)
+                        .keyboardType(.emailAddress)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
+                        )
+                    SecureField("Password", text: self.$password)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2)
+                        )
+                    SecureField("Password Match", text: self.$passwordMatch)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(self.passwordMatch == "" ? borderColor : Color.green, lineWidth: 2)
+                        )
+                    Section{
                         
+                        HStack{
+                            Spacer(minLength: 15)
+                            if(height == 0){
+                                Text("Height").foregroundColor(.gray).opacity(0.6)
+                            }
+                            if !metric {
+                                Text("\(String(format: "%.1f", height)) '")
+                            } else {
+                                Text("\(String(format: "%.1f", height)) cm")
+                            }
+                            Menu {
+                                Button(action:{
+                                    if metric {
+                                        self.height = 0.0}
+                                    metric = false
+                                }){
+                                    Text("Imperic")
+                                }
+                                Button(action:{
+                                    if !metric{
+                                        self.height = 0.0}
+                                    metric = true
+                                }){
+                                    Text("Metric").foregroundColor(.blue)
+                                }
+                            } label: {
+                                if(metric == false){
+                                    Text("Imperic")
+                                        .foregroundColor(self.height == 0 ? borderColor : Color.green)
+                                    Image(systemName: "ruler").foregroundColor(.blue)
+                                    
+                                } else {
+                                    Text("Metric ")
+                                        .foregroundColor(self.height == 0 ? borderColor : Color.green)
+                                    (Image(systemName: "ruler")).foregroundColor(.blue)
+                                }
+                            }
+                            .foregroundColor(.black)
+                            HeightPicker(metric: $metric, height: $height)
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(self.height == 0 ? borderColor : Color.green, lineWidth: 2))
                     }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(self.weight == "" ? borderColor : Color.green, lineWidth: 2))
+                 
+                        HStack() {
+                            Text(" ")
+                            TextField("Weight", text: $weight)
+                                .keyboardType(.numberPad)
+                                .onReceive(Just(weight)) { newValue in
+                                    let filtered = newValue.filter { "0123456789.".contains($0) }
+                                    if filtered != newValue {
+                                        self.weight = filtered
+                                    }
+                                }.frame(width: geo.size.width / 6, alignment: .leading)
+                            if metric {
+                                Text("kg")
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                    .opacity(0.6)
+                            } else {
+                                Text("lb")
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                    .opacity(0.6)
+                            }
+                            Spacer()
+                            
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(self.weight == "" ? borderColor : Color.green, lineWidth: 2))
+                    }
+                
+                Button(action: {
+                    let waterIntake = ((Double(self.weight)!) / 100) * waterIntakeCalculator()
+                    registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, waterIntake: waterIntake )
+                }, label: {
+                    Text("Register")
+                }).padding()
+                .buttonStyle(LoginButton())
                 }
-            }.padding(.horizontal)
-            Spacer()
-        }.alert(isPresented: self.$alert, content: {
+                }.padding(.horizontal)
+        
+                Spacer()
+     
+        
+        .alert(isPresented: self.$alert, content: {
             Alert(title: Text("Error"), message: Text(self.error), dismissButton: .default(Text("OK")))
         })
+
     }
     
     func registerUser(email: String, name: String, password: String, rePassword: String, height: Double, weight: String, metric: Bool, waterIntake: Double){

@@ -67,14 +67,14 @@ struct WaterView: View {
     @Binding var waterColor: Color
     @Environment(\.colorScheme) var colorScheme
     @State private var percent: Double = 0
-    @State private var backgroundColor = Color.black
+    @Binding var backgroundColor: Color
     let timer = Timer.publish(every: 0.005, on: .main, in: .common).autoconnect()
 
     var body: some View {
         GeometryReader { proxy in
             ZStack {
                 Cup()
-                    .stroke(colorScheme == .light ? Color.white : Color.black , lineWidth: 0.0025 * min(proxy.size.width, proxy.size.height))
+                    .stroke(colorScheme == .light ? Color.clear : Color.clear , lineWidth: 0.0025 * min(proxy.size.width, proxy.size.height))
                     .overlay(
                         backgroundColor
                             .clipShape(Cup())
@@ -89,10 +89,11 @@ struct WaterView: View {
               
                     .onAppear {
                         if(colorScheme == .light) {
-                            backgroundColor = Color.white
                         }
                         show = true
-                        }                    }
+                        }
+            }
+                
                     .onReceive(timer, perform: { _ in
                         if self.offset.degrees < 360 {
                             self.offset.degrees += 0.5

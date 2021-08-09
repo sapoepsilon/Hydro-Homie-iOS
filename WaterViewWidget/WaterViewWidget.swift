@@ -44,11 +44,13 @@ struct WaterViewWidgetEntryView : View {
     var entry: Provider.Entry
     @State var percentage: Double = 34
     @State var waterColor: Color =  Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.8)
+    @State var backgroundColor = Color.clear
+    
     let timer = Timer.publish(every: 0.3, on: .main, in: .common).autoconnect()
 
     var body: some View {
         ZStack{
-            WaterView(factor: self.$percentage, waterColor: self.$waterColor)
+            WaterView(factor: self.$percentage, waterColor: self.$waterColor, backgroundColor: $backgroundColor)
         }
         
     }

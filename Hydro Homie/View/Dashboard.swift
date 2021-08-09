@@ -12,6 +12,7 @@ import Firebase
 
 struct Dashboard: View {
     
+
     @EnvironmentObject var hydration: HydrationDocument
     @EnvironmentObject var user: UserRepository
     @ObservedObject var userDocument: UserDocument
@@ -38,6 +39,7 @@ struct Dashboard: View {
     @State private var isInformation: Bool = false
     @State private var isCustomWater: Bool = false
     
+    @State private var waterBackgroundColor: Color = Color.black
     //alchol
     @State private var isAlcoholConsumed: Bool = false
     @State private var percentageOfAlcohol: Double = 0
@@ -46,6 +48,10 @@ struct Dashboard: View {
     @State private var isDiureticMode: Bool = false
     @State private var amountOfAccumulatedAlcohol: Double = 0
     
+    
+    //Background colors
+    @Binding  var backgroundColorTop: Color
+    @Binding  var backgroundColorBottom: Color
     
     // MARK: User information
     @State var userName: String = ""
@@ -59,11 +65,16 @@ struct Dashboard: View {
     
     @ObservedObject var alcoholTimer = timerBackground
     
-    @ViewBuilder
+    
     var body: some View {
         GeometryReader { reader in
+           
             NavigationView {
-                VStack{
+                ZStack{
+                    LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
+                                   .edgesIgnoringSafeArea(.vertical)
+                
+                VStack {
                     if isAlcoholConsumed {
                         Text(isDiureticMode ? "Diuretic mode is on" : "Alchol mode is on")
                             .foregroundColor(waterColor)
@@ -86,7 +97,9 @@ struct Dashboard: View {
                             .foregroundColor(colorScheme == .dark ? .gray : waterColor)
                             .font(.system(size: reader.size.height / 40, weight: .heavy))
                     }
-                    Spacer(minLength: reader.size.height / 7) //Space between
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        Spacer(minLength: reader.size.height / 7) //Space between
+                    }
                     HStack{
                         if actionView{
                             VStack{
@@ -111,7 +124,7 @@ struct Dashboard: View {
                                                 } else {
                                                     actionOffset = CGSize.zero
                                                 }
-                                                
+
                                             })
                                     .onReceive(timer, perform: { time in
                                         if actionOffset.height > 1 {
@@ -121,7 +134,7 @@ struct Dashboard: View {
                             }
                         }
                         else {
-                            WaterView(factor: self.$percentageWater, waterColor: $waterColor)
+                            WaterView(factor: self.$percentageWater, waterColor: $waterColor, backgroundColor: $waterBackgroundColor)
                                 .frame(height: reader.size.height / 2)
                                 .scaleEffect(waterScaleEffect)
                                 .onTapGesture {
@@ -145,7 +158,7 @@ struct Dashboard: View {
                                     withAnimation {
                                         waterScaleEffect = 1.5
                                     }
-                                    
+
                                 }
                                 .shadow(color: colorScheme == .dark ? .white : .black, radius: 6)
                                 .offset(x: offset.width * 5, y: offset.height * 5)
@@ -154,7 +167,7 @@ struct Dashboard: View {
                                     DragGesture()
                                         .onChanged { gesture in
                                             print ( gesture.translation.height / 3)
-                                            
+
                                             //if the user long presses change the water level, else show the context menu
                                             if waterScaleEffect == 1 {
                                                 self.offset.width = gesture.translation.width / 3
@@ -173,7 +186,7 @@ struct Dashboard: View {
                                                     waterViewOpacity = 0 // if the user swipes right waterView disappears
                                                     actionView = true
                                                 }
-                                                
+
                                             } else if self.offset.width > 50 {
                                                 self.currentHydrationDictionary = userDocument.previousDate(hydrationArray: self.currentHydrationDictionary)
                                                 offset.width = -89.5
@@ -196,7 +209,6 @@ struct Dashboard: View {
                                         }
                                     }
                                 })
-                            
                         }
                     }
                     if isCurrentHydration {
@@ -215,12 +227,11 @@ struct Dashboard: View {
                     }
                     Spacer(minLength: reader.size.height / 9)
                 }
-                
-                //MARK: tool bar
-                .toolbar(content: {
+                .toolbar {
                     ToolbarItem(placement: .primaryAction){
                         Button(action: {
                             popUp = true
+                            print("popUp: \(popUp)")
                         }, label: {
                             Image(systemName: "gear")
                         })
@@ -236,28 +247,51 @@ struct Dashboard: View {
                                 hydrationDate = userDocument.getTheLatestDate()
                                 currentHydrationDictionary = userDocument.user.hydration.last!
                                 waterViewOpacity = 2
+                                
+                                print("popUp: \(popUp)")
+                                print("isCurrentHydration: \(isCurrentHydration)")
                             }
                         }, label: {
                             Image(systemName: "house")
                         })
                     }
-                    ToolbarItem(placement: .bottomBar) {
-                        Image(systemName: "drop")
-                            .scaleEffect(2)
-                            .onTapGesture {
-                                withAnimation() {
-                                    isDiuretic = true
-                                }
-                            }
-                    }
-                })
+                }
             }
+            }
+            //MARK: tool bar
+            .toolbar(content: {
+                
+                ToolbarItem(placement: .bottomBar) {
+                    Image(systemName: "drop")
+                        .scaleEffect(2)
+                        .onTapGesture {
+                            withAnimation() {
+                                isDiuretic = true
+                            }
+                        }
+                }
+            })
             .navigationViewStyle(StackNavigationViewStyle())
-            .accentColor(colorScheme == .dark ? .gray : waterColor)
+
+        
             
         }.onAppear{
             userDocument.fetchData()
+            print("popUP on appear: \(popUp)")
+            
+               
+            if colorScheme == .light {
+                let toolBarBackground = UIColor(self.backgroundColorBottom)
+                UIToolbar.appearance().barTintColor = toolBarBackground
+            } else {
+                UIToolbar.appearance().barTintColor = UIColor(red: 38/255, green: 40/255, blue: 42/255, alpha: 46/100)
+            }
+            waterBackgroundColor = backgroundColorTop
+            
+
+           
         }
+      
         .onChange(of: userDocument.user.name, perform: { newValue in
             
             self.isMetric = userDocument.user.metric
@@ -274,11 +308,18 @@ struct Dashboard: View {
                 volumeMetric = "ml"
             }
         })
+//        .sheet(isPresented: $popUp, content: {
+//            PopUp(active: $popUp, cups: $cups, waterColor: $waterColor, isMetric: self.$isMetric, isCustomWater: $isCustomWater, isAlcoholConsumed: self.$isAlcoholConsumed, percentageOfAlcohol: self.$percentageOfAlcohol, percentageOfEachAlcohol: self.$percentageOfEachAlcohol, amountOfEachAlcohol: self.$amountOfEachAlcohol, amountOfAccumulatedAlcohol: self.$amountOfEachAlcohol, backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
+//                .environmentObject(user)
+//                .environmentObject(userDocument)
+////                .font(.title)
+//                .clearModalBackground()
+////                .edgesIgnoringSafeArea(.bottom)
+//        })
         .sheet(isPresented: $popUp, content: {
-            PopUp(active: $popUp, cups: $cups, waterColor: $waterColor, isMetric: self.$isMetric, isCustomWater: $isCustomWater, isAlcoholConsumed: self.$isAlcoholConsumed, percentageOfAlcohol: self.$percentageOfAlcohol, percentageOfEachAlcohol: self.$percentageOfEachAlcohol, amountOfEachAlcohol: self.$amountOfEachAlcohol, amountOfAccumulatedAlcohol: self.$amountOfEachAlcohol)
+            PopUp(active: $popUp, cups: $cups, waterColor: $waterColor, isMetric: $isMetric, isCustomWater: $isCustomWater, backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isAlcoholConsumed: $isAlcoholConsumed, percentageOfAlcohol: $percentageOfAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol)
                 .environmentObject(user)
                 .environmentObject(userDocument)
-                .font(.title)
                 .clearModalBackground()
                 .edgesIgnoringSafeArea(.bottom)
         })
@@ -345,10 +386,10 @@ struct Dashboard: View {
     
     func currentWaterColor(colorScheme: ColorScheme) -> Color {
         var waterColor: Color = Color( red: 0, green: 0, blue: 0, opacity: 0)
-        if colorScheme == .dark {
-            waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 0.5)
+        if colorScheme == .light {
+            waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 1)
         } else {
-            waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 0.5)
+            waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 1)
         }
         return waterColor
     }
@@ -370,6 +411,12 @@ struct Dashboard: View {
             return "cups"
         }
     }
+//    func backgroundColor() -> some View {
+//        return  ZStack {
+//            LinearGradient(gradient: Gradient(colors: [backroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
+//                   .edgesIgnoringSafeArea(.vertical)
+//        }
+//    }
 }
 
 struct PopUp: View {
@@ -386,7 +433,11 @@ struct PopUp: View {
     @Binding var isCustomWater: Bool
     
     @State var isNavigationBarHidden: Bool = true
-
+    
+    //Background colors
+    @Binding  var backgroundColorTop: Color
+    @Binding  var backgroundColorBottom: Color
+    
     //Alcohol
     @Binding var isAlcoholConsumed: Bool
     @Binding var percentageOfAlcohol: Double
@@ -406,7 +457,11 @@ struct PopUp: View {
         //                    }).scaleEffect(0.75)
         //                }
         ZStack {
+            
             NavigationView {
+                ZStack{
+                    LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
+                                   .edgesIgnoringSafeArea(.vertical)
                 VStack {
                     HStack {
                         Spacer()
@@ -417,50 +472,62 @@ struct PopUp: View {
                     }
                     NavigationLink(
                         
-                        destination: ActionView().environmentObject(userDocument),
+                        destination: ActionView()
+                            .environmentObject(userDocument),
                         label: {
                             Text("Action Control")
                                 .foregroundColor(colorScheme == .dark ? .white : .black)
+                                .font(.system(size: 35))
                         })
-                    
+                    Spacer()
                     HStack {
                         Text("Precise Control")
+                            .font(.system(size: 35))
+
                         Image(systemName: "figure.walk")
                             .padding()
+                            .font(.system(size: 35))
+
                     }
                     .onTapGesture {
                         isPrecise.toggle()
                     }
-                    
+                    Spacer()
                     Text("Log diuretic")
                         .onTapGesture {
                             withAnimation() {
                                 isDiuretic.toggle()
                             }
                         }
+                        .font(.system(size: 35))
+
                     if isPrecise {
                         PreciseControl()
                     }
-                    
+                    Spacer()
                     Text("Sign out")
                         .onTapGesture {
                             user.signOut()
                         }
                         .padding(.vertical)
-                        .frame(width: UIScreen.main.bounds.width - 50)
                         .cornerRadius(23)
+                        .font(.system(size: 35))
+
                     
                     Spacer()
+                    }
                 }
                 .navigationBarTitle("Action Control")
                 .navigationBarHidden(self.isNavigationBarHidden)
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
         .onAppear {
             isNavigationBarHidden = true
         }
         .sheet(isPresented: $isDiuretic, content: {
             DiureticView(cups: $cups, customDrinkDocument: CustomDrinkViewModel(), waterColor: $waterColor, isCustomWater: $isCustomWater, isMetric: $isMetric, isDiuretic: $isDiuretic, popUp: $active, isAlcoholConsumed: $isAlcoholConsumed, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol)
+          
                 .clearModalBackground()
                 .edgesIgnoringSafeArea(.bottom)
         })
