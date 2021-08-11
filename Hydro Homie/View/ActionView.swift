@@ -31,7 +31,7 @@ struct ActionView: View {
         GeometryReader{ geometry in
             ZStack {
                 Rectangle()
-                    .foregroundColor(colorScheme == .dark ?  Color.black.opacity(0.1) : Color.white.opacity(0.1))
+                    .foregroundColor(colorScheme == .dark ?  Color.black.opacity(0.001) : Color.white.opacity(0.001))
 
                 if isPrecise {
                     PreciseControl()

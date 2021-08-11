@@ -26,7 +26,7 @@ class TimerViewModel: ObservableObject {
     // these are internals of the timer.  when did it last start; when did it last
     // shut down; what state is it in; and how much time had it accumulated before
     // it last started up.
-    private var previouslyAccumulatedTime: TimeInterval = 14
+    private var previouslyAccumulatedTime: TimeInterval = 14410
     private var startDate: Date? = nil
     private var lastStopDate: Date? = nil
     private var state: SLTimerMode = .stopped
@@ -34,7 +34,7 @@ class TimerViewModel: ObservableObject {
     // this is what people need to see: its accumulated time, which is the sum of
     // any accumulated time plus any current run time.  it gets updated by the timer
     // while running every second, which causes a subscriber to see the update.
-    @Published var totalAccumulatedTime: TimeInterval = 14
+    @Published var totalAccumulatedTime: TimeInterval = 14410
 
     // now we let people ask us questions or tell us to do things
     var isSuspended: Bool { return state == .suspended }

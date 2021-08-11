@@ -15,7 +15,7 @@ struct RegisterView: View {
     @Binding var registerView: Bool
     
     @Environment(\.colorScheme) var colorScheme
-
+    
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var passwordMatch: String = ""
@@ -28,9 +28,12 @@ struct RegisterView: View {
     @State private var error: String = ""
     @State private var alert: Bool = false
     @State private var isCoffeeDrinker: Bool = false
-
-
     
+    @AppStorage ("log_status") var appleLogStatus = false
+    @AppStorage ("appleName") var appleName: String = ""
+    @AppStorage ("appleEmail") var appleEmail: String = ""
+    @AppStorage ("appleUID") var appleUID: String = ""
+
     @EnvironmentObject var userCreation: UserRepository
     
     
@@ -40,7 +43,7 @@ struct RegisterView: View {
                 Color.gray.opacity(0.4)
                 VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
             }
-
+            
             VStack(spacing:0) {
                 ZStack{
                     Text("Register").font(.headline)
@@ -48,6 +51,7 @@ struct RegisterView: View {
                         .padding()
                 }
                 VStack{
+                    
                     TextField("Name", text: self.$name)
                         .keyboardType(.emailAddress)
                         .padding()
@@ -55,6 +59,7 @@ struct RegisterView: View {
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.name == "" ? borderColor : Color.green, lineWidth: 2)
                         )
+                    
                     TextField("Email", text: self.$email)
                         .keyboardType(.emailAddress)
                         .padding()
@@ -62,18 +67,20 @@ struct RegisterView: View {
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
                         )
-                    SecureField("Password", text: self.$password)
-                        .padding()
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2)
-                        )
-                    SecureField("Password Match", text: self.$passwordMatch)
-                        .padding()
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(self.passwordMatch == "" ? borderColor : Color.green, lineWidth: 2)
-                        )
+                    if !appleLogStatus {
+                        SecureField("Password", text: self.$password)
+                            .padding()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2)
+                            )
+                        SecureField("Password Match", text: self.$passwordMatch)
+                            .padding()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(self.passwordMatch == "" ? borderColor : Color.green, lineWidth: 2)
+                            )
+                    }
                     Section{
                         
                         HStack{
@@ -120,57 +127,83 @@ struct RegisterView: View {
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.height == 0 ? borderColor : Color.green, lineWidth: 2))
                     }
-                 
-                        HStack() {
-                            Text(" ")
-                            TextField("Weight", text: $weight)
-                                .keyboardType(.numberPad)
-                                .onReceive(Just(weight)) { newValue in
-                                    let filtered = newValue.filter { "0123456789.".contains($0) }
-                                    if filtered != newValue {
-                                        self.weight = filtered
-                                    }
-                                }.frame(width: geo.size.width / 6, alignment: .leading)
-                            if metric {
-                                Text("kg")
-                                    .foregroundColor(.gray)
-                                    .padding()
-                                    .opacity(0.6)
-                            } else {
-                                Text("lb")
-                                    .foregroundColor(.gray)
-                                    .padding()
-                                    .opacity(0.6)
-                            }
-                            Spacer()
-                            
+                    
+                    HStack() {
+                        Text(" ")
+                        TextField("Weight", text: $weight)
+                            .keyboardType(.numberPad)
+                            .onReceive(Just(weight)) { newValue in
+                                let filtered = newValue.filter { "0123456789.".contains($0) }
+                                if filtered != newValue {
+                                    self.weight = filtered
+                                }
+                            }.frame(width: geo.size.width / 6, alignment: .leading)
+                        if metric {
+                            Text("kg")
+                                .foregroundColor(.gray)
+                                .padding()
+                                .opacity(0.6)
+                        } else {
+                            Text("lb")
+                                .foregroundColor(.gray)
+                                .padding()
+                                .opacity(0.6)
                         }
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(self.weight == "" ? borderColor : Color.green, lineWidth: 2))
+                        Spacer()
+                        
                     }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(self.weight == "" ? borderColor : Color.green, lineWidth: 2))
+                }
                 
                 Button(action: {
                     let waterIntake = ((Double(self.weight)!) / 100) * waterIntakeCalculator()
-                    registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, waterIntake: waterIntake )
+                    
+                    if appleLogStatus {
+                        appleUserRegister(email: email, name: name, height: height, weight: weight, metric: metric, waterIntake: waterIntake)
+                    } else {
+                        registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, waterIntake: waterIntake )
+                    }
                 }, label: {
                     Text("Register")
                 }).padding()
-                .buttonStyle(LoginButton())
-                }
-                }.padding(.horizontal)
+                    .buttonStyle(LoginButton())
+            }
+        }
+        .padding(.horizontal)
         
-                Spacer()
-     
+        .onAppear {
+            if appleLogStatus {
+                self.email = appleEmail
+                self.name = appleName
+            }
+        }
         
-        .alert(isPresented: self.$alert, content: {
-            Alert(title: Text("Error"), message: Text(self.error), dismissButton: .default(Text("OK")))
-        })
-
+        Spacer()
+        
+            .alert(isPresented: self.$alert, content: {
+                Alert(title: Text("Error"), message: Text(self.error), dismissButton: .default(Text("OK")))
+            })
+        
+    }
+    
+    func appleUserRegister(email: String, name: String, height: Double, weight: String, metric: Bool, waterIntake: Double ) {
+        
+        if (email != "" && name != "" && height != 0 && weight != "" ) {
+            
+            let weight: Double = Double(weight)!
+            print("appleUID: \(appleUID)")
+            UserDefaults.standard.set(appleUID, forKey: "userID")
+            userCreation.addUserInformation(name: name, weight: weight, height: height, userID: appleUID, metric: metric, waterIntake: waterIntake)
+            registerView = false
+        } else {
+            self.borderColor = Color.red
+        }
     }
     
     func registerUser(email: String, name: String, password: String, rePassword: String, height: Double, weight: String, metric: Bool, waterIntake: Double){
-                
+        
         if(email != "" && name != "" && password != "" && rePassword != "" && height != 0 && weight != "" ) {
             if(password == rePassword) {
                 let weight: Double = Double(weight)!
@@ -185,7 +218,6 @@ struct RegisterView: View {
             }
         } else {
             self.borderColor = Color.red
-            
         }
     }
     
@@ -199,7 +231,7 @@ struct RegisterView: View {
         }
         return waterIntakeCalculator
     }
-
+    
 }
 
 

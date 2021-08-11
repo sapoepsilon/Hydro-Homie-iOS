@@ -74,7 +74,7 @@ struct WaterView: View {
         GeometryReader { proxy in
             ZStack {
                 Cup()
-                    .stroke(colorScheme == .light ? Color.clear : Color.clear , lineWidth: 0.0025 * min(proxy.size.width, proxy.size.height))
+                    .stroke(colorScheme == .light ? Color.gray : Color.gray , lineWidth: 0.0025 * min(proxy.size.width, proxy.size.height))
                     .overlay(
                         backgroundColor
                             .clipShape(Cup())

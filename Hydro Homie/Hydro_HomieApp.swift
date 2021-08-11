@@ -8,15 +8,11 @@
     import SwiftUI
     import Firebase
     import UIKit
-    import CoreLocation
     
        @main
     struct Hydro_HomieApp: App {
-         init() {
-                setupAuthentication()
-        }
-        let context = PersistanceController.shared
-
+         
+        @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
         var body: some Scene {
             WindowGroup {
                 ContentView()
@@ -24,11 +20,12 @@
                 
             }
         }
-    }
-
-    extension Hydro_HomieApp {
-        private func setupAuthentication() {
-            FirebaseApp.configure()
+        
+        class AppDelegate: NSObject, UIApplicationDelegate {
+            func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+                FirebaseApp.configure()
+                return true
+            }
         }
     }
 

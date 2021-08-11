@@ -191,6 +191,7 @@ struct Dashboard: View {
                                                 self.currentHydrationDictionary = userDocument.previousDate(hydrationArray: self.currentHydrationDictionary)
                                                 offset.width = -89.5
                                                 offset.height = 0
+                                                
                                             } else if self.offset.width < -50 {
                                                 self.currentHydrationDictionary = userDocument.nextDate(hydrationArray: self.currentHydrationDictionary)
                                                 offset.width = 89.5
@@ -386,11 +387,13 @@ struct Dashboard: View {
     
     func currentWaterColor(colorScheme: ColorScheme) -> Color {
         var waterColor: Color = Color( red: 0, green: 0, blue: 0, opacity: 0)
-        if colorScheme == .light {
-            waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 1)
-        } else {
-            waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 1)
-        }
+    
+            if colorScheme == .light {
+                waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 1)
+            } else {
+                waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 1)
+            }
+        
         return waterColor
     }
     
