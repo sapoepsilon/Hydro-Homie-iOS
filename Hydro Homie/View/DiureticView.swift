@@ -45,7 +45,7 @@ struct DiureticView: View {
                 Color.gray.opacity(0.2)
                 VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
             }
-            ScrollView {
+            VStack {
                 if UIDevice.current.userInterfaceIdiom == .pad {
                     Spacer().frame(width: geometry.size.width, height: geometry.size.height / spacerAmount, alignment: .center)
                 }
@@ -105,13 +105,7 @@ struct DiureticView: View {
                 }
                 VStack {
                     if !isCoffee && !isAlcohol && !isCustomDrink && !showCustomDrink && !isCustomWater {
-                        if UIDevice.current.userInterfaceIdiom == .phone {
-                            if UIDevice().type == .iPhone8 {
-                                
-                            } else {
-                                
-                            }
-                        }
+                        
                             VStack {
                                 HStack {
                                     Image(colorScheme == .dark ? "waterDropDark" : "waterDrop")
@@ -404,48 +398,50 @@ struct DiureticView: View {
                 print("editIndent: \(editIndent)")
             }
             
-            ForEach(customDrinkDocument.customDrinks, id: \.self) { drink in
-                if drink.isCustomWater {
-                    HStack() {
+            Form {
+                ForEach(customDrinkDocument.customDrinks, id: \.self) { drink in
+                    if drink.isCustomWater {
+                        HStack() {
 
-                        Image(colorScheme == .dark ? "waterDropDark" : "waterDrop")
-                            .renderingMode(.template)
-                            .foregroundColor(colorScheme == .light ? .white : .white)
-                            .onTapGesture {
-                                cups += drink.amount
-                                isDiuretic = false
-                                popUp = false // close the .sheet and go back to the dashboard
+                            Image(colorScheme == .dark ? "waterDropDark" : "waterDrop")
+                                .renderingMode(.template)
+                                .foregroundColor(colorScheme == .light ? .white : .white)
+                                .onTapGesture {
+                                    cups += drink.amount
+                                    isDiuretic = false
+                                    popUp = false // close the .sheet and go back to the dashboard
+                                }
+                                .padding()
+                            
+                            Text(drink.name)
+                                .foregroundColor(colorScheme == .light ? .black : .white)
+                                .padding()
+                                .onTapGesture {
+                                    cups += drink.amount
+                                    isDiuretic = false
+                                    popUp = false // close the .sheet and go back to the dashboard
+                                }
+                                .frame(width: editIndent)
+                    
+                            let formattedFloat = String(format: "%.1f", drink.amount)
+                            Text(formattedFloat)
+                            
+                            Button(action: {
+                                customDrinkDocument.deleteCustomDrink(customDrink: drink)
+                            }, label: {
+                                Image(systemName: "minus.circle")
+                            }).opacity(isEdit ? 1 : 0)
+                            .foregroundColor(.red)
+                        }
+                        .onLongPressGesture {
+                            withAnimation {
+                                isEdit = true
                             }
-                            .padding()
-                        
-                        Text(drink.name)
-                            .foregroundColor(colorScheme == .light ? .black : .white)
-                            .padding()
-                            .onTapGesture {
-                                cups += drink.amount
-                                isDiuretic = false
-                                popUp = false // close the .sheet and go back to the dashboard
-                            }
-                            .frame(width: editIndent)
-                
-                        let formattedFloat = String(format: "%.1f", drink.amount)
-                        Text(formattedFloat)
-                        
-                        Button(action: {
-                            customDrinkDocument.deleteCustomDrink(customDrink: drink)
-                        }, label: {
-                            Image(systemName: "minus.circle")
-                        }).opacity(isEdit ? 1 : 0)
-                        .foregroundColor(.red)
-                    }
-                    .onLongPressGesture {
-                        withAnimation {
-                            isEdit = true
                         }
                     }
                 }
-            }
-        }.opacity(isCustomWater ? 1 : 0)
+            }.opacity(isCustomWater ? 1 : 0)
+        }
         
     }
     

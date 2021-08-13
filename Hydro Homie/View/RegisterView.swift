@@ -29,6 +29,11 @@ struct RegisterView: View {
     @State private var alert: Bool = false
     @State private var isCoffeeDrinker: Bool = false
     
+    @State private var fieldsWidth: CGFloat = UIScreen.main.bounds.width
+    @State private var registerViewWidth: CGFloat = 0.9
+    
+    @AppStorage ("appleFirestoreExists") var appleFireStoreExists: Bool = false
+
     @AppStorage ("log_status") var appleLogStatus = false
     @AppStorage ("appleName") var appleName: String = ""
     @AppStorage ("appleEmail") var appleEmail: String = ""
@@ -38,13 +43,13 @@ struct RegisterView: View {
     
     
     var body: some View {
-        GeometryReader{ geo in
+        GeometryReader { geo in
             ZStack {
                 Color.gray.opacity(0.4)
                 VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
             }
-            
-            VStack(spacing:0) {
+
+            ScrollView() {
                 ZStack{
                     Text("Register").font(.headline)
                         .bold()
@@ -59,7 +64,6 @@ struct RegisterView: View {
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.name == "" ? borderColor : Color.green, lineWidth: 2)
                         )
-                    
                     TextField("Email", text: self.$email)
                         .keyboardType(.emailAddress)
                         .padding()
@@ -137,7 +141,7 @@ struct RegisterView: View {
                                 if filtered != newValue {
                                     self.weight = filtered
                                 }
-                            }.frame(width: geo.size.width / 6, alignment: .leading)
+                            }
                         if metric {
                             Text("kg")
                                 .foregroundColor(.gray)
@@ -155,6 +159,7 @@ struct RegisterView: View {
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(self.weight == "" ? borderColor : Color.green, lineWidth: 2))
+                    
                 }
                 
                 Button(action: {
@@ -162,6 +167,7 @@ struct RegisterView: View {
                     
                     if appleLogStatus {
                         appleUserRegister(email: email, name: name, height: height, weight: weight, metric: metric, waterIntake: waterIntake)
+                        Dashboard = true
                     } else {
                         registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, waterIntake: waterIntake )
                     }
@@ -170,24 +176,45 @@ struct RegisterView: View {
                 }).padding()
                     .buttonStyle(LoginButton())
             }
+            .frame(width: fieldsWidth * registerViewWidth)
+            .position(x:viewPosition(geometry: geo).width,y: viewPosition(geometry: geo).height)
+
         }
-        .padding(.horizontal)
+
+      
         
         .onAppear {
             if appleLogStatus {
                 self.email = appleEmail
                 self.name = appleName
             }
+            
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                registerViewWidth = 0.6
+            }
         }
-        
-        Spacer()
-        
+     
             .alert(isPresented: self.$alert, content: {
                 Alert(title: Text("Error"), message: Text(self.error), dismissButton: .default(Text("OK")))
             })
         
+  
     }
+
     
+    func viewPosition(geometry: GeometryProxy) -> CGSize {
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            x = geometry.frame(in: .global).midX
+            y = geometry.frame(in: .global).midY
+            return CGSize(width: x, height: y)
+        } else {
+            y = geometry.frame(in: .global).midY / 2
+            x = geometry.frame(in: .global).midX * 0.7
+            return CGSize(width: x, height: y)
+        }
+    }
     func appleUserRegister(email: String, name: String, height: Double, weight: String, metric: Bool, waterIntake: Double ) {
         
         if (email != "" && name != "" && height != 0 && weight != "" ) {
@@ -196,7 +223,12 @@ struct RegisterView: View {
             print("appleUID: \(appleUID)")
             UserDefaults.standard.set(appleUID, forKey: "userID")
             userCreation.addUserInformation(name: name, weight: weight, height: height, userID: appleUID, metric: metric, waterIntake: waterIntake)
-            registerView = false
+            print("appleLogStatus before: \(appleLogStatus)")
+            print("appleFireStoreExists before: \(appleFireStoreExists)")
+            appleLogStatus = false
+            appleFireStoreExists = true
+            print("appleLogStatus after: \(appleLogStatus)")
+            print("appleFireStoreExists after: \(appleFireStoreExists)")
         } else {
             self.borderColor = Color.red
         }

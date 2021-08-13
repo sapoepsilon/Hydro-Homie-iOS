@@ -11,6 +11,7 @@ import Combine
 import CoreData
 import CoreLocation
 import AuthenticationServices
+import GoogleSignIn
 
 
 struct ContentView: View {
@@ -27,7 +28,7 @@ struct ContentView: View {
     @State private var registerView: Bool = false
     @State private var waterColor: Color = Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5)
     
-    
+
     @State  var waterBackgroundColor =  Color.clear
     @AppStorage ("log_status") var appleLogStatus = false
     @AppStorage ("appleFirestoreExists") var appleFireStoreExists: Bool = false
@@ -36,25 +37,28 @@ struct ContentView: View {
     @State private var backgroundColorBottom: Color = Color(red: 197/255, green: 197/255, blue: 237/255, opacity: 93/100)
     
     
-    
+    let signInConfig = GIDConfiguration(clientID: "862934440261-hcuq1d035rdqpbt26nuv82hlvoutqfsk.apps.googleusercontent.com")
+
     let timer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
     
     
-    
+
+
     var body: some View {
         GeometryReader { geomtry in
             if(user.loggedIn == false) {
                 ZStack {
                     LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
                         .edgesIgnoringSafeArea(.vertical)
-                    VStack(spacing: 5) {
+            
+                    ScrollView() {
                             Text("Hydro Homie")
                                 .foregroundColor(waterColor)
                                 .font(.system(size: geomtry.size.height * 0.09))
                             WaterView(factor: self.$timeRemaining, waterColor: self.$waterColor, backgroundColor: $waterBackgroundColor)
                                 .shadow(color: colorScheme == .light ? Color.black : Color.gray , radius: 6)
                                 .frame( height: UIScreen.main.bounds.height * 0.4, alignment: .center)
-                        
+
                         Spacer().frame(height: UIScreen.main.bounds.height * 0.005)
 
                             TextField("Username", text: self.$email)
@@ -85,19 +89,19 @@ struct ContentView: View {
                             }).alert(isPresented: self.$signIn, content: {
                                 Alert(title: Text("error"), message: Text(error.description), dismissButton: .default(Text("OK")))
                             })                                    .buttonStyle(LoginButton())
-                            
+
                             //MARK: Sign-in with Apple ID
-                            
+
                             SignInWithAppleButton(
                                 onRequest: { request in
                                     appleLoginData.nonce = randomNonceString()
                                     request.requestedScopes = [.email, .fullName]
                                     request.nonce = sha256(appleLoginData.nonce)
-                                    
-                                    
+
+
                                 },
                                 onCompletion: { result in
-                                    
+
                                     switch result {
                                     case .success(let user):
                                         guard let credential = user.credential as? ASAuthorizationAppleIDCredential else {
@@ -119,40 +123,45 @@ struct ContentView: View {
                             .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.height * 0.05)
                                                                 .clipShape(Capsule())
                             //                                    .padding(.horizontal, 30)
-                            
+
+
+                        Button(action: {
+                        }) {
+                            HStack {
+                                Image("googleSignLight")
+                                Text("Sign In")
+                            }
+                        }
                             Button(action: {
-                                
                                 registerView = true
                             }, label: {
                                 Text("Do not have an account? ")
-                            })
-                            
-                        
+                            })  .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.height * 0.05)
+                            .clipShape(Capsule())
+
+
                     }
-                    
+                    .sheet(isPresented: $registerView, content: {
+                        RegisterView(Dashboard: $user.loggedIn, registerView: self.$registerView)
+                            .environmentObject(UserRepository())
+                            
+                    })
                     .onAppear {
                         if colorScheme == .dark {
                             backgroundColorTop = Color(red: 63/255, green: 101/255, blue: 131/255, opacity: 51/100)
                             backgroundColorBottom = Color(red: 115/255, green: 116/255, blue: 117/255, opacity: 46/100)
                         }
-                        
+
                     }
                 }
+                
             } else {
                 Dashboard(userDocument: UserDocument(), backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
                     .environmentObject(HydrationDocument())
             }
             
         }
-
         
-        
-        .sheet(isPresented: self.$registerView, content: {
-            RegisterView(Dashboard: $user.loggedIn, registerView: self.$registerView)
-                .environmentObject(UserRepository())
-                .clearModalBackground()
-                .edgesIgnoringSafeArea(.bottom)
-        })
         .onChange(of: user.loggedIn, perform: {newValue in
             print("signIn \(signIn)")
             self.registerView = false
@@ -162,7 +171,7 @@ struct ContentView: View {
                 self.timeRemaining += 0.1
             }
         })
-        
+ 
         .onAppear{      
             if colorScheme == .dark {
                 waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 0.5)
@@ -179,6 +188,7 @@ struct ContentView: View {
             } else {
                 user.checkUser()
             }
+            
         }
     }
 }

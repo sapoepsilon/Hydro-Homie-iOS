@@ -161,15 +161,7 @@ class UserRepository: ObservableObject {
             print("Unable to Encode Note (\(error))")
         }
         // add the user information into UserDefaults
-        print("loggedIN: \(loggedIn)")
-        print("appleLogStatus before: \(appleLogStatus)")
-        print("appleFireStoreExists before: \(appleFireStoreExists)")
-        self.loggedIn = true
-        appleLogStatus = false
-        appleFireStoreExists = true
-        print("loggedIN: \(loggedIn)")
-        print("appleLogStatus after: \(appleLogStatus)")
-        print("appleFireStoreExists after: \(appleFireStoreExists)")
+
     }
     
 

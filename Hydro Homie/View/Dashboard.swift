@@ -11,7 +11,8 @@ import Firebase
 
 
 struct Dashboard: View {
-    
+    private var idiom : UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
+
 
     @EnvironmentObject var hydration: HydrationDocument
     @EnvironmentObject var user: UserRepository
@@ -166,7 +167,6 @@ struct Dashboard: View {
                                 .gesture(
                                     DragGesture()
                                         .onChanged { gesture in
-                                            print ( gesture.translation.height / 3)
 
                                             //if the user long presses change the water level, else show the context menu
                                             if waterScaleEffect == 1 {
@@ -271,6 +271,7 @@ struct Dashboard: View {
                             }
                         }
                 }
+                
             })
             .navigationViewStyle(StackNavigationViewStyle())
 
@@ -309,14 +310,7 @@ struct Dashboard: View {
                 volumeMetric = "ml"
             }
         })
-//        .sheet(isPresented: $popUp, content: {
-//            PopUp(active: $popUp, cups: $cups, waterColor: $waterColor, isMetric: self.$isMetric, isCustomWater: $isCustomWater, isAlcoholConsumed: self.$isAlcoholConsumed, percentageOfAlcohol: self.$percentageOfAlcohol, percentageOfEachAlcohol: self.$percentageOfEachAlcohol, amountOfEachAlcohol: self.$amountOfEachAlcohol, amountOfAccumulatedAlcohol: self.$amountOfEachAlcohol, backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
-//                .environmentObject(user)
-//                .environmentObject(userDocument)
-////                .font(.title)
-//                .clearModalBackground()
-////                .edgesIgnoringSafeArea(.bottom)
-//        })
+
         .sheet(isPresented: $popUp, content: {
             PopUp(active: $popUp, cups: $cups, waterColor: $waterColor, isMetric: $isMetric, isCustomWater: $isCustomWater, backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isAlcoholConsumed: $isAlcoholConsumed, percentageOfAlcohol: $percentageOfAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol)
                 .environmentObject(user)
@@ -324,11 +318,13 @@ struct Dashboard: View {
                 .clearModalBackground()
                 .edgesIgnoringSafeArea(.bottom)
         })
-        .sheet(isPresented: $isDiuretic, content: {
+  
+        .halfASheet(isPresented: $isDiuretic, content: {
             DiureticView(cups: $cups, customDrinkDocument: CustomDrinkViewModel(), waterColor: $waterColor, isCustomWater: $isCustomWater, isMetric: $isMetric, isDiuretic: $isDiuretic, popUp: $popUp, isAlcoholConsumed: $isAlcoholConsumed, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol)
                 .clearModalBackground()
                 .edgesIgnoringSafeArea(.bottom)
         })
+  
         .onChange(of: self.currentHydrationDictionary, perform: { newValue in
             for (date,_) in currentHydrationDictionary {
                 self.hydrationDate = date
