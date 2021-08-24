@@ -29,16 +29,21 @@ struct RegisterView: View {
     @State private var alert: Bool = false
     @State private var isCoffeeDrinker: Bool = false
     
+    @State private var isCoffeeMessage: Bool = false
+    
     @State private var fieldsWidth: CGFloat = UIScreen.main.bounds.width
     @State private var registerViewWidth: CGFloat = 0.9
     
+    @State var fieldFocus = [false, true, false, false]
+    @State private var  isSecureField = true
+    
     @AppStorage ("appleFirestoreExists") var appleFireStoreExists: Bool = false
-
+    
     @AppStorage ("log_status") var appleLogStatus = false
     @AppStorage ("appleName") var appleName: String = ""
     @AppStorage ("appleEmail") var appleEmail: String = ""
     @AppStorage ("appleUID") var appleUID: String = ""
-
+    
     @EnvironmentObject var userCreation: UserRepository
     
     
@@ -48,42 +53,65 @@ struct RegisterView: View {
                 Color.gray.opacity(0.4)
                 VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
             }
-
-            ScrollView() {
+            
+            VStack {
                 ZStack{
                     Text("Register").font(.headline)
                         .bold()
-                        .padding()
+                      
                 }
                 VStack{
-                    
-                    TextField("Name", text: self.$name)
-                        .keyboardType(.emailAddress)
+                    SATextField(tag: 0, placeholder: "Name", changeHandler: { (name) in
+                        self.name = name
+                    }, onCommitHandler: {
+                        print("commit handler")
+                    })
                         .padding()
+                        .keyboardType(.default)
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.name == "" ? borderColor : Color.green, lineWidth: 2)
                         )
-                    TextField("Email", text: self.$email)
+                        .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
+
+                    SATextField(tag: 1, placeholder: "E-mail", changeHandler: { (email) in
+                        self.email = email
+                    }, onCommitHandler: {
+                        print("commit handler")
+                    })   .padding()
+                        .fixedSize(horizontal: false, vertical: true)
                         .keyboardType(.emailAddress)
-                        .padding()
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
                         )
+                        .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
+
                     if !appleLogStatus {
-                        SecureField("Password", text: self.$password)
+                        SATextField(tag: 2, placeholder: "Password", changeHandler: {(password) in
+                            self.password = password
+                        }, isSecureTextEntry: $isSecureField, onCommitHandler: {
+                            print("commit handler")
+                        })
                             .padding()
+                            .fixedSize(horizontal: false, vertical: true)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 16)
                                     .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2)
                             )
-                        SecureField("Password Match", text: self.$passwordMatch)
+                            .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
+                        SATextField(tag: 3, placeholder: "Re-type password", changeHandler: { (pass) in
+                            self.passwordMatch = pass
+                        }, isSecureTextEntry: $isSecureField, onCommitHandler: {
+                            print("commit handler")
+                        })
                             .padding()
+                            .fixedSize(horizontal: false, vertical: true)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 16)
                                     .stroke(self.passwordMatch == "" ? borderColor : Color.green, lineWidth: 2)
                             )
+                            .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                     }
                     Section{
                         
@@ -160,28 +188,43 @@ struct RegisterView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(self.weight == "" ? borderColor : Color.green, lineWidth: 2))
                     
+                    
+                    HStack() {
+                        Toggle("Are you a coffee Drinker? ", isOn: $isCoffeeDrinker)
+                            .foregroundColor(.gray)
+                            .padding()
+                        Button(action: {
+                            self.isCoffeeMessage = true
+                        }, label: {
+                            Image(systemName: "info")
+                        }).padding()
+                    }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(self.weight == "" ? borderColor : Color.green, lineWidth: 2))
+                    
                 }
                 
+                
                 Button(action: {
-                    let waterIntake = ((Double(self.weight)!) / 100) * waterIntakeCalculator()
+                    let waterIntake = ((Double(self.weight) ?? 0) / 100) * waterIntakeCalculator()
                     
                     if appleLogStatus {
-                        appleUserRegister(email: email, name: name, height: height, weight: weight, metric: metric, waterIntake: waterIntake)
+                        appleUserRegister(email: email, name: name, height: height, weight: weight, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake)
                         Dashboard = true
                     } else {
-                        registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, waterIntake: waterIntake )
+                        registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, isCoffeeDrinker: self.isCoffeeDrinker, waterIntake: waterIntake )
                     }
                 }, label: {
                     Text("Register")
                 }).padding()
-                    .buttonStyle(LoginButton())
+                .buttonStyle(LoginButton())
             }
-            .frame(width: fieldsWidth * registerViewWidth)
-            .position(x:viewPosition(geometry: geo).width,y: viewPosition(geometry: geo).height)
-
+        
+            
         }
-
-      
+        
+        
         
         .onAppear {
             if appleLogStatus {
@@ -193,14 +236,17 @@ struct RegisterView: View {
                 registerViewWidth = 0.6
             }
         }
-     
-            .alert(isPresented: self.$alert, content: {
-                Alert(title: Text("Error"), message: Text(self.error), dismissButton: .default(Text("OK")))
-            })
         
-  
+        .alert(isPresented: self.$alert, content: {
+            Alert(title: Text("Error"), message: Text(self.error), dismissButton: .default(Text("OK")))
+        })
+        .alert(isPresented: self.$isCoffeeMessage, content: {
+            Alert(title: Text("Coffee drinker"), message: Text("Do you consume 2 or more cups of coffeinated drinks per day?"), dismissButton: .default(Text("Ok")))
+        })
+        
+        
     }
-
+    
     
     func viewPosition(geometry: GeometryProxy) -> CGSize {
         var x: CGFloat = 0
@@ -210,19 +256,19 @@ struct RegisterView: View {
             y = geometry.frame(in: .global).midY
             return CGSize(width: x, height: y)
         } else {
-            y = geometry.frame(in: .global).midY / 2
+            y = geometry.frame(in: .global).midY / 1.3
             x = geometry.frame(in: .global).midX * 0.7
             return CGSize(width: x, height: y)
         }
     }
-    func appleUserRegister(email: String, name: String, height: Double, weight: String, metric: Bool, waterIntake: Double ) {
+    func appleUserRegister(email: String, name: String, height: Double, weight: String, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double ) {
         
         if (email != "" && name != "" && height != 0 && weight != "" ) {
             
             let weight: Double = Double(weight)!
             print("appleUID: \(appleUID)")
             UserDefaults.standard.set(appleUID, forKey: "userID")
-            userCreation.addUserInformation(name: name, weight: weight, height: height, userID: appleUID, metric: metric, waterIntake: waterIntake)
+            userCreation.addUserInformation(name: name, weight: weight, height: height, userID: appleUID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake)
             print("appleLogStatus before: \(appleLogStatus)")
             print("appleFireStoreExists before: \(appleFireStoreExists)")
             appleLogStatus = false
@@ -234,12 +280,12 @@ struct RegisterView: View {
         }
     }
     
-    func registerUser(email: String, name: String, password: String, rePassword: String, height: Double, weight: String, metric: Bool, waterIntake: Double){
+    func registerUser(email: String, name: String, password: String, rePassword: String, height: Double, weight: String, metric: Bool,isCoffeeDrinker: Bool, waterIntake: Double){
         
         if(email != "" && name != "" && password != "" && rePassword != "" && height != 0 && weight != "" ) {
             if(password == rePassword) {
                 let weight: Double = Double(weight)!
-                userCreation.signUpUser(email: email, password: password, name: name, weight: weight, height: height, metric: metric, waterIntake: waterIntake, onSucces: {
+                userCreation.signUpUser(email: email, password: password, name: name, weight: weight, height: height, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, onSucces: {
                 }, onError: {error in
                     self.error = error.description
                     self.alert = true

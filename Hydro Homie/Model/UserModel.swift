@@ -11,7 +11,8 @@ struct User: Encodable {
     var height: Int
     var weight: Double
     var metric: Bool
+    var isCoffeeDrinker: Bool
     var waterIntake: Double
-    var hydration: [[String: Int]]
+    var hydration: [[String: Double]]
 }
 

@@ -10,6 +10,13 @@ import Firebase
 
 class CustomDrinkViewModel: ObservableObject {
     
+    
+    //Quick drink menu  variables
+    @Published var drinkOpacity: Double = 0
+    @Published var coffeeOpacity: Double = 0
+    @Published var waterOpacity: Double = 0
+    @Published var alcoholOpacity: Double = 0
+    
     let db = Firestore.firestore()
     let today = Date()
     @ObservedObject var hydrationDocument = HydrationDocument()
@@ -29,7 +36,7 @@ class CustomDrinkViewModel: ObservableObject {
         "caffeineAmount": 0
     ]]
     init() {
-        getAllDrinks()
+        self.getAllDrinks()
     }
     
     func deleteCustomDrink(customDrink: CustomDrinkModel) {
@@ -38,6 +45,9 @@ class CustomDrinkViewModel: ObservableObject {
         let deletingDrinkID: Int = customDrink.matchingID(matching: customDrink, array: customDrinks)! // fix from the force unwrap to proper Int
         //1. delete it from the published array
         self.customDrinks.remove(at: deletingDrinkID)
+        self.drinksArray.remove(at: deletingDrinkID)
+        getDrinkOpacity()
+
         //2. Create a dictionary with the fields of the published array.
         var drinkDictionaryArray: [[String:Any]] = []
         
@@ -85,6 +95,7 @@ class CustomDrinkViewModel: ObservableObject {
     }
     
     func addCustomDrink(newCustomDrink: CustomDrinkModel) -> String {
+        
         let customDrinkDictionary: [String:Any] = [
             "id": newCustomDrink.id,
             "name": newCustomDrink.name,
@@ -97,6 +108,8 @@ class CustomDrinkViewModel: ObservableObject {
             "caffeineAmount": newCustomDrink.caffeineAmount
         ]
         var Error: String = "Written successfully"
+        print("customDrink Dictionary values\(customDrinkDictionary.debugDescription)")
+        
         db.collection("users").document("customDrinks\(self.hydrationDocument.userID())").setData([
                 "customDrinks": FieldValue.arrayUnion([
                     customDrinkDictionary
@@ -121,6 +134,8 @@ class CustomDrinkViewModel: ObservableObject {
                                // if the array had any variables stored beforehand, than adding more and storing in userdefaults
                                if drinksArray != [] {
                                    drinksArray.append(newCustomDrink)
+                                self.customDrinks.append(newCustomDrink)
+
                                    let enodedArray = try encoder.encode(drinksArray) //encoding the arrau
                                    UserDefaults.standard.set(1, forKey: "fetchCustomDrink") // seting to false, so the user won't connect to the Firebase
                                    UserDefaults.standard.set(enodedArray, forKey: "customDrinksArray") //setting the customDrink array
@@ -137,14 +152,16 @@ class CustomDrinkViewModel: ObservableObject {
                        }
                        //get the array with the current drinks
                        // Encode Note
-                   } catch {
-                       print("Unable to Encode Note (\(error))")
-                       UserDefaults.standard.set(1, forKey: "fetchCustomDrink") // seting to true, so the user will fetch the data from the firebase
                    }
-                   print("Document successfully written!")
+              
+                print("Document successfully written!")
+
                }
             }
-        
+//        print("custom Drinks array: \(self.customDrinks)")
+//        print("local Drinks array: \(self.drinksArray)")
+        self.getDrinkOpacity()
+        self.getAllDrinks()
         return Error
     }
     
@@ -224,5 +241,33 @@ class CustomDrinkViewModel: ObservableObject {
             fetchFromServer()
         }
     }
+    
+func getDrinkOpacity() {
+        
+        var waterOpacity: Double = 0
+        var coffeeOpacity: Double = 0
+        var alcoholOpacity: Double = 0
+        var drinkOpacity: Double = 0
+        
+//        print("getting data from getDrinkOpacity function \(drinksArray.debugDescription)")
+        for drink in self.drinksArray {
+            if drink.isCustomWater {
+                waterOpacity = 1
+                drinkOpacity = 1
+            } else if drink.isAlcohol {
+                alcoholOpacity = 1
+                drinkOpacity = 1
+            } else if drink.isCaffeine {
+                coffeeOpacity = 1
+                drinkOpacity = 1
+            }
+        }
+       
+        self.waterOpacity = waterOpacity
+        self.drinkOpacity = drinkOpacity
+        self.alcoholOpacity = alcoholOpacity
+        self.coffeeOpacity = coffeeOpacity
+    }
+    
 }
 

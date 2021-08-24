@@ -42,26 +42,14 @@
 		99B09B472682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 99B09B422682641800C15A14 /* WaterViewWidget.intentdefinition */; };
 		99B09B4A2682641900C15A14 /* WaterViewWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		99B09B4E2682642500C15A14 /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AEBF9266D752300FAD0CB /* WaterView.swift */; };
+		99B63EA326D2FDFD0099FB2A /* NotificationTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B63EA226D2FDFD0099FB2A /* NotificationTimer.swift */; };
+		99B63EA826D308BE0099FB2A /* NotificationTimerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B63EA726D308BE0099FB2A /* NotificationTimerModel.swift */; };
 		99C86513268ADCBA006B4802 /* DiureticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C86512268ADCBA006B4802 /* DiureticView.swift */; };
 		99D60B83267124D600EE106B /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B82267124D600EE106B /* UserModel.swift */; };
 		99D60B852671255D00EE106B /* UserDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B842671255D00EE106B /* UserDocument.swift */; };
 		99DE64D7266DBF1D0017015A /* Hydration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64D6266DBF1D0017015A /* Hydration.swift */; };
 		99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64D9266DC4510017015A /* HydrationDocument.swift */; };
 		99DE64DC266E7C8A0017015A /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64DB266E7C8A0017015A /* RegisterView.swift */; };
-		99E8758726B22BEC009AAED9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8758626B22BEC009AAED9 /* ContentView.swift */; };
-		99E8758926B22BEC009AAED9 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8758826B22BEC009AAED9 /* NotificationController.swift */; };
-		99E8758B26B22BEC009AAED9 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8758A26B22BEC009AAED9 /* NotificationView.swift */; };
-		99E8758D26B22BEC009AAED9 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8758C26B22BEC009AAED9 /* ComplicationController.swift */; };
-		99E8758F26B22BEC009AAED9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99E8758E26B22BEC009AAED9 /* Assets.xcassets */; };
-		99E8759226B22BEC009AAED9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99E8759126B22BEC009AAED9 /* Preview Assets.xcassets */; };
-		99E8759F26B22DAE009AAED9 /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AEBF9266D752300FAD0CB /* WaterView.swift */; };
-		99E875A126B22DAE009AAED9 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B82267124D600EE106B /* UserModel.swift */; };
-		99E875A226B22DAE009AAED9 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9970190B2689064E007F2935 /* LocationService.swift */; };
-		99E875A326B22DAE009AAED9 /* AlcoholTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992B733826A7B9050012E34E /* AlcoholTimer.swift */; };
-		99E875A626B22DAE009AAED9 /* TimerBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992B733A26A7C51A0012E34E /* TimerBackground.swift */; };
-		99E875AA26B22DAE009AAED9 /* PreciseControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997DC07F268926210018F557 /* PreciseControl.swift */; };
-		99E875AB26B22DAE009AAED9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D02637955500672D2E /* Assets.xcassets */; };
-		99E875AC26B22DAE009AAED9 /* CustomDrinkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99234678269A8B9400785C7E /* CustomDrinkModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,7 +95,6 @@
 
 /* Begin PBXFileReference section */
 		991C48A926C1EF9F002A4D10 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		991ED8A5267A902100AE129A /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
 		99234678269A8B9400785C7E /* CustomDrinkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrinkModel.swift; sourceTree = "<group>"; };
 		9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrinkViewModel.swift; sourceTree = "<group>"; };
 		992B733826A7B9050012E34E /* AlcoholTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlcoholTimer.swift; sourceTree = "<group>"; };
@@ -125,6 +112,7 @@
 		9965D7D02637955500672D2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9965D7D32637955500672D2E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9965D7D52637955500672D2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9968227826CDC7AA00C144B6 /* Background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Background.swift; sourceTree = "<group>"; };
 		9970190B2689064E007F2935 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		997DC07F268926210018F557 /* PreciseControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreciseControl.swift; sourceTree = "<group>"; };
 		99ACBA1626816BFD0005A151 /* ActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionView.swift; sourceTree = "<group>"; };
@@ -136,6 +124,8 @@
 		99B09B422682641800C15A14 /* WaterViewWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WaterViewWidget.intentdefinition; sourceTree = "<group>"; };
 		99B09B432682641900C15A14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		99B09B452682641900C15A14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		99B63EA226D2FDFD0099FB2A /* NotificationTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTimer.swift; sourceTree = "<group>"; };
+		99B63EA726D308BE0099FB2A /* NotificationTimerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTimerModel.swift; sourceTree = "<group>"; };
 		99C86512268ADCBA006B4802 /* DiureticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticView.swift; sourceTree = "<group>"; };
 		99D60B82267124D600EE106B /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		99D60B842671255D00EE106B /* UserDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDocument.swift; sourceTree = "<group>"; };
@@ -143,16 +133,6 @@
 		99DE64D9266DC4510017015A /* HydrationDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationDocument.swift; sourceTree = "<group>"; };
 		99DE64DB266E7C8A0017015A /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RegisterView.swift; path = "Hydro Homie/View/RegisterView.swift"; sourceTree = SOURCE_ROOT; };
 		99E786CF2639131100D13EC5 /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
-		99E8757926B22BEC009AAED9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		99E8757F26B22BEC009AAED9 /* Watch Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Watch Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		99E8758626B22BEC009AAED9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		99E8758826B22BEC009AAED9 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
-		99E8758A26B22BEC009AAED9 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
-		99E8758C26B22BEC009AAED9 /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
-		99E8758E26B22BEC009AAED9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		99E8759126B22BEC009AAED9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		99E8759326B22BEC009AAED9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		99E8759426B22BEC009AAED9 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,7 +141,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				994F8617268293FF00E38099 /* SwiftUICharts in Frameworks */,
-				9946C62E26C370B200FF8846 /* GoogleSignIn in Frameworks */,
 				99023361268248A200FACE04 /* FirebaseAuth in Frameworks */,
 				99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */,
 			);
@@ -173,13 +152,6 @@
 			files = (
 				99B09B3E2682641800C15A14 /* SwiftUI.framework in Frameworks */,
 				99B09B3D2682641800C15A14 /* WidgetKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		99E8757C26B22BEC009AAED9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +172,6 @@
 			isa = PBXGroup;
 			children = (
 				994096BC266D4BFE00830829 /* UserRepository.swift */,
-				991ED8A5267A902100AE129A /* Persistance.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -229,8 +200,6 @@
 			children = (
 				9965D7CB2637955400672D2E /* Hydro Homie */,
 				99B09B3F2682641800C15A14 /* WaterViewWidget */,
-				99E8757826B22BEB009AAED9 /* Watch */,
-				99E8758326B22BEC009AAED9 /* Watch Extension */,
 				9965D7CA2637955400672D2E /* Products */,
 				43B8B21D244BCAFEC6E430A9 /* Frameworks */,
 			);
@@ -241,7 +210,6 @@
 			children = (
 				9965D7C92637955400672D2E /* Hydro Homie.app */,
 				99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */,
-				99E8757F26B22BEC009AAED9 /* Watch Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -285,6 +253,8 @@
 				99AEA095268CF9BE004BD12D /* CustomDrink.swift */,
 				9936A33E269A40FD006FAF41 /* Extensions.swift */,
 				992B733826A7B9050012E34E /* AlcoholTimer.swift */,
+				9968227826CDC7AA00C144B6 /* Background.swift */,
+				99B63EA226D2FDFD0099FB2A /* NotificationTimer.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -308,39 +278,9 @@
 				9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */,
 				992B733A26A7C51A0012E34E /* TimerBackground.swift */,
 				9946C62926C36FF500FF8846 /* AuthenticationViewModel.swift */,
+				99B63EA726D308BE0099FB2A /* NotificationTimerModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		99E8757826B22BEB009AAED9 /* Watch */ = {
-			isa = PBXGroup;
-			children = (
-				99E8757926B22BEC009AAED9 /* Assets.xcassets */,
-			);
-			path = Watch;
-			sourceTree = "<group>";
-		};
-		99E8758326B22BEC009AAED9 /* Watch Extension */ = {
-			isa = PBXGroup;
-			children = (
-				99E8758626B22BEC009AAED9 /* ContentView.swift */,
-				99E8758826B22BEC009AAED9 /* NotificationController.swift */,
-				99E8758A26B22BEC009AAED9 /* NotificationView.swift */,
-				99E8758C26B22BEC009AAED9 /* ComplicationController.swift */,
-				99E8758E26B22BEC009AAED9 /* Assets.xcassets */,
-				99E8759326B22BEC009AAED9 /* Info.plist */,
-				99E8759426B22BEC009AAED9 /* PushNotificationPayload.apns */,
-				99E8759026B22BEC009AAED9 /* Preview Content */,
-			);
-			path = "Watch Extension";
-			sourceTree = "<group>";
-		};
-		99E8759026B22BEC009AAED9 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				99E8759126B22BEC009AAED9 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -366,7 +306,6 @@
 				99023360268248A200FACE04 /* FirebaseAuth */,
 				99023362268248A200FACE04 /* FirebaseFirestore */,
 				994F8616268293FF00E38099 /* SwiftUICharts */,
-				9946C62D26C370B200FF8846 /* GoogleSignIn */,
 			);
 			productName = "Hydro Homie";
 			productReference = 9965D7C92637955400672D2E /* Hydro Homie.app */;
@@ -389,23 +328,6 @@
 			productReference = 99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		99E8757E26B22BEC009AAED9 /* Watch Extension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 99E8759826B22BEC009AAED9 /* Build configuration list for PBXNativeTarget "Watch Extension" */;
-			buildPhases = (
-				99E8757B26B22BEC009AAED9 /* Sources */,
-				99E8757C26B22BEC009AAED9 /* Frameworks */,
-				99E8757D26B22BEC009AAED9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Watch Extension";
-			productName = "Watch Extension";
-			productReference = 99E8757F26B22BEC009AAED9 /* Watch Extension.appex */;
-			productType = "com.apple.product-type.watchkit2-extension";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -413,16 +335,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					9965D7C82637955400672D2E = {
 						CreatedOnToolsVersion = 12.4;
 					};
 					99B09B3B2682641800C15A14 = {
 						CreatedOnToolsVersion = 12.5;
-					};
-					99E8757E26B22BEC009AAED9 = {
-						CreatedOnToolsVersion = 13.0;
 					};
 				};
 			};
@@ -439,7 +358,6 @@
 			packageReferences = (
 				9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				994F8615268293FF00E38099 /* XCRemoteSwiftPackageReference "ChartView" */,
-				9946C62C26C370B200FF8846 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = 9965D7CA2637955400672D2E /* Products */;
 			projectDirPath = "";
@@ -453,7 +371,6 @@
 			targets = (
 				9965D7C82637955400672D2E /* Hydro Homie */,
 				99B09B3B2682641800C15A14 /* WaterViewWidgetExtension */,
-				99E8757E26B22BEC009AAED9 /* Watch Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -488,17 +405,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		99E8757D26B22BEC009AAED9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				99E8759226B22BEC009AAED9 /* Preview Assets.xcassets in Resources */,
-				991C48AC26C1EF9F002A4D10 /* GoogleService-Info.plist in Resources */,
-				99E875AB26B22DAE009AAED9 /* Assets.xcassets in Resources */,
-				99E8758F26B22BEC009AAED9 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -515,12 +421,13 @@
 				997DC080268926210018F557 /* PreciseControl.swift in Sources */,
 				994096BD266D4BFE00830829 /* UserRepository.swift in Sources */,
 				99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */,
-				991ED8A6267A902100AE129A /* Persistance.swift in Sources */,
 				99088D0826B223470091339F /* Dashboard.swift in Sources */,
 				9946C62A26C36FF500FF8846 /* AuthenticationViewModel.swift in Sources */,
 				99D60B852671255D00EE106B /* UserDocument.swift in Sources */,
 				99B09B472682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */,
 				995D4110266EFC5600916F5C /* HeightPicker.swift in Sources */,
+				99B63EA326D2FDFD0099FB2A /* NotificationTimer.swift in Sources */,
+				9968227926CDC7AA00C144B6 /* Background.swift in Sources */,
 				992B733926A7B9050012E34E /* AlcoholTimer.swift in Sources */,
 				9970190C2689064E007F2935 /* LocationService.swift in Sources */,
 				995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */,
@@ -528,6 +435,7 @@
 				9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */,
 				99D60B83267124D600EE106B /* UserModel.swift in Sources */,
 				9923467B269A8BEC00785C7E /* CustomDrinkViewModel.swift in Sources */,
+				99B63EA826D308BE0099FB2A /* NotificationTimerModel.swift in Sources */,
 				994F86142682822A00E38099 /* BarChart.swift in Sources */,
 				99DE64D7266DBF1D0017015A /* Hydration.swift in Sources */,
 				99C86513268ADCBA006B4802 /* DiureticView.swift in Sources */,
@@ -541,24 +449,6 @@
 				99B09B462682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */,
 				99B09B4E2682642500C15A14 /* WaterView.swift in Sources */,
 				99B09B412682641800C15A14 /* WaterViewWidget.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		99E8757B26B22BEC009AAED9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				99E8758926B22BEC009AAED9 /* NotificationController.swift in Sources */,
-				99E875A126B22DAE009AAED9 /* UserModel.swift in Sources */,
-				99E875A226B22DAE009AAED9 /* LocationService.swift in Sources */,
-				99E875AC26B22DAE009AAED9 /* CustomDrinkModel.swift in Sources */,
-				99E875A626B22DAE009AAED9 /* TimerBackground.swift in Sources */,
-				99E8758726B22BEC009AAED9 /* ContentView.swift in Sources */,
-				99E875A326B22DAE009AAED9 /* AlcoholTimer.swift in Sources */,
-				99E8758D26B22BEC009AAED9 /* ComplicationController.swift in Sources */,
-				99E875AA26B22DAE009AAED9 /* PreciseControl.swift in Sources */,
-				99E8758B26B22BEC009AAED9 /* NotificationView.swift in Sources */,
-				99E8759F26B22DAE009AAED9 /* WaterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -577,6 +467,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -613,7 +504,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -631,6 +522,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Debug;
 		};
@@ -638,6 +530,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -682,6 +575,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -695,6 +589,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "Hydro Homie/Hydro Homie.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -721,6 +616,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "Hydro Homie/Hydro Homie.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -787,70 +683,6 @@
 			};
 			name = Release;
 		};
-		99E8759926B22BEC009AAED9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Watch Extension/Preview Content\"";
-				DEVELOPMENT_TEAM = NK28QT38A3;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Watch Extension/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Watch Extension";
-				INFOPLIST_KEY_CLKComplicationPrincipalClass = "$(PRODUCT_MODULE_NAME).ComplicationController";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie.watchkitapp.watchkitextension";
-				PRODUCT_NAME = "${TARGET_NAME}";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 8.0;
-			};
-			name = Debug;
-		};
-		99E8759A26B22BEC009AAED9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Watch Extension/Preview Content\"";
-				DEVELOPMENT_TEAM = NK28QT38A3;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Watch Extension/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Watch Extension";
-				INFOPLIST_KEY_CLKComplicationPrincipalClass = "$(PRODUCT_MODULE_NAME).ComplicationController";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie.watchkitapp.watchkitextension";
-				PRODUCT_NAME = "${TARGET_NAME}";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 8.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -881,15 +713,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		99E8759826B22BEC009AAED9 /* Build configuration list for PBXNativeTarget "Watch Extension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				99E8759926B22BEC009AAED9 /* Debug */,
-				99E8759A26B22BEC009AAED9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -899,14 +722,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 8.1.1;
-			};
-		};
-		9946C62C26C370B200FF8846 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.0.1;
 			};
 		};
 		994F8615268293FF00E38099 /* XCRemoteSwiftPackageReference "ChartView" */ = {
@@ -929,11 +744,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
-		};
-		9946C62D26C370B200FF8846 /* GoogleSignIn */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9946C62C26C370B200FF8846 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
-			productName = GoogleSignIn;
 		};
 		994F8616268293FF00E38099 /* SwiftUICharts */ = {
 			isa = XCSwiftPackageProductDependency;

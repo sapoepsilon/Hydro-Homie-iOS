@@ -1,19 +1,15 @@
 //
-//  TimerBackground.swift
-//  TimerBackground
+//  NotificationTimerModel.swift
+//  Hydro Homie
 //
-//  Created by Ismatulla Mansurov on 7/20/21.
+//  Created by Ismatulla Mansurov on 8/22/21.
 //
 
 import Foundation
 
+var notificationTimerdisabledWhenNotActive = false
 
-import Foundation
-
-
-var kDisableTimerWhenAppIsNotActive = false
-
-class TimerViewModel: ObservableObject {
+class NotificationTimerViewModel: ObservableObject {
 
     private enum SLTimerMode {
         case stopped
@@ -26,20 +22,27 @@ class TimerViewModel: ObservableObject {
     // these are internals of the timer.  when did it last start; when did it last
     // shut down; what state is it in; and how much time had it accumulated before
     // it last started up.
-    private var previouslyAccumulatedTime: TimeInterval = 14400
+    private var previouslyAccumulatedTime: TimeInterval = 0.0
     private var startDate: Date? = nil
     private var lastStopDate: Date? = nil
     private var state: SLTimerMode = .stopped
-            
+    private var timerInterval: TimeInterval?
+ 
     // this is what people need to see: its accumulated time, which is the sum of
     // any accumulated time plus any current run time.  it gets updated by the timer
     // while running every second, which causes a subscriber to see the update.
-    @Published var totalAccumulatedTime: TimeInterval = 14400
+    @Published var totalAccumulatedTime: TimeInterval = 0
 
     // now we let people ask us questions or tell us to do things
     var isSuspended: Bool { return state == .suspended }
     var isRunning: Bool { return state == .running }
     var isStopped: Bool { return state == .stopped }
+    
+    func defineTimeInterval(timeInterval: TimeInterval) {
+        self.previouslyAccumulatedTime = timeInterval
+        self.totalAccumulatedTime = timeInterval
+        self.timerInterval = timeInterval
+    }
 
     private func shutdownTimer() {
         // how long we've been in the .running state
@@ -99,10 +102,9 @@ class TimerViewModel: ObservableObject {
     func reset() {
         guard state == .stopped else { return }
         previouslyAccumulatedTime = 0
-        totalAccumulatedTime = 14400
+        totalAccumulatedTime = timerInterval ?? 120
     }
     
 }
 
-// global timer variable
-var timerBackground = TimerViewModel()
+var notificationTimeInterval = NotificationTimerViewModel()

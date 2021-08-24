@@ -52,7 +52,7 @@ class UserRepository: ObservableObject {
                 }
         }
     }
-    func signUpUser(email: String, password: String, name: String, weight: Double, height: Double, metric: Bool, waterIntake: Double, onSucces: @escaping() -> Void, onError: @escaping (_ errorMessage : String) -> Void ) {
+    func signUpUser(email: String, password: String, name: String, weight: Double, height: Double, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double, onSucces: @escaping() -> Void, onError: @escaping (_ errorMessage : String) -> Void ) {
     
             Auth.auth().createUser(withEmail: email, password: password) { [self](authData, error) in
         
@@ -65,7 +65,7 @@ class UserRepository: ObservableObject {
                     print(self.userID)
                     UserDefaults.standard.set(self.userID, forKey: "userID")
 
-                    addUserInformation(name: name, weight: weight, height: height, userID: self.userID, metric: metric, waterIntake: waterIntake)
+                    addUserInformation(name: name, weight: weight, height: height, userID: self.userID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake)
                 }
             }
     }
@@ -128,7 +128,7 @@ class UserRepository: ObservableObject {
        try! Auth.auth().signOut()
     }
     
-    func addUserInformation(name: String, weight: Double, height: Double, userID: String, metric: Bool, waterIntake: Double) {
+    func addUserInformation(name: String, weight: Double, height: Double, userID: String, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double) {
         
         print("userID before adding it \(userID)")
         
@@ -144,7 +144,7 @@ class UserRepository: ObservableObject {
         } 
         
         //MARK: USERDEFAULTS: user infromation
-        let userInfo: User = User(name: name, height: Int(height), weight: weight, metric: metric, waterIntake: waterIntake, hydration: [])
+        let userInfo: User = User(name: name, height: Int(height), weight: weight, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, hydration: [])
         
         do {
             // Create JSON Encoder

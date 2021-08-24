@@ -412,7 +412,18 @@ struct CustomStepper : View {
         generator.impactOccurred()
     }
 }
+struct ClearBackgroundMenuStyle : MenuStyle {
+    @Environment(\.colorScheme) var colorScheme
 
+    init() {
+      
+    }
+    func makeBody(configuration: Configuration) -> some View {
+        Menu(configuration)
+            .foregroundColor(Color.green)
+            .border(Color.red, width: 34)
+    }
+}
 
 struct LoginButton : ButtonStyle {
     @Environment(\.colorScheme) var colorScheme
@@ -433,6 +444,20 @@ struct LoginButton : ButtonStyle {
             .cornerRadius(26)
     }
 
+}
+struct drinkAdditionBackground : Shape {
+    var startAngle: Angle = Angle(degrees: 0)
+    var endAngle: Angle = Angle(degrees: 45)
+    var clockwise: Bool = true
+    
+    func path(in rect: CGRect) -> Path {
+        var p = Path()
+
+        p.addArc(center: CGPoint(x: rect.maxX, y: rect.maxY), radius: rect.width / 3, startAngle: startAngle, endAngle: endAngle, clockwise: clockwise)
+
+
+        return p
+    }
 }
 
 extension Color {
@@ -686,7 +711,7 @@ extension HalfASheet {
             VStack {
                 HStack {
                     closeButton
-                        .padding(.top, 20)
+                        .padding(.top, 10)
                 }
                 Spacer()
             }
@@ -744,7 +769,7 @@ extension HalfASheet {
         let button =
             ZStack {
                 Rectangle()
-                    .frame(width: UIScreen.main.bounds.width / 6, height: 9 )
+                    .frame(width: UIScreen.main.bounds.width / 6, height: 7.5)
                     .cornerRadius(30)
             
         }
@@ -855,3 +880,56 @@ struct HalfASheetPresentationModifier<SheetContent>: ViewModifier where SheetCon
     }
 }
 
+class WrappableTextField: UITextField, UITextFieldDelegate {
+    var textFieldChangedHandler: ((String)->Void)?
+    var onCommitHandler: (()->Void)?
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let nextField = textField.superview?.superview?.viewWithTag(textField.tag + 1) as? UITextField {
+            nextField.becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return false
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let currentValue = textField.text as NSString? {
+            let proposedValue = currentValue.replacingCharacters(in: range, with: string)
+            textFieldChangedHandler?(proposedValue as String)
+        }
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        onCommitHandler?()
+    }
+}
+
+struct SATextField: UIViewRepresentable {
+    private let tmpView = WrappableTextField()
+
+    //var exposed to SwiftUI object init
+    var tag:Int = 0
+    var placeholder:String?
+    var changeHandler:((String)->Void)?
+    var isSecureTextEntry: Binding<Bool>? = nil
+    var onCommitHandler:(()->Void)?
+    
+    func makeUIView(context: UIViewRepresentableContext<SATextField>) -> WrappableTextField {
+        tmpView.tag = tag
+        tmpView.delegate = tmpView
+        tmpView.placeholder = placeholder
+        tmpView.onCommitHandler = onCommitHandler
+        tmpView.textFieldChangedHandler = changeHandler
+        tmpView.isSecureTextEntry = isSecureTextEntry?.wrappedValue ?? false
+
+        return tmpView
+    }
+    
+    func updateUIView(_ uiView: WrappableTextField, context: UIViewRepresentableContext<SATextField>) {
+        uiView.isSecureTextEntry = isSecureTextEntry?.wrappedValue ?? false
+        uiView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        uiView.setContentHuggingPriority(.defaultLow, for: .horizontal)
+    }
+}

@@ -14,7 +14,7 @@ struct BarView: View {
     @State private var pickerSelectedItem = 0
     @State var waterColor: Color =  Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5)
     @State private var weekly: Bool = false
-    @State private var cups: Int = 0
+    @State private var cups: Double = 0
     @State private var weeklyOnAppear: Int = 0
     @State private var yearly: Bool = false
     @State private var monthly: Bool = false
@@ -163,16 +163,16 @@ struct BarView: View {
         
     }
     
-    func getCups(hydration: [String: Int]) -> Int {
+    func getCups(hydration: [String: Double]) -> Double {
         
-        var cup: Int = 0
+        var cup: Double = 0
         for (_,cups) in hydration {
             cup += cups
         }
         return cup
     }
     
-    func getDates(hydration: [String: Int]) -> (String, Double) {
+    func getDates(hydration: [String: Double]) -> (String, Double) {
         var cup: Double = 0
         var date: String = ""
         for (dates,cups) in hydration {

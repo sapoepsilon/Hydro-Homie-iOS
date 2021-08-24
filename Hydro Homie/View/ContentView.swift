@@ -11,7 +11,6 @@ import Combine
 import CoreData
 import CoreLocation
 import AuthenticationServices
-import GoogleSignIn
 
 
 struct ContentView: View {
@@ -36,13 +35,7 @@ struct ContentView: View {
     @State private var backgroundColorTop: Color = Color(red: 148/255, green: 189/255, blue: 227/255, opacity: 89/100)
     @State private var backgroundColorBottom: Color = Color(red: 197/255, green: 197/255, blue: 237/255, opacity: 93/100)
     
-    
-    let signInConfig = GIDConfiguration(clientID: "862934440261-hcuq1d035rdqpbt26nuv82hlvoutqfsk.apps.googleusercontent.com")
-
     let timer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
-    
-    
-
 
     var body: some View {
         GeometryReader { geomtry in
@@ -61,7 +54,7 @@ struct ContentView: View {
 
                         Spacer().frame(height: UIScreen.main.bounds.height * 0.005)
 
-                            TextField("Username", text: self.$email)
+                            TextField("Email", text: self.$email)
                                 .padding(.horizontal, 10)
                                 .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.07, alignment: .center)
                                 .overlay(
@@ -69,6 +62,8 @@ struct ContentView: View {
                                         .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
                                 )
                                 .foregroundColor(colorScheme == .light ? .white : .gray)
+                                .
+                                keyboardType(.emailAddress)
 
 
                             SecureField("Password", text: self.$password)
@@ -79,6 +74,8 @@ struct ContentView: View {
                                         .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2))
                                 .foregroundColor(colorScheme == .light ? .white : .gray)
 
+
+                        VStack(spacing: 0) {
                             Button(action: {
                                 user.signInUser( email: email, password: password, onSucces: {
                                 }, onError: {error in
@@ -120,31 +117,20 @@ struct ContentView: View {
                                 }
                             )
                             .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                            .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.height * 0.05)
+                            .frame(width: UIScreen.main.bounds.width * 0.6, height: UIScreen.main.bounds.height * 0.05)
                                                                 .clipShape(Capsule())
-                            //                                    .padding(.horizontal, 30)
-
-
-                        Button(action: {
-                        }) {
-                            HStack {
-                                Image("googleSignLight")
-                                Text("Sign In")
-                            }
                         }
-                            Button(action: {
-                                registerView = true
-                            }, label: {
-                                Text("Do not have an account? ")
-                            })  .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.height * 0.05)
-                            .clipShape(Capsule())
-
-
+                        Button(action: {
+                            registerView = true
+                        }, label: {
+                            Text("Do not have an account? ")
+                        })  .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.height * 0.05)
+                        .clipShape(Capsule())
+                            //                                    .padding(.horizontal, 30)
                     }
                     .sheet(isPresented: $registerView, content: {
                         RegisterView(Dashboard: $user.loggedIn, registerView: self.$registerView)
-                            .environmentObject(UserRepository())
-                            
+                            .environmentObject(appleLoginData)
                     })
                     .onAppear {
                         if colorScheme == .dark {
@@ -156,12 +142,12 @@ struct ContentView: View {
                 }
                 
             } else {
-                Dashboard(userDocument: UserDocument(), backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
+                Dashboard(customDrinkDocument: CustomDrinkViewModel(), userDocument: UserDocument(), backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
+                    
                     .environmentObject(HydrationDocument())
             }
             
         }
-        
         .onChange(of: user.loggedIn, perform: {newValue in
             print("signIn \(signIn)")
             self.registerView = false
