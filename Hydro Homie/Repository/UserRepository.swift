@@ -54,7 +54,7 @@ class UserRepository: ObservableObject {
     }
     func signUpUser(email: String, password: String, name: String, weight: Double, height: Double, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double, onSucces: @escaping() -> Void, onError: @escaping (_ errorMessage : String) -> Void ) {
     
-            Auth.auth().createUser(withEmail: email, password: password) { [self](authData, error) in
+            Auth.auth().createUser(withEmail: email, password: password) { (authData, error) in
         
                 if (error != nil) {
                     print(error!.localizedDescription)
@@ -65,7 +65,7 @@ class UserRepository: ObservableObject {
                     print(self.userID)
                     UserDefaults.standard.set(self.userID, forKey: "userID")
 
-                    addUserInformation(name: name, weight: weight, height: height, userID: self.userID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake)
+                    self.addUserInformation(name: name, weight: weight, height: height, userID: self.userID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake)
                 }
             }
     }
@@ -99,14 +99,18 @@ class UserRepository: ObservableObject {
             self.appleUID = result!.user.uid
             self.appleLogStatus = true
             
-            let appleFirestoreDocumentName = Firestore.firestore().collection("user").document(self.appleUID)
+            let appleFirestoreDocumentName = Firestore.firestore().collection("users").document(self.appleUID)
+            print("apple UID\(self.appleUID)")
             
             appleFirestoreDocumentName.getDocument { (document, error) in
                 if let document = document, document.exists {
                     appleFireStoreExists = true
                     self.loggedIn = true
+                    print("document exists \(document.debugDescription)")
                 } else {
                     appleFireStoreExists = false
+                    print("document does not exists \(document.debugDescription)")
+
                 }
             }
         }
@@ -138,13 +142,14 @@ class UserRepository: ObservableObject {
              "weight": weight,
              "height": height,
              "metric": metric,
-             "waterIntake": waterIntake
+             "waterIntake": waterIntake,
+            "isCoffeeDrinker": isCoffeeDrinker
         ]) { onError in
             print(onError.debugDescription)
         } 
         
         //MARK: USERDEFAULTS: user infromation
-        let userInfo: User = User(name: name, height: Int(height), weight: weight, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, hydration: [])
+        let userInfo: User = User(name: name, height: Int(height), weight: weight, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, hydration: [], userUID: userID)
         
         do {
             // Create JSON Encoder
@@ -164,7 +169,6 @@ class UserRepository: ObservableObject {
 
     }
     
-
 }
 
  func sha256(_ input: String) -> String {

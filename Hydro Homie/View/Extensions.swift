@@ -359,9 +359,45 @@ struct EqualWidth: ViewModifier {
                 }
             )
     }
-    
 }
 
+extension String {
+
+    func camelCaseToWords() -> String {
+
+        return unicodeScalars.reduce("") {
+
+            if CharacterSet.uppercaseLetters.contains($1) {
+
+                return ($0 + " " + String($1))
+            }
+            else {
+
+                return $0 + String($1)
+            }
+        }
+    }
+}
+
+public extension UIImage {
+     convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
+       let rect = CGRect(origin: .zero, size: size)
+       UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+       color.setFill()
+       UIRectFill(rect)
+       let image = UIGraphicsGetImageFromCurrentImageContext()
+       UIGraphicsEndImageContext()
+       
+       guard let cgImage = image?.cgImage else { return nil }
+       self.init(cgImage: cgImage)
+     }
+   }
+
+extension UIToolbar {
+    func setBackgroundColor(image: UIImage) {
+        setBackgroundImage(image, forToolbarPosition: .any, barMetrics: .default)
+    }
+}
 extension View {
     func equalWidth() -> some View {
         modifier(EqualWidth())
@@ -377,7 +413,7 @@ struct CustomStepper : View {
     
     var body: some View {
         HStack {
-            
+
             Image(systemName: "minus.square")
                 .resizable()
                 .opacity(value >= 0 ? 1 : 0)
@@ -431,8 +467,8 @@ struct LoginButton : ButtonStyle {
     @State private var buttonWidth: CGFloat = 0.6
 
     init() {
-      
     }
+    
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .frame(width: UIScreen.main.bounds.width * buttonWidth, height: UIScreen.main.bounds.height * 0.05)
@@ -454,7 +490,6 @@ struct drinkAdditionBackground : Shape {
         var p = Path()
 
         p.addArc(center: CGPoint(x: rect.maxX, y: rect.maxY), radius: rect.width / 3, startAngle: startAngle, endAngle: endAngle, clockwise: clockwise)
-
 
         return p
     }
@@ -552,7 +587,6 @@ public struct HalfASheet<Content: View>: View {
                         Spacer()
                         
                         ZStack {
-
                             content()
                                 .cornerRadius(23)
                                 .padding(actualContentInsets)
@@ -912,22 +946,29 @@ struct SATextField: UIViewRepresentable {
     //var exposed to SwiftUI object init
     var tag:Int = 0
     var placeholder:String?
+    var fieldVariable:String?
     var changeHandler:((String)->Void)?
+    var returnKeyType: UIReturnKeyType = .default
     var isSecureTextEntry: Binding<Bool>? = nil
     var onCommitHandler:(()->Void)?
+    var text: String?
     
     func makeUIView(context: UIViewRepresentableContext<SATextField>) -> WrappableTextField {
+        
         tmpView.tag = tag
         tmpView.delegate = tmpView
         tmpView.placeholder = placeholder
         tmpView.onCommitHandler = onCommitHandler
         tmpView.textFieldChangedHandler = changeHandler
         tmpView.isSecureTextEntry = isSecureTextEntry?.wrappedValue ?? false
-
+        tmpView.returnKeyType = returnKeyType
         return tmpView
     }
     
     func updateUIView(_ uiView: WrappableTextField, context: UIViewRepresentableContext<SATextField>) {
+        if text != nil {
+            uiView.text = text
+        }
         uiView.isSecureTextEntry = isSecureTextEntry?.wrappedValue ?? false
         uiView.setContentHuggingPriority(.defaultHigh, for: .vertical)
         uiView.setContentHuggingPriority(.defaultLow, for: .horizontal)

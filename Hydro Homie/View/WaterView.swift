@@ -59,6 +59,7 @@ struct Cup: Shape {
         return path
     }
 }
+
 struct WaterView: View {
     
     @State private var show: Bool = false
@@ -86,14 +87,22 @@ struct WaterView: View {
                             .blur(radius: 1.5, opaque: false)
                             .clipShape(Cup())
                     )
-              
+                    .onChange(of: colorScheme, perform: {_ in 
+//                        if colorScheme == .light {
+//                            waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 1)
+//                        } else {
+//                            waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 1)
+//                        }
+                    })
                     .onAppear {
                         if(colorScheme == .light) {
+                            UIToolbar.appearance().barTintColor = .clear
+                           
                         }
                         show = true
                         }
             }
-                
+            
                     .onReceive(timer, perform: { _ in
                         if self.offset.degrees < 360 {
                             self.offset.degrees += 0.5

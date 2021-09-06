@@ -25,10 +25,8 @@ struct DiureticView: View {
     @State private var isEdit = false
     @State private var showCustomDrink: Bool = false
     @State private var isCustomDrink: Bool = false
-    @State private var isAlcohol: Bool = false
     @Binding var popUp: Bool
     @State private var isCustomCoffee: Bool = false
-    @State private var isCoffee: Bool = false
     
     //alcohol
     @Binding var isAlcoholConsumed:Bool
@@ -55,8 +53,6 @@ struct DiureticView: View {
                 HStack {
                     Button(action: {
                         withAnimation() {
-                            isCoffee = false
-                            isAlcohol = false
                             isCustomDrink = false
                             showCustomDrink = false
                             isCustomWater = false
@@ -67,7 +63,7 @@ struct DiureticView: View {
                         Image(systemName: "house")
                     })
                     .padding()
-                    .opacity(isCoffee || isAlcohol || isCustomDrink || isCustomWater || showCustomDrink ? 1 : 0)
+                    .opacity(isCustomDrink || isCustomWater || showCustomDrink ? 1 : 0)
                     
                     Spacer().frame(width: geometry.size.width / spacerCaluclator())
                     
@@ -111,82 +107,44 @@ struct DiureticView: View {
                 }
                 
                 VStack {
-                    if !isCoffee && !isAlcohol && !isCustomDrink && !showCustomDrink && !isCustomWater {
+                    if !isCustomDrink && !showCustomDrink && !isCustomWater {
                         withAnimation() {
                             VStack {
                                 VStack {
                                     HStack {
-                                        Image(colorScheme == .dark ? "waterDropDark" : "waterDrop")
+                                        Image(colorScheme == .dark ? "cupDark" : "cupLight")
                                             .renderingMode(.template)
                                             .foregroundColor(colorScheme == .light ? .white : .white)
                                     }
                                     .padding()
                                     
-                                    Text ("Log a cup of Water")
+                                    Text ("Log a cup of water")
                                         .foregroundColor(colorScheme == .light ? .black : .white)
                                 }.onTapGesture {
                                     cups += 1
                                     isDiuretic = false
                                 }
-                                
+
+                                .opacity(!isCustomDrink ? 1 : 0)
                                 VStack {
-                                    HStack{
-                                        Image(colorScheme == .light ?  "coffee" : "coffeeDark")
-                                            .renderingMode(.template)
-                                            .foregroundColor(colorScheme == .light ? .white : .white)
-                                    }
-                                    .padding()
-                                    Text("Log Coffee")
-                                        .foregroundColor(colorScheme == .light ? .black : .white)
-                                }
-                                .onTapGesture {
-                                    withAnimation() {
-                                        isCustomDrink = false
-                                        isAlcohol = false
-                                        isCoffee = true
-                                        print(isCoffee)
-                                    }
-                                }
-                                .opacity(!isCoffee || !isAlcohol || !isCustomDrink ? 1 : 0)
-                                VStack {
-                                    HStack{
-                                        Image(colorScheme == .light ?  "alcohol" : "alcoholDark")
-                                            .renderingMode(.template)
-                                            .foregroundColor(colorScheme == .light ? .white : .white)
-                                    }
-                                    .padding()
-                                    
-                                    Text("Log Alcohol")
-                                        .foregroundColor(colorScheme == .light ? .black : .white)
-                                }
-                                .onTapGesture {
-                                    withAnimation() {
-                                        isCustomDrink = false
-                                        isCoffee = false
-                                        isAlcohol = true
-                                    }
-                                }
-                                .opacity(!isCoffee || !isAlcohol || !isCustomDrink ? 1 : 0)
-                                HStack {
+                                    Image(colorScheme == .light ? "waterDropDark" : "waterDrop")
+                                        .padding()
                                     Text("Log custom amount of water")
                                         .foregroundColor(colorScheme == .light ? .black : .white)
                                 }
-                                .padding()
                                 .onTapGesture {
                                     withAnimation {
                                         isCustomWater = true
                                     }
                                 }
-                                HStack{
+                                VStack{
+                                    Image("alcoholDark")
                                     Text("Your custom drinks")
-                                        .fontWeight(.bold)
                                         .foregroundColor(colorScheme == .light ? .black : .white)
                                 }
                                 .onTapGesture {
                                     withAnimation() {
                                         isCustomDrink = false
-                                        isCoffee = false
-                                        isAlcohol = false
                                         showCustomDrink = true
                                     }
                                 }
@@ -195,92 +153,14 @@ struct DiureticView: View {
                                 HStack {
                                     Button(action: {
                                         isCustomDrink = true
-                                        isCoffee = false
-                                        isAlcohol = false
                                     }, label: {
-                                        Text("Add a custom drink")
+                                        Text("Create a custom drink")
                                             .fontWeight(.bold)
                                     })
                                 }
                                 .padding()
-                                
                             }
                         }.transition(AnyTransition.move(edge: .bottom))
-                        
-                    }
-                    
-                    
-                    //MARK: Coffee
-                    if isCoffee  {
-                        VStack {
-                            Text("Black coffee").padding()
-                                .onTapGesture {
-                                    cups += 0.5
-                                    isDiuretic = false
-                                    popUp = false // close the popUp for the popUp view
-                                    print("black coffee \(cups)")
-                                }
-                                .foregroundColor(colorScheme == .light ? .black : .white)
-                            
-                            Text("Decaf coffee").padding()
-                                .onTapGesture {
-                                    cups += 0.95
-                                    isDiuretic = false
-                                    popUp = false // close the popUp for the popUp view
-                                    print("decaf coffee \(cups)")
-                                    
-                                }
-                                .foregroundColor(colorScheme == .light ? .black : .white)
-                            
-                            Text("Starbucks coffees").padding()
-                                .foregroundColor(colorScheme == .light ? .black : .white)
-                            
-                            Text("Add custom coffee").padding()
-                                .foregroundColor(colorScheme == .light ? .black : .white)
-                                .onTapGesture {
-                                    isCustomDrink = true
-                                }
-                        }                            .transition(AnyTransition.move(edge: .bottom))
-                        
-                    }
-                    //MARK: Alcohol
-                    
-                    if isAlcohol {
-                        VStack {
-                            Text("Liquor 40%").padding()
-                                .onTapGesture {
-                                    cups += 0.40
-                                    isDiuretic = false
-                                    popUp = false // close the popUp for the popUp view
-                                    print("liquor  \(cups)")
-                                }
-                                .foregroundColor(colorScheme == .light ? .black : .white)
-                            
-                            Text("Wine 9%").padding()
-                                .onTapGesture {
-                                    cups += 0.8
-                                    isDiuretic = false
-                                    popUp = false // close the popUp for the popUp view
-                                    print("wine 9%  \(cups)")
-                                }
-                                .foregroundColor(colorScheme == .light ? .black : .white)
-                            
-                            Text("Beer 5%").padding()
-                                .onTapGesture {
-                                    cups += 0.85
-                                    isDiuretic = false
-                                    popUp = false // close the popUp for the popUp view
-                                    print("wine Beer 5%  \(cups)")
-                                }
-                                .foregroundColor(colorScheme == .light ? .black : .white)
-                            
-                            Text("Beer 4%").padding()
-                                .onTapGesture {
-                                    cups += 0.9
-                                }
-                                .foregroundColor(colorScheme == .light ? .black : .white)
-                        }                            .transition(AnyTransition.move(edge: .bottom))
-                        
                     }
                 }
                 

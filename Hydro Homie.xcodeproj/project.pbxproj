@@ -10,10 +10,8 @@
 		99023361268248A200FACE04 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 99023360268248A200FACE04 /* FirebaseAuth */; };
 		99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 99023362268248A200FACE04 /* FirebaseFirestore */; };
 		99088D0826B223470091339F /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E786CF2639131100D13EC5 /* Dashboard.swift */; };
+		9908B1A126D567910081A495 /* EditUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9908B1A026D567910081A495 /* EditUserView.swift */; };
 		991C48AA26C1EF9F002A4D10 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 991C48A926C1EF9F002A4D10 /* GoogleService-Info.plist */; };
-		991C48AB26C1EF9F002A4D10 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 991C48A926C1EF9F002A4D10 /* GoogleService-Info.plist */; };
-		991C48AC26C1EF9F002A4D10 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 991C48A926C1EF9F002A4D10 /* GoogleService-Info.plist */; };
-		991ED8A6267A902100AE129A /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991ED8A5267A902100AE129A /* Persistance.swift */; };
 		99234679269A8B9400785C7E /* CustomDrinkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99234678269A8B9400785C7E /* CustomDrinkModel.swift */; };
 		9923467B269A8BEC00785C7E /* CustomDrinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */; };
 		992B733926A7B9050012E34E /* AlcoholTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992B733826A7B9050012E34E /* AlcoholTimer.swift */; };
@@ -21,7 +19,6 @@
 		9936A33F269A40FD006FAF41 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9936A33E269A40FD006FAF41 /* Extensions.swift */; };
 		994096BD266D4BFE00830829 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994096BC266D4BFE00830829 /* UserRepository.swift */; };
 		9946C62A26C36FF500FF8846 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9946C62926C36FF500FF8846 /* AuthenticationViewModel.swift */; };
-		9946C62E26C370B200FF8846 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 9946C62D26C370B200FF8846 /* GoogleSignIn */; };
 		994F86142682822A00E38099 /* BarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F86132682822A00E38099 /* BarChart.swift */; };
 		994F8617268293FF00E38099 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 994F8616268293FF00E38099 /* SwiftUICharts */; };
 		995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AEBF9266D752300FAD0CB /* WaterView.swift */; };
@@ -30,18 +27,10 @@
 		9965D7CF2637955400672D2E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9965D7CE2637955400672D2E /* ContentView.swift */; };
 		9965D7D12637955500672D2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D02637955500672D2E /* Assets.xcassets */; };
 		9965D7D42637955500672D2E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D32637955500672D2E /* Preview Assets.xcassets */; };
-		9970190C2689064E007F2935 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9970190B2689064E007F2935 /* LocationService.swift */; };
-		997DC080268926210018F557 /* PreciseControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997DC07F268926210018F557 /* PreciseControl.swift */; };
+		9968227926CDC7AA00C144B6 /* Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9968227826CDC7AA00C144B6 /* Background.swift */; };
+		997111B626E58088001EABD1 /* ResetPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997111B526E58088001EABD1 /* ResetPassword.swift */; };
 		99ACBA1726816BFD0005A151 /* ActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99ACBA1626816BFD0005A151 /* ActionView.swift */; };
 		99AEA096268CF9BE004BD12D /* CustomDrink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AEA095268CF9BE004BD12D /* CustomDrink.swift */; };
-		99B09B3D2682641800C15A14 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99ACBA1D268180E00005A151 /* WidgetKit.framework */; };
-		99B09B3E2682641800C15A14 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99ACBA1F268180E00005A151 /* SwiftUI.framework */; };
-		99B09B412682641800C15A14 /* WaterViewWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B09B402682641800C15A14 /* WaterViewWidget.swift */; };
-		99B09B442682641900C15A14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99B09B432682641900C15A14 /* Assets.xcassets */; };
-		99B09B462682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 99B09B422682641800C15A14 /* WaterViewWidget.intentdefinition */; };
-		99B09B472682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 99B09B422682641800C15A14 /* WaterViewWidget.intentdefinition */; };
-		99B09B4A2682641900C15A14 /* WaterViewWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		99B09B4E2682642500C15A14 /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AEBF9266D752300FAD0CB /* WaterView.swift */; };
 		99B63EA326D2FDFD0099FB2A /* NotificationTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B63EA226D2FDFD0099FB2A /* NotificationTimer.swift */; };
 		99B63EA826D308BE0099FB2A /* NotificationTimerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B63EA726D308BE0099FB2A /* NotificationTimerModel.swift */; };
 		99C86513268ADCBA006B4802 /* DiureticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C86512268ADCBA006B4802 /* DiureticView.swift */; };
@@ -59,13 +48,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = D99924CA1A92B3C7008CC226;
 			remoteInfo = SignInSample;
-		};
-		99B09B482682641900C15A14 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9965D7C12637955400672D2E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 99B09B3B2682641800C15A14;
-			remoteInfo = WaterViewWidgetExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -86,7 +68,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				99B09B4A2682641900C15A14 /* WaterViewWidgetExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +75,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9908B1A026D567910081A495 /* EditUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserView.swift; sourceTree = "<group>"; };
 		991C48A926C1EF9F002A4D10 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		99234678269A8B9400785C7E /* CustomDrinkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrinkModel.swift; sourceTree = "<group>"; };
 		9923467A269A8BEC00785C7E /* CustomDrinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrinkViewModel.swift; sourceTree = "<group>"; };
@@ -113,17 +95,11 @@
 		9965D7D32637955500672D2E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9965D7D52637955500672D2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9968227826CDC7AA00C144B6 /* Background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Background.swift; sourceTree = "<group>"; };
-		9970190B2689064E007F2935 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
-		997DC07F268926210018F557 /* PreciseControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreciseControl.swift; sourceTree = "<group>"; };
+		997111B526E58088001EABD1 /* ResetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassword.swift; sourceTree = "<group>"; };
 		99ACBA1626816BFD0005A151 /* ActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionView.swift; sourceTree = "<group>"; };
 		99ACBA1D268180E00005A151 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		99ACBA1F268180E00005A151 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		99AEA095268CF9BE004BD12D /* CustomDrink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrink.swift; sourceTree = "<group>"; };
-		99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WaterViewWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		99B09B402682641800C15A14 /* WaterViewWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterViewWidget.swift; sourceTree = "<group>"; };
-		99B09B422682641800C15A14 /* WaterViewWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WaterViewWidget.intentdefinition; sourceTree = "<group>"; };
-		99B09B432682641900C15A14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		99B09B452682641900C15A14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99B63EA226D2FDFD0099FB2A /* NotificationTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTimer.swift; sourceTree = "<group>"; };
 		99B63EA726D308BE0099FB2A /* NotificationTimerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTimerModel.swift; sourceTree = "<group>"; };
 		99C86512268ADCBA006B4802 /* DiureticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticView.swift; sourceTree = "<group>"; };
@@ -143,15 +119,6 @@
 				994F8617268293FF00E38099 /* SwiftUICharts in Frameworks */,
 				99023361268248A200FACE04 /* FirebaseAuth in Frameworks */,
 				99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		99B09B392682641800C15A14 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				99B09B3E2682641800C15A14 /* SwiftUI.framework in Frameworks */,
-				99B09B3D2682641800C15A14 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,7 +148,6 @@
 			children = (
 				99DE64D6266DBF1D0017015A /* Hydration.swift */,
 				99D60B82267124D600EE106B /* UserModel.swift */,
-				9970190B2689064E007F2935 /* LocationService.swift */,
 				99234678269A8B9400785C7E /* CustomDrinkModel.swift */,
 			);
 			path = Model;
@@ -199,7 +165,6 @@
 			isa = PBXGroup;
 			children = (
 				9965D7CB2637955400672D2E /* Hydro Homie */,
-				99B09B3F2682641800C15A14 /* WaterViewWidget */,
 				9965D7CA2637955400672D2E /* Products */,
 				43B8B21D244BCAFEC6E430A9 /* Frameworks */,
 			);
@@ -209,7 +174,6 @@
 			isa = PBXGroup;
 			children = (
 				9965D7C92637955400672D2E /* Hydro Homie.app */,
-				99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -248,26 +212,16 @@
 				99E786CF2639131100D13EC5 /* Dashboard.swift */,
 				99ACBA1626816BFD0005A151 /* ActionView.swift */,
 				994F86132682822A00E38099 /* BarChart.swift */,
-				997DC07F268926210018F557 /* PreciseControl.swift */,
 				99C86512268ADCBA006B4802 /* DiureticView.swift */,
 				99AEA095268CF9BE004BD12D /* CustomDrink.swift */,
 				9936A33E269A40FD006FAF41 /* Extensions.swift */,
 				992B733826A7B9050012E34E /* AlcoholTimer.swift */,
 				9968227826CDC7AA00C144B6 /* Background.swift */,
 				99B63EA226D2FDFD0099FB2A /* NotificationTimer.swift */,
+				9908B1A026D567910081A495 /* EditUserView.swift */,
+				997111B526E58088001EABD1 /* ResetPassword.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		99B09B3F2682641800C15A14 /* WaterViewWidget */ = {
-			isa = PBXGroup;
-			children = (
-				99B09B402682641800C15A14 /* WaterViewWidget.swift */,
-				99B09B422682641800C15A14 /* WaterViewWidget.intentdefinition */,
-				99B09B432682641900C15A14 /* Assets.xcassets */,
-				99B09B452682641900C15A14 /* Info.plist */,
-			);
-			path = WaterViewWidget;
 			sourceTree = "<group>";
 		};
 		99DE64D8266DC4270017015A /* ViewModel */ = {
@@ -299,7 +253,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				99B09B492682641900C15A14 /* PBXTargetDependency */,
 			);
 			name = "Hydro Homie";
 			packageProductDependencies = (
@@ -310,23 +263,6 @@
 			productName = "Hydro Homie";
 			productReference = 9965D7C92637955400672D2E /* Hydro Homie.app */;
 			productType = "com.apple.product-type.application";
-		};
-		99B09B3B2682641800C15A14 /* WaterViewWidgetExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 99B09B4B2682641900C15A14 /* Build configuration list for PBXNativeTarget "WaterViewWidgetExtension" */;
-			buildPhases = (
-				99B09B382682641800C15A14 /* Sources */,
-				99B09B392682641800C15A14 /* Frameworks */,
-				99B09B3A2682641800C15A14 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = WaterViewWidgetExtension;
-			productName = WaterViewWidgetExtension;
-			productReference = 99B09B3C2682641800C15A14 /* WaterViewWidgetExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -339,9 +275,6 @@
 				TargetAttributes = {
 					9965D7C82637955400672D2E = {
 						CreatedOnToolsVersion = 12.4;
-					};
-					99B09B3B2682641800C15A14 = {
-						CreatedOnToolsVersion = 12.5;
 					};
 				};
 			};
@@ -370,7 +303,6 @@
 			projectRoot = "";
 			targets = (
 				9965D7C82637955400672D2E /* Hydro Homie */,
-				99B09B3B2682641800C15A14 /* WaterViewWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -396,15 +328,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		99B09B3A2682641800C15A14 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				99B09B442682641900C15A14 /* Assets.xcassets in Resources */,
-				991C48AB26C1EF9F002A4D10 /* GoogleService-Info.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -418,18 +341,16 @@
 				9936A33F269A40FD006FAF41 /* Extensions.swift in Sources */,
 				9965D7CF2637955400672D2E /* ContentView.swift in Sources */,
 				99234679269A8B9400785C7E /* CustomDrinkModel.swift in Sources */,
-				997DC080268926210018F557 /* PreciseControl.swift in Sources */,
 				994096BD266D4BFE00830829 /* UserRepository.swift in Sources */,
 				99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */,
+				997111B626E58088001EABD1 /* ResetPassword.swift in Sources */,
 				99088D0826B223470091339F /* Dashboard.swift in Sources */,
 				9946C62A26C36FF500FF8846 /* AuthenticationViewModel.swift in Sources */,
 				99D60B852671255D00EE106B /* UserDocument.swift in Sources */,
-				99B09B472682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */,
 				995D4110266EFC5600916F5C /* HeightPicker.swift in Sources */,
 				99B63EA326D2FDFD0099FB2A /* NotificationTimer.swift in Sources */,
 				9968227926CDC7AA00C144B6 /* Background.swift in Sources */,
 				992B733926A7B9050012E34E /* AlcoholTimer.swift in Sources */,
-				9970190C2689064E007F2935 /* LocationService.swift in Sources */,
 				995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */,
 				992B733B26A7C51A0012E34E /* TimerBackground.swift in Sources */,
 				9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */,
@@ -437,30 +358,13 @@
 				9923467B269A8BEC00785C7E /* CustomDrinkViewModel.swift in Sources */,
 				99B63EA826D308BE0099FB2A /* NotificationTimerModel.swift in Sources */,
 				994F86142682822A00E38099 /* BarChart.swift in Sources */,
+				9908B1A126D567910081A495 /* EditUserView.swift in Sources */,
 				99DE64D7266DBF1D0017015A /* Hydration.swift in Sources */,
 				99C86513268ADCBA006B4802 /* DiureticView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		99B09B382682641800C15A14 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				99B09B462682641900C15A14 /* WaterViewWidget.intentdefinition in Sources */,
-				99B09B4E2682642500C15A14 /* WaterView.swift in Sources */,
-				99B09B412682641800C15A14 /* WaterViewWidget.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		99B09B492682641900C15A14 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 99B09B3B2682641800C15A14 /* WaterViewWidgetExtension */;
-			targetProxy = 99B09B482682641900C15A14 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9965D7D62637955500672D2E /* Debug */ = {
@@ -637,52 +541,6 @@
 			};
 			name = Release;
 		};
-		99B09B4C2682641900C15A14 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NK28QT38A3;
-				INFOPLIST_FILE = WaterViewWidget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie.WaterViewWidget";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		99B09B4D2682641900C15A14 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NK28QT38A3;
-				INFOPLIST_FILE = WaterViewWidget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie.WaterViewWidget";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -700,15 +558,6 @@
 			buildConfigurations = (
 				9965D7D92637955500672D2E /* Debug */,
 				9965D7DA2637955500672D2E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		99B09B4B2682641900C15A14 /* Build configuration list for PBXNativeTarget "WaterViewWidgetExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				99B09B4C2682641900C15A14 /* Debug */,
-				99B09B4D2682641900C15A14 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

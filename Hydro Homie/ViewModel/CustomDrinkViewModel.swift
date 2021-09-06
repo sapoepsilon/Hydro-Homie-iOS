@@ -8,9 +8,9 @@
 import SwiftUI
 import Firebase
 
+
 class CustomDrinkViewModel: ObservableObject {
-    
-    
+
     //Quick drink menu  variables
     @Published var drinkOpacity: Double = 0
     @Published var coffeeOpacity: Double = 0
@@ -23,7 +23,6 @@ class CustomDrinkViewModel: ObservableObject {
     @Published var customDrinks: [CustomDrinkModel] = []
     @Published var customDrinkObject: CustomDrinkModel = CustomDrinkModel(id: 0, name: "name", isAlcohol: false, isCaffeine: false, amount: 23, alcoholAmount: 0, alcoholPercentage: 0, caffeineAmount: 0, isCustomWater: false)
     
-    var drinksArray: [CustomDrinkModel] = []
     var customDrinkDictionary: [[String:Any]] = [[
         "id": 0,
         "name": "",
@@ -45,14 +44,12 @@ class CustomDrinkViewModel: ObservableObject {
         let deletingDrinkID: Int = customDrink.matchingID(matching: customDrink, array: customDrinks)! // fix from the force unwrap to proper Int
         //1. delete it from the published array
         self.customDrinks.remove(at: deletingDrinkID)
-        self.drinksArray.remove(at: deletingDrinkID)
         getDrinkOpacity()
 
         //2. Create a dictionary with the fields of the published array.
         var drinkDictionaryArray: [[String:Any]] = []
         
         for drink in self.customDrinks {
-            
             let customDrinkDictionary: [String:Any] = [
                 "id": drink.id,
                 "name": drink.name,
@@ -95,7 +92,8 @@ class CustomDrinkViewModel: ObservableObject {
     }
     
     func addCustomDrink(newCustomDrink: CustomDrinkModel) -> String {
-        
+        self.customDrinks.append(newCustomDrink)
+
         let customDrinkDictionary: [String:Any] = [
             "id": newCustomDrink.id,
             "name": newCustomDrink.name,
@@ -118,8 +116,8 @@ class CustomDrinkViewModel: ObservableObject {
             { err in
                if let err = err {
                    print("Error writing document: \(err)")
-                Error = err.localizedDescription
-               }  else {
+                return Error = err.localizedDescription
+               }
                    // store the customDrink into the UserDefaults
                    var drinksArray: [CustomDrinkModel] = []
                    do {
@@ -134,7 +132,6 @@ class CustomDrinkViewModel: ObservableObject {
                                // if the array had any variables stored beforehand, than adding more and storing in userdefaults
                                if drinksArray != [] {
                                    drinksArray.append(newCustomDrink)
-                                self.customDrinks.append(newCustomDrink)
 
                                    let enodedArray = try encoder.encode(drinksArray) //encoding the arrau
                                    UserDefaults.standard.set(1, forKey: "fetchCustomDrink") // seting to false, so the user won't connect to the Firebase
@@ -153,15 +150,10 @@ class CustomDrinkViewModel: ObservableObject {
                        //get the array with the current drinks
                        // Encode Note
                    }
-              
                 print("Document successfully written!")
-
-               }
             }
 //        print("custom Drinks array: \(self.customDrinks)")
-//        print("local Drinks array: \(self.drinksArray)")
-        self.getDrinkOpacity()
-        self.getAllDrinks()
+//        print("local Drinks array: \(self.drinksArray)"
         return Error
     }
     
@@ -173,7 +165,7 @@ class CustomDrinkViewModel: ObservableObject {
                 print(error!.localizedDescription)
                 return
             }   else if(querySnapshot!.data() != nil) {
-                self.drinksArray.removeAll()
+                self.customDrinks.removeAll()
                 let document = querySnapshot!.data()
                 self.customDrinkDictionary = ((document!["customDrinks"] as? [[String:Any]])!)
             
@@ -190,12 +182,8 @@ class CustomDrinkViewModel: ObservableObject {
                     self.customDrinkObject.alcoholAmount = customDrink["alcoholAmount"] as? Double ?? 0
                     self.customDrinkObject.caffeineAmount = customDrink["caffeineAmount"] as? Double ?? 0
                     self.customDrinkObject.alcoholPercentage = customDrink["alcoholPercentage"] as? Double ?? 0
-                    self.drinksArray.append(self.customDrinkObject)
+                    self.customDrinks.append(self.customDrinkObject)
                 }
-                
-                if self.drinksArray != self.customDrinks {
-                    self.customDrinks.removeAll()
-                    self.customDrinks = self.drinksArray
                     UserDefaults.standard.set(0, forKey: "fetchCustomDrink")
                     
                     do {
@@ -203,13 +191,13 @@ class CustomDrinkViewModel: ObservableObject {
                         let encoder = JSONEncoder()
                         //get the array with the current drinks
                         // Encode Note
-                        let data = try encoder.encode(self.drinksArray)
+                        let data = try encoder.encode(self.customDrinks)
                         UserDefaults.standard.set(data, forKey: "customDrinksArray")
 
                     } catch {
                         print("Unable to Encode Note (\(error))")
                     }
-                }
+                
                 print("custom Drinks array\(self.customDrinks.debugDescription)")
             } else {
             print("Document does not exist")
@@ -230,8 +218,7 @@ class CustomDrinkViewModel: ObservableObject {
                     let decoder = JSONDecoder()
 
                     // Decode Note
-                    self.drinksArray = try decoder.decode([CustomDrinkModel].self, from: data)
-                    self.customDrinks = self.drinksArray
+                    self.customDrinks = try decoder.decode([CustomDrinkModel].self, from: data)
                 } catch {
                     print("Unable to Decode Note (\(error))")
                     fetchFromServer()
@@ -240,6 +227,7 @@ class CustomDrinkViewModel: ObservableObject {
         } else if fetch == 1 || self.customDrinks.count < 1 {
             fetchFromServer()
         }
+        getDrinkOpacity()
     }
     
 func getDrinkOpacity() {
@@ -250,7 +238,7 @@ func getDrinkOpacity() {
         var drinkOpacity: Double = 0
         
 //        print("getting data from getDrinkOpacity function \(drinksArray.debugDescription)")
-        for drink in self.drinksArray {
+        for drink in self.customDrinks {
             if drink.isCustomWater {
                 waterOpacity = 1
                 drinkOpacity = 1

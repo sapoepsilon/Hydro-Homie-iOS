@@ -17,16 +17,16 @@ struct ContentView: View {
     
     @State private var email: String = ""
     @State private var password: String = ""
-    @StateObject var appleLoginData = UserRepository()
     @EnvironmentObject var user: UserRepository
-    @Environment(\.colorScheme) var colorScheme
+    @State private var colorScheme: ColorScheme = .light
     @State private var signIn: Bool = UserRepository().loggedIn
     @State private var error: String = ""
     @State private var timeRemaining : Double = 0
     @State private var borderColor: Color = Color.white
     @State private var registerView: Bool = false
     @State private var waterColor: Color = Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5)
-    
+    @State private var isSecureField: Bool = true
+    @Environment(\.colorScheme) var ColorScheme
 
     @State  var waterBackgroundColor =  Color.clear
     @AppStorage ("log_status") var appleLogStatus = false
@@ -34,6 +34,8 @@ struct ContentView: View {
     @AppStorage ("appleName") var appleName: String = ""
     @State private var backgroundColorTop: Color = Color(red: 148/255, green: 189/255, blue: 227/255, opacity: 89/100)
     @State private var backgroundColorBottom: Color = Color(red: 197/255, green: 197/255, blue: 237/255, opacity: 93/100)
+    
+    @State private var resetPasswordView: Bool = false
     
     let timer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
 
@@ -52,30 +54,37 @@ struct ContentView: View {
                                 .shadow(color: colorScheme == .light ? Color.black : Color.gray , radius: 6)
                                 .frame( height: UIScreen.main.bounds.height * 0.4, alignment: .center)
 
-                        Spacer().frame(height: UIScreen.main.bounds.height * 0.005)
+                        Spacer().frame(height: UIScreen.main.bounds.height * 0.03)
+                            
+                        SATextField(tag: 0, placeholder: "E-mail", changeHandler: {(email) in
+                            self.email = email
+                        }, returnKeyType: .next,onCommitHandler: {
+                          print("commit handler")
+                        })
+                            .padding()
+                            .fixedSize(horizontal: false, vertical: true)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
+                            )
+                            .foregroundColor(colorScheme == .light ? .white : .gray)
+                            .keyboardType(.emailAddress)
+                            .padding(.horizontal, UIScreen.main.bounds.size.width * 0.1)
+               
+                        SATextField(tag: 1, placeholder: "Password", changeHandler: {(pass) in
+                            self.password = pass
+                        }, returnKeyType: .done, isSecureTextEntry: $isSecureField, onCommitHandler: {
+                            print("commit handler")
+                        })
+                            .padding()
+                            .fixedSize(horizontal: false, vertical: true)
+                            .foregroundColor(colorScheme == .light ? .white : .gray)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2))
+                            .padding(.horizontal, UIScreen.main.bounds.size.width * 0.1)
 
-                            TextField("Email", text: self.$email)
-                                .padding(.horizontal, 10)
-                                .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.07, alignment: .center)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
-                                )
-                                .foregroundColor(colorScheme == .light ? .white : .gray)
-                                .
-                                keyboardType(.emailAddress)
-
-
-                            SecureField("Password", text: self.$password)
-                                .padding(.horizontal, 10)
-                                .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.07, alignment: .center)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2))
-                                .foregroundColor(colorScheme == .light ? .white : .gray)
-
-
-                        VStack(spacing: 0) {
+                        VStack(spacing: 4) {
                             Button(action: {
                                 user.signInUser( email: email, password: password, onSucces: {
                                 }, onError: {error in
@@ -85,17 +94,16 @@ struct ContentView: View {
                                 Text("Sign In")
                             }).alert(isPresented: self.$signIn, content: {
                                 Alert(title: Text("error"), message: Text(error.description), dismissButton: .default(Text("OK")))
-                            })                                    .buttonStyle(LoginButton())
+                            })
+                            .buttonStyle(LoginButton())
 
+//                            Spacer().frame(height: UIScreen.main.bounds.height / 20)
                             //MARK: Sign-in with Apple ID
-
                             SignInWithAppleButton(
                                 onRequest: { request in
-                                    appleLoginData.nonce = randomNonceString()
+                                    user.nonce = randomNonceString()
                                     request.requestedScopes = [.email, .fullName]
-                                    request.nonce = sha256(appleLoginData.nonce)
-
-
+                                    request.nonce = sha256(user.nonce)
                                 },
                                 onCompletion: { result in
 
@@ -105,7 +113,7 @@ struct ContentView: View {
                                             return
                                         }
                                         appleName = credential.fullName?.givenName ?? "Please enter your name"
-                                        appleLoginData.appleAuthenticate(credintial: credential)
+                                        self.user.appleAuthenticate(credintial: credential)
                                         if appleLogStatus {
                                             if !appleFireStoreExists {
                                                 registerView = true
@@ -124,13 +132,19 @@ struct ContentView: View {
                             registerView = true
                         }, label: {
                             Text("Do not have an account? ")
-                        })  .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.height * 0.05)
+                        })  .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.height * 0.03)
                         .clipShape(Capsule())
+                        
+                        Button(action: {
+                            resetPasswordView = true
+                        }, label: {
+                            Text("Reset your password")
+                        })
                             //                                    .padding(.horizontal, 30)
                     }
                     .sheet(isPresented: $registerView, content: {
                         RegisterView(Dashboard: $user.loggedIn, registerView: self.$registerView)
-                            .environmentObject(appleLoginData)
+                            .environmentObject(user)
                     })
                     .onAppear {
                         if colorScheme == .dark {
@@ -142,12 +156,14 @@ struct ContentView: View {
                 }
                 
             } else {
-                Dashboard(customDrinkDocument: CustomDrinkViewModel(), userDocument: UserDocument(), backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
-                    
+                Dashboard(isDocumentAddition: $registerView, customDrinkDocument: CustomDrinkViewModel(), userDocument: UserDocument(), backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
                     .environmentObject(HydrationDocument())
             }
             
         }
+        .sheet(isPresented: $resetPasswordView, content: {
+            ResetPassword(resetPasswordView: $resetPasswordView)
+        })
         .onChange(of: user.loggedIn, perform: {newValue in
             print("signIn \(signIn)")
             self.registerView = false
@@ -157,15 +173,14 @@ struct ContentView: View {
                 self.timeRemaining += 0.1
             }
         })
- 
-        .onAppear{      
+        .onAppear{
+            print("apple fire store exists \(appleFireStoreExists)")
             if colorScheme == .dark {
                 waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 0.5)
                 borderColor = Color.white
-                
             } else {
                 waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 0.5)
-                borderColor = Color.white
+                borderColor = Color.gray	
             }
             if appleLogStatus {
                 if appleFireStoreExists {
@@ -174,7 +189,7 @@ struct ContentView: View {
             } else {
                 user.checkUser()
             }
-            
+            colorScheme = ColorScheme
         }
     }
 }

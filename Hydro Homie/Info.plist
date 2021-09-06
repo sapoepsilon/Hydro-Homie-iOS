@@ -31,8 +31,6 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Location data needed for better calculation</string>
 	<key>NSlocation</key>
 	<string></string>
 	<key>UIApplicationSceneManifest</key>

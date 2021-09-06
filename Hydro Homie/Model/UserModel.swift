@@ -14,5 +14,6 @@ struct User: Encodable {
     var isCoffeeDrinker: Bool
     var waterIntake: Double
     var hydration: [[String: Double]]
+    var userUID: String
 }
 
