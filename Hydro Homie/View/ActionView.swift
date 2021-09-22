@@ -8,7 +8,6 @@
 import SwiftUI
 import CoreLocation
 
-
 struct ActionView: View {
     @State private var isStats: Bool = false
     @State private var isEdit: Bool = false
@@ -46,7 +45,6 @@ struct ActionView: View {
                         }
                         Spacer()
                         Text(" ")
-     
                         HStack {
                             Button(action: {
                                 isEdit = true
@@ -98,7 +96,7 @@ struct ActionView: View {
 //                TextField(String(user.user.height), text: self.$userHeight)
             }
             )
-            .sheet(isPresented: self.$isStats, content: {
+            .formSheet(isPresented: self.$isStats, content: {
                 BarView().environmentObject(user)
                     .clearModalBackground()
             })

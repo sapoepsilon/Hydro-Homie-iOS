@@ -8,13 +8,11 @@
     import SwiftUI
     import Firebase
     import UIKit
-    
+
        @main
     struct Hydro_HomieApp: App {
 
         @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-        
-   
         var body: some Scene {
             WindowGroup {
                 ContentView(    )

@@ -9,13 +9,11 @@ import Foundation
 import SwiftUI
 
 struct Background : View {
-    
     enum drink {
         case water
         case coffee
         case alcohol
     }
-    
     @State private var isCustomWater: Bool = false
     @State private var isCustomCoffee: Bool = false
     @State private var isCustomAlcohol: Bool = false
@@ -28,6 +26,10 @@ struct Background : View {
     @Binding var backgroundOpacity: Double
     @Binding var isQuickDrink: Bool
     @Binding var isFirstMenu:Bool
+    
+    //Coffee
+    @Binding var coffeeAmount: Double
+    @Binding var accumulatedCoffeeAmount: Double
     @EnvironmentObject var customDrinkDocument: CustomDrinkViewModel
     
     @State private var backgroundColor: Color = Color.black
@@ -136,13 +138,11 @@ struct Background : View {
                 }.padding()
             }
         }
-        
         .onAppear {
             if colorScheme == .light {
                 backgroundColor = Color.gray
             }
         }
-        
         .onChange(of: isQuickDrink, perform: { value in
             if !value {
                 isCustomWater = false
@@ -190,11 +190,11 @@ struct Background : View {
                                 cups += drink.amount
                                 isFirstMenu = false
                                 isQuickDrink = false // close the .sheet and go back to the dashboard
+                                coffeeAmount += drink.caffeineAmount / 1000 //parse grams into mg
                             }
                         Spacer().frame(height: UIScreen.main.bounds.size.height / 22)
                     }
                 }
-        
         }
 }
 

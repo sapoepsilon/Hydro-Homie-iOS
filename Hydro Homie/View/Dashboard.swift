@@ -8,7 +8,8 @@
 import SwiftUI
 import Firebase
 import UserNotifications
-
+import HealthKit
+import HealthKitUI
 
 
 
@@ -52,6 +53,9 @@ struct Dashboard: View {
     
     @State private var toolBar: UIToolbar = UIToolbar()
     
+    // Coffee
+    @State private var amountOfCoffee: Double = 0
+    @State private var accumalatedAmountOfCoffee: Double = 0
     //alchol
     @State private var isAlcoholConsumed: Bool = false
     @State private var percentageOfAlcohol: Double = 0
@@ -71,7 +75,6 @@ struct Dashboard: View {
     @State private var backgroundOpacity: Double = 0.001
     @State private var isFirstMenu = false
     
-    
     // MARK: User information
     @State var userName: String = ""
     @State var waterIntake: Double = 1
@@ -84,6 +87,9 @@ struct Dashboard: View {
     @ObservedObject var notificationTimerDocument = notificationTimeInterval
     @ObservedObject var alcoholTimer = timerBackground
     
+    let healthStore = HKHealthStore()
+
+    
     var body: some View {
         GeometryReader { reader in
             NavigationView {
@@ -91,7 +97,7 @@ struct Dashboard: View {
                     background()
                     VStack {
                         if isAlcoholConsumed {
-                            alcoholConsumed()
+//                            alcoholConsumed()
                         }
                         hydrationInfromation(reader: reader)
                         HStack{
@@ -148,12 +154,13 @@ struct Dashboard: View {
             })
             .navigationViewStyle(StackNavigationViewStyle())
             
-            Background(percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, isAlcoholConsumed: $isAlcoholConsumed, cups: $cups, backgroundOpacity: $backgroundOpacity, isQuickDrink: $isQuickDrink,   isFirstMenu: $isFirstMenu )
+            Background(percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, isAlcoholConsumed: $isAlcoholConsumed, cups: $cups, backgroundOpacity: $backgroundOpacity, isQuickDrink: $isQuickDrink,   isFirstMenu: $isFirstMenu, coffeeAmount: $amountOfCoffee, accumulatedCoffeeAmount: $accumalatedAmountOfCoffee )
                 .environmentObject(customDrinkDocument)
                 .opacity(isQuickDrink ? 1 : 0)
         }
         .onAppear{
             userDocument.fetchData()
+            customDrinkDocument.getAllDrinks()
             customDrinkDocument.getDrinkOpacity()
             if colorScheme == .light {
                 toolBackground = UIColor(self.backgroundColorBottom)
@@ -165,7 +172,6 @@ struct Dashboard: View {
             hydration.requestNotifiactionPermission()
             waterBackgroundColor = backgroundColorTop
             waterColor = currentWaterColor(colorScheme: colorScheme)
-            
         }
         
         .onChange(of: userDocument.user.name, perform: { newValue in
@@ -190,7 +196,7 @@ struct Dashboard: View {
             RegisterView(Dashboard: $user.loggedIn, registerView: $isDocumentAddition)
         })
         .sheet(isPresented: $popUp, content: {
-            PopUp(active: $popUp, cups: $cups, customDrinkDocument: customDrinkDocument, waterColor: $waterColor, isMetric: $isMetric, isCustomWater: $isCustomWater, backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isAlcoholConsumed: $isAlcoholConsumed, percentageOfAlcohol: $percentageOfAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol)
+            PopUp(active: $popUp, cups: $cups, customDrinkDocument: customDrinkDocument, waterColor: $waterColor, isMetric: $isMetric, isCustomWater: $isCustomWater, backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isAlcoholConsumed: $isAlcoholConsumed, percentageOfAlcohol: $percentageOfAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, coffeeAmount: $amountOfCoffee, accumulatedCoffeeAmount: $accumalatedAmountOfCoffee)
                 .environmentObject(customDrinkDocument)
                 .environmentObject(user)
                 .environmentObject(userDocument)
@@ -212,11 +218,14 @@ struct Dashboard: View {
             
         })
         .halfASheet(isPresented: $isDiuretic, content: {
-            DiureticView(cups: $cups, waterColor: $waterColor, isCustomWater: $isCustomWater, isMetric: $isMetric, isDiuretic: $isDiuretic, popUp: $popUp, isAlcoholConsumed: $isAlcoholConsumed, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol)
+            DiureticView(cups: $cups, waterColor: $waterColor, isCustomWater: $isCustomWater, isMetric: $isMetric, isDiuretic: $isDiuretic, popUp: $popUp, isAlcoholConsumed: $isAlcoholConsumed, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, coffeeAmount: $amountOfCoffee ,accumulatedCoffeeAmount: $accumalatedAmountOfCoffee)
                 .environmentObject(customDrinkDocument)
                 .clearModalBackground()
                 .edgesIgnoringSafeArea(.bottom)
         })
+//        .onChange(of: amountOfCoffee, perform: { value in
+//            addCaffeineToHK(caffeine: value)
+//        })
         .onChange(of: isDiureticMode, perform: { value in
             waterColor = currentWaterColor(colorScheme: colorScheme)
         })
@@ -265,6 +274,11 @@ struct Dashboard: View {
             formattedFloat = String(format: "%.1f", cupsLeft)
             cupsFormattedFloat = String(format: "%.1f", cups)
             cupLocal()
+            print("cup amount \(previousCup)")
+            addWaterAmountToHealthKit(ounces: (previousCup * 8))
+            if amountOfCoffee != 0 {
+                addCaffeineToHK(caffeine: amountOfCoffee)
+            }
         })
         .onChange(of: colorScheme, perform: { _ in
             if colorScheme == .dark {
@@ -305,16 +319,16 @@ struct Dashboard: View {
                     }
                   }) , secondaryButton: Alert.Button.cancel())
         })
-        
     }
+    
     //MARK: Stepper function
     func stepper() -> some View {
         return HStack{
             CustomStepper(value: $cups, isDiuretic: $isDiuretic, textColor: $waterColor, isCustomWater: $isCustomWater)
         }
     }
+    
     func calculateNotificationInterval(waterIntake: Double, awakeness: Double) -> Double {
-        
         let minutes: Double = 60
         let seconds: Double = 60
         var notificationInterval = ((awakeness / waterIntake) * minutes) * seconds
@@ -350,8 +364,6 @@ struct Dashboard: View {
             .scaleEffect(2)
             .foregroundColor(waterColor)
             .onTapGesture {
-                UIToolbar.appearance().setBackgroundColor(image: UIImage(color: .green, size: CGSize(width: UIScreen.main.bounds.width, height: 34))!)
-                
                 withAnimation() {
                     isQuickDrink.toggle()
                     if isQuickDrink {
@@ -363,7 +375,6 @@ struct Dashboard: View {
                 }
             }
             .padding()
-        
     }
     //MARK: Quick Menu functions
     
@@ -414,7 +425,6 @@ struct Dashboard: View {
     func customWaters() -> some View {
         ForEach(customDrinkDocument.customDrinks, id: \.self) { drink in
             if drink.isCustomWater {
-                
                 HStack() {
                     Text(drink.name)
                         .foregroundColor(colorScheme == .light ? .black : .white)
@@ -430,7 +440,6 @@ struct Dashboard: View {
             }
         }
     }
-    
     //MARK: function to save and retrieve cups in UserDefaults
     
     func cupLocal() {
@@ -464,9 +473,70 @@ struct Dashboard: View {
         return cupConverter
     }
     
+    func healthKitData() {
+        //MARK: HEALTH KIT
+        let readData: Set<HKQuantityType>
+
+        if HKHealthStore.isHealthDataAvailable() {
+            //rest of the code will be here
+            readData = Set([HKObjectType.quantityType(forIdentifier: .dietaryWater)!, HKObjectType.quantityType(forIdentifier: .bodyMass)!, HKObjectType.quantityType(forIdentifier: .dietaryCaffeine)!])
+            print("body mass and height \(readData.debugDescription)")
+            healthStore.requestAuthorization(toShare: readData, read: readData) { (success, error) in
+                if success {
+                    
+                } else {
+                    print("Authorization failed")
+                }
+            }
+        } else {
+            print("No HealthKit data available")
+        }
+    }
+    func addCaffeineToHK(caffeine: Double) {
+        let caffeineQuantityType = HKQuantityType.quantityType(forIdentifier: .dietaryCaffeine)
+        let caffeineQuantityUnit = HKUnit(from: .gram)
+        let caffeineQuantityAmount = HKQuantity(unit: caffeineQuantityUnit, doubleValue: caffeine)
+        let now = Date()
+        let sample = HKQuantitySample(type: caffeineQuantityType!, quantity: caffeineQuantityAmount, start: now, end: now)
+        let correlationType = HKObjectType.correlationType(forIdentifier: HKCorrelationTypeIdentifier.food)
+        let waterCorrelationForWaterAmount = HKCorrelation(type: correlationType!, start: now, end: now, objects: [sample])
+        // Send water intake data to healthStore…aka ‘Health’ app
+        // 5
+          self.healthStore.save(waterCorrelationForWaterAmount, withCompletion: { (success, error) in
+          if (error != nil) {
+              NSLog(String("error occurred saving water data"))
+          }
+        })
+    }
+    func addWaterAmountToHealthKit(ounces : Double) {
+      // 1
+      let quantityType = HKQuantityType.quantityType(forIdentifier: .dietaryWater)
+        
+      // string value represents US fluid
+      // 2
+        let quanitytUnit = HKUnit(from: "fl_oz_us")
+      let quantityAmount = HKQuantity(unit: quanitytUnit, doubleValue: ounces)
+      let now = Date()
+      // 3
+      let sample = HKQuantitySample(type: quantityType!, quantity: quantityAmount, start: now, end: now)
+      let correlationType = HKObjectType.correlationType(forIdentifier: HKCorrelationTypeIdentifier.food)
+      // 4
+      let waterCorrelationForWaterAmount = HKCorrelation(type: correlationType!, start: now, end: now, objects: [sample])
+      // Send water intake data to healthStore…aka ‘Health’ app
+      // 5
+        self.healthStore.save(waterCorrelationForWaterAmount, withCompletion: { (success, error) in
+        if (error != nil) {
+            NSLog(String("error occurred saving water data"))
+        }
+      })
+        
+        
+    }
     func waterDrop(reader: GeometryProxy) -> some View {
-        return
+        return VStack {
             WaterView(factor: self.$percentageWater, waterColor: $waterColor, backgroundColor: $waterBackgroundColor)
+            healthKitButton()
+        }
             .frame(height: reader.size.height / 2)
             .scaleEffect(waterScaleEffect)
             .onTapGesture {
@@ -535,12 +605,12 @@ struct Dashboard: View {
             
             .onReceive(timer, perform: { time in
                 if offset.width < -1 {
-                    offset.width += 1
+                    offset.width += 2
                 } else if offset.width > 1 {
-                    offset.width -= 1
+                    offset.width -= 2
                 } else if offset.height > 1 {
                     if !actionView {
-                        offset.height -= 1
+                        offset.height -= 2
                     }
                 }
             })
@@ -573,9 +643,17 @@ struct Dashboard: View {
                     })
             .onReceive(timer, perform: { time in
                 if actionOffset.height > 1 {
-                    actionOffset.height -= 1
+                    actionOffset.height -= 2
                 }
             })
+    }
+    
+    func healthKitButton() -> some View {
+        return    Button(action: {
+            healthKitData()
+        }, label: {
+            Text("Get the helthkit data")
+        })
     }
     //MARK: hydration information
     func hydrationInfromation(reader: GeometryProxy) -> some View {
@@ -657,6 +735,9 @@ struct PopUp: View {
     @Binding var amountOfAccumulatedAlcohol: Double
     @State private var isDarkMode: Bool = false
     
+    @Binding var coffeeAmount: Double
+    @Binding var accumulatedCoffeeAmount: Double
+    
     
     var body: some View {
         ZStack {
@@ -732,7 +813,7 @@ struct PopUp: View {
         })
         
         .sheet(isPresented: $isDiuretic, content: {
-            DiureticView(cups: $cups, waterColor: $waterColor, isCustomWater: $isCustomWater, isMetric: $isMetric, isDiuretic: $isDiuretic, popUp: $active, isAlcoholConsumed: $isAlcoholConsumed, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol , percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol)
+            DiureticView(cups: $cups, waterColor: $waterColor, isCustomWater: $isCustomWater, isMetric: $isMetric, isDiuretic: $isDiuretic, popUp: $active, isAlcoholConsumed: $isAlcoholConsumed, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol , percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, coffeeAmount: $coffeeAmount, accumulatedCoffeeAmount: $accumulatedCoffeeAmount)
                 .environmentObject(customDrinkDocument)
                 .clearModalBackground()
                 .edgesIgnoringSafeArea(.bottom)

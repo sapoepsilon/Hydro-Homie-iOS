@@ -34,6 +34,9 @@ struct DiureticView: View {
     @Binding var percentageOfEachAlcohol: Double
     @Binding var amountOfEachAlcohol: Double
     
+    //Coffee
+    @Binding var coffeeAmount: Double
+    @Binding var accumulatedCoffeeAmount: Double
     
     
     
@@ -127,7 +130,7 @@ struct DiureticView: View {
 
                                 .opacity(!isCustomDrink ? 1 : 0)
                                 VStack {
-                                    Image(colorScheme == .light ? "waterDropDark" : "waterDrop")
+                                    Image(colorScheme == .light ? "waterDrop" : "waterDropDark" )
                                         .padding()
                                     Text("Log custom amount of water")
                                         .foregroundColor(colorScheme == .light ? .black : .white)
@@ -244,6 +247,7 @@ struct DiureticView: View {
                                 .padding()
                         } else if drink.isCaffeine {
                             Image(colorScheme == .light ?  "coffee" : "coffeeDark")
+                                .foregroundColor(colorScheme == .light ? .white : .white)
                                 .padding()
                         } else {
                             Image(colorScheme == .dark ? "waterDropDark" : "waterDrop")
@@ -254,13 +258,16 @@ struct DiureticView: View {
                     }
                     .onTapGesture {
                         cups += drink.amount
-                        isDiuretic = false
-                        popUp = false // close the .sheet and go back to the dashboard
                         if drink.isAlcohol {
                             isAlcoholConsumed = true
                             self.amountOfAccumulatedAlcohol += drink.alcoholAmount
                             percentageOfEachAlcohol  = drink.alcoholPercentage
+                        } else if drink.isCaffeine {
+                            coffeeAmount = drink.caffeineAmount / 100
+                            print("caffeine in .mg \(coffeeAmount)")
                         }
+                        isDiuretic = false
+                        popUp = false // close the .sheet and go back to the dashboard
                     }
                     
                     Text(drink.name)
@@ -274,6 +281,9 @@ struct DiureticView: View {
                                 isAlcoholConsumed = true
                                 self.amountOfAccumulatedAlcohol += drink.alcoholAmount
                                 percentageOfEachAlcohol  = drink.alcoholPercentage
+                            } else if drink.isCaffeine {
+                                coffeeAmount = drink.caffeineAmount / 1000
+                                print("caffeine in .mg \(coffeeAmount)")
                             }
                         }
                         .frame(width: editIndent)

@@ -46,16 +46,16 @@ struct CustomDrink: View {
     
     @State private var selectedLiquid = differentLiquids.milk
     //alcoholic beverage details
-    @State private var alcoholPercentage: String = "" //maybe should make picker out of it
+    @State private var alcoholPercentage: String = ""
     @State private var alcoholAmount: Double = 0
     @State private var additionalLiquids: Bool = false
     @State private var alcoholCupAmount: String = ""
-    @State private var caffeineAmount: Double = 0
+    @State private var caffeineAmount: String = ""
     @State private var customDrinks: [CustomDrinkModel] = []
     @State private var mlConverter: Double = 29.5735
     @State private var ethanolDensity: Double = 0.789
-    @State private var differentBeverageName = "Different Beverage"
-    
+    @State private var differentBeverageName = "What kind of beverage"
+    @State private var isCaffeineInfo: Bool = false
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -130,40 +130,40 @@ struct CustomDrink: View {
                             .pickerStyle(SegmentedPickerStyle())
                         }
                     }
-                        if isAlcohol {
-                            Section(header: Text("Alcoholic beverage: ") ) {
-                                HStack {
-                                    TextField("Percentage of alcohol", text: $alcoholPercentage)
-                                        .keyboardType(.numberPad)
-                                        .onReceive(Just(alcoholPercentage)) { newValue in
-                                            let filtered = newValue.filter { "0123456789.".contains($0) }
-                                            if filtered != newValue {
-                                                alcoholPercentage = filtered
-                                            }
+                    if isAlcohol {
+                        Section(header: Text("Alcoholic beverage: ") ) {
+                            HStack {
+                                TextField("Percentage of alcohol", text: $alcoholPercentage)
+                                    .keyboardType(.numberPad)
+                                    .onReceive(Just(alcoholPercentage)) { newValue in
+                                        let filtered = newValue.filter { "0123456789.".contains($0) }
+                                        if filtered != newValue {
+                                            alcoholPercentage = filtered
                                         }
-                                    Text("%")
-                                }
-                                HStack{
-                                    TextField("Cup Amount", text: $alcoholCupAmount)
-                                        .keyboardType(.numberPad)
-                                        .onReceive(Just(alcoholCupAmount)) { newValue in
-                                            let filtered = newValue.filter { "0123456789.".contains($0) }
-                                            if filtered != newValue {
-                                                alcoholCupAmount = filtered
-                                            }
+                                    }
+                                Text("%")
+                            }
+                            HStack{
+                                TextField("Cup Amount", text: $alcoholCupAmount)
+                                    .keyboardType(.numberPad)
+                                    .onReceive(Just(alcoholCupAmount)) { newValue in
+                                        let filtered = newValue.filter { "0123456789.".contains($0) }
+                                        if filtered != newValue {
+                                            alcoholCupAmount = filtered
                                         }
-                                    Text(cupMeasurement)
-                                }
-                                HStack {
-                                    Text("Additional beverages in your drink?")
-                                    Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
-                                        Text("No").tag(false)
-                                        Text("Yes").tag(true)
-                                    })
-                                }
-                                .pickerStyle(SegmentedPickerStyle())
-                                if additionalLiquids {
-                                    withAnimation {
+                                    }
+                                Text(cupMeasurement)
+                            }
+                            HStack {
+                                Text("Additional beverages in your drink?")
+                                Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
+                                    Text("No").tag(false)
+                                    Text("Yes").tag(true)
+                                })
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
+                            if additionalLiquids {
+                                withAnimation {
                                     Menu(content: {
                                         ForEach(differentLiquids.allCases, id: \.self   ) { liquid in
                                             Button(action: {
@@ -177,77 +177,95 @@ struct CustomDrink: View {
                                     }, label: {
                                         Text(differentBeverageName)
                                     })
-                                    }
-                                    HStack{
-                                        if alcoholCupAmount.isEmpty && alcoholPercentage.isEmpty  {
-                                            
-                                        } else {
+                                }
+                                HStack{
+                                    if alcoholCupAmount.isEmpty && alcoholPercentage.isEmpty  {
+                                        
+                                    } else {
                                         Menu(content: {
                                             ForEach((1..<Int(maxAmountBeverageAmount)).reversed(), id: \.self) { number in
                                                 Button(action: {
                                                     additionalBeverageAmount = Double(number)
                                                 }, label: {
-                                                    Text("\(String(number)) ml")
+                                                    Text("\(String(number)) \(cupMeasurement)")
                                                 })
                                             }
                                         }, label: {
                                             Text("Amount of beverage")
                                         })
-                                            Text("Amount: \(additionalBeverageAmount, specifier: "%.f")").opacity(additionalBeverageAmount > 0 ? 1 : 0)
-                                        }
+                                        Text("Amount: \(additionalBeverageAmount, specifier: "%.f")").opacity(additionalBeverageAmount > 0 ? 1 : 0)
                                     }
                                 }
                             }
                         }
-                        
-                        if isCoffee {
-                            Section(header: Text("Coffee beverage: ") ) {
-                                HStack {
-                                    TextField("Amount of caffeine in mg", value: $caffeineAmount, formatter: formatter)
-                                    Text("%")
-                                }
-                                HStack{
-                                    TextField("Cup Amount", value: $alcoholCupAmount, formatter: formatter)
-                                    Text(cupMeasurement)
-                                }
+                    }
+                    
+                    if isCoffee {
+                        Section(header: Text("Coffee beverage: ") ) {
+                            HStack {
                                 
-                                Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
-                                    Text("No").tag(false)
-                                    Text("Yes").tag(true)
+                                TextField("Amount of caffeine in mg", text: $caffeineAmount)
+                                    .keyboardType(.numberPad)
+                                    .onReceive(Just(caffeineAmount)) { newValue in
+                                        let filtered = newValue.filter { "0123456789.".contains($0) }
+                                        if filtered != newValue {
+                                            caffeineAmount = filtered
+                                        }
+                                    }
+                                Text("mg")
+                                Button(action: {
+                                    isCaffeineInfo = true
+                                }, label: {
+                                    Image(systemName: "info")
                                 })
-                                .pickerStyle(SegmentedPickerStyle())
-                                
-                                if additionalLiquids && alcoholCupAmount != "" && alcoholPercentage != "" {
+                            }
+                            HStack{
+                                TextField("Cup Amount", text: $alcoholCupAmount)
+                                    .keyboardType(.numberPad)
+                                    .onReceive(Just(caffeineAmount)) { newValue in
+                                        let filtered = newValue.filter { "0123456789.".contains($0) }
+                                        if filtered != newValue {
+                                            caffeineAmount = filtered
+                                        }
+                                    }
+                                Text(cupMeasurement)
+                            }
+                            Picker("Additional liquids in the beverage ?", selection: $additionalLiquids, content: {
+                                Text("No").tag(false)
+                                Text("Yes").tag(true)
+                            })
+                            .pickerStyle(SegmentedPickerStyle())
+                            
+                            if additionalLiquids && alcoholCupAmount != "" && alcoholPercentage != "" {
+                                Menu(content: {
+                                    ForEach(differentLiquids.allCases, id: \.self   ) { liquid in
+                                        Button(action: {
+                                            selectedLiquid = liquid
+                                            differentBeverageName = liquid.rawValue.camelCaseToWords()
+                                            
+                                        }, label: {
+                                            Text(liquid.rawValue.camelCaseToWords())
+                                        })
+                                    }
+                                }, label: {
+                                    Text(differentBeverageName)
+                                })
+                                HStack{
                                     Menu(content: {
-                                        ForEach(differentLiquids.allCases, id: \.self   ) { liquid in
+                                        ForEach((1...Int(maxAmountBeverageAmount)).reversed(), id: \.self) { number in
                                             Button(action: {
-                                                selectedLiquid = liquid
-                                                differentBeverageName = liquid.rawValue.camelCaseToWords()
-                                                
+                                                additionalBeverageAmount = Double(number)
                                             }, label: {
-                                                Text(liquid.rawValue.camelCaseToWords())
+                                                Text(String(number))
                                             })
                                         }
                                     }, label: {
-                                        Text(differentBeverageName)
+                                        Text("Amount of beverage")
                                     })
-                                    HStack{
-                                        Menu(content: {
-                                            
-                                            ForEach((1...Int(maxAmountBeverageAmount)).reversed(), id: \.self) { number in
-                                                Button(action: {
-                                                    additionalBeverageAmount = Double(number)
-                                                }, label: {
-                                                    Text(String(number))
-                                                })
-                                            }
-                                        }, label: {
-                                            Text("Amount of beverage")
-                                        })
-                                    }
                                 }
                             }
                         }
+                    }
                 }
             }
             if additionalLiquids {
@@ -255,10 +273,17 @@ struct CustomDrink: View {
                     addDrinkButton()
                 }
             } else if !additionalLiquids {
-                addDrinkButton()
-                    .opacity( customWaterAmount.isEmpty && alcoholCupAmount.isEmpty ? 0 : 1)
+                if isCoffee {
+                    addDrinkButton()
+                        .opacity( caffeineAmount.isEmpty || alcoholCupAmount.isEmpty ? 0 : 1)
+                } else if isWater {
+                    addDrinkButton()
+                        .opacity(customWaterAmount.isEmpty ? 0 : 1)
+                } else {
+                    addDrinkButton()
+                        .opacity( alcoholPercentage.isEmpty || alcoholCupAmount.isEmpty ? 0 : 1)
+                }
             }
-            
         }
         .alert(isPresented: $ErrorDetector, content: {
             Alert(title: Text("Alert"), message: Text(ErrorTestDeleteLater), dismissButton: .default(Text("OK"), action: {
@@ -267,9 +292,17 @@ struct CustomDrink: View {
                     isDiureticSheet = false
                 }
             }))
-            
+        })
+        .alert(isPresented: $isCaffeineInfo, content: {
+            Alert(title: Text("How to calculate caffeine amount"), message:
+                    Text(" For any amount of 'good strength' American-style coffee by any brew method, weigh the dry coffee in grams and multiply by 0.008, or 80mg of caffeine for each 10g of dry coffee.." ), primaryButton: Alert.Button.default(Text("Learn more"), action: {
+                        UIApplication.shared.open(URL(string: "https://coffee.stackexchange.com/a/324")!)
+                    }), secondaryButton: Alert.Button.cancel())
         })
         .onAppear {
+            if isMetric {
+                mlConverter = 1
+            }
             cupMeasurement =  isMetric ? "ml" : "oz"
             CustomDrinkDocument.getAllDrinks()
             self.customDrinks = CustomDrinkDocument.customDrinks
@@ -281,12 +314,12 @@ struct CustomDrink: View {
         .onChange(of: alcoholCupAmount, perform: { value in
             if alcoholPercentage != "" && alcoholCupAmount != "" {
                 let alcoholcupAmount = Double(alcoholCupAmount) ?? 0
-//                let alcoholpercentage = Double(alcoholPercentage) ?? 0
-//                let localDrinkAmount = alcoholcupAmount - ((alcoholcupAmount / 100) * alcoholpercentage)
-//                print("drink amount \(localDrinkAmount)")
-//                let localAlcoholAmount = (alcoholcupAmount * mlConverter) * (alcoholpercentage / 100) * ethanolDensity
-//                let returnAmount = localDrinkAmount - localAlcoholAmount
-//                print("drink amount \(returnAmount)" )
+                //                let alcoholpercentage = Double(alcoholPercentage) ?? 0
+                //                let localDrinkAmount = alcoholcupAmount - ((alcoholcupAmount / 100) * alcoholpercentage)
+                //                print("drink amount \(localDrinkAmount)")
+                //                let localAlcoholAmount = (alcoholcupAmount * mlConverter) * (alcoholpercentage / 100) * ethanolDensity
+                //                let returnAmount = localDrinkAmount - localAlcoholAmount
+                //                print("drink amount \(returnAmount)" )
                 maxAmountBeverageAmount = alcoholcupAmount
             }
         })
@@ -307,7 +340,7 @@ struct CustomDrink: View {
             } else {
                 drinkAmount = Double(customWaterAmount) ?? 0
             }
-            
+            let caffeineAmount = Double(caffeineAmount) ?? 0
             if isMetric {
                 drinkAmount /= 237
             } else {
@@ -324,12 +357,10 @@ struct CustomDrink: View {
         , label: {
             Text("Create the custom drink")
         })
-                    .buttonStyle(LoginButton())
+        .buttonStyle(LoginButton())
     }
     func createCustomDrink(name: String, isAlcohol: Bool, isCaffeine: Bool, amount: Double, alcoholAmount: Double, caffeineAmount: Double, alcoholPercentage: Double, isCustomWater: Bool) {
         
         ErrorTestDeleteLater = CustomDrinkDocument.addCustomDrink(newCustomDrink: CustomDrinkModel(id: CustomDrinkDocument.customDrinks.count, name: name, isAlcohol: isAlcohol, isCaffeine: isCaffeine, amount: amount, alcoholAmount: alcoholAmount, alcoholPercentage: alcoholPercentage, caffeineAmount: caffeineAmount, isCustomWater: isCustomWater))
     }
-    
-    
 }
