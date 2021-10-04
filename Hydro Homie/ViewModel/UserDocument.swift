@@ -6,59 +6,58 @@
 //
 
 import Foundation
-import FirebaseFirestore
-import FirebaseAuth
+import Firebase
 import CoreLocation
 
 class UserDocument: ObservableObject {
-    
+
     let db = Firestore.firestore()
     let today = Date()
     var locationManager: CLLocationManager?
-    @Published var user: User = User(name: "", height: 1, weight: 1, metric: false, isCoffeeDrinker: false, waterIntake: 1,  hydration:  [["": 1]], userUID: "")
-    
+    @Published var user: User = User(name: "", height: 1, weight: 1, metric: false, isCoffeeDrinker: false, waterIntake: 1, hydration: [["": ["water": 0.0, "alcohol": 0.0, "coffee": 0.0]]], userUID: "")
+
     enum documentExist {
         case exist
         case doesNotExist
     }
-    
+
     @Published var enumDocument: documentExist = documentExist.exist
+
     func fetchData() {
-        
         //check if the user has a new device
         // if not the return values from UserDefaults
-        
+
         let currentUserID = Auth.auth().currentUser?.uid
 
         db.collection("users").document(currentUserID!).addSnapshotListener { (querySnapshot, error) in
             if (error != nil) {
                 print(error!.localizedDescription)
                 return
-            }   else if(querySnapshot!.data() != nil) {
+            } else if (querySnapshot!.data() != nil) {
                 let document = querySnapshot!.data()
                 self.user.name = document!["name"] as? String ?? ""
                 self.user.height = document!["height"] as? Int ?? 1
                 self.user.weight = document!["weight"] as? Double ?? 1
                 self.user.metric = document!["metric"] as? Bool ?? false
                 self.user.waterIntake = document!["waterIntake"] as? Double ?? 1
-                self.user.hydration = document!["hydration"] as? [[String: Double]] ??  [["": 1]]
+                self.user.hydration = document!["hydration"] as? [[String: Dictionary<String, Double>]] ?? [["": ["water": 0, "alcohol": 0, "coffee": 0]]]
+                self.saveHydrationDictionaryToUserDefaults(hydrationInTheLoop: self.user.hydration)
                 self.user.isCoffeeDrinker = document!["isCoffeeDrinker"] as? Bool ?? false
                 self.user.userUID = document!["userID"] as? String ?? ""
                 self.enumDocument = .exist
-            } else if(querySnapshot?.exists == nil) {
+            } else if (querySnapshot?.exists == nil) {
                 self.enumDocument = .doesNotExist
             }
 
         }
     }
-    
-    
-    
+
+
     func getUser() -> User {
         let user = user
         return user
     }
-    
+
     func getTheLatestDate() -> String {
         // MARK: change to core data
         let cupsDate = Date()
@@ -66,26 +65,24 @@ class UserDocument: ObservableObject {
         let today = format.string(from: cupsDate)
         let lastItem = user.hydration.last
         var currentDate: String = ""
-        for (date, _) in  lastItem ?? [today : 0] {
-            currentDate = date
+        for (_, _) in lastItem ?? [today: ["water": 0, "alcohol": 0, "coffee": 0]] {
+            currentDate = lastItem?.keys.first! ?? ""
         }
         return currentDate
     }
-
 
     func changeData(userID: String, name: String?, weight: Double?, height: Double?, isMetric: Bool, isCoffeeDrinker: Bool, waterIntake: Double) -> String {
         //TODO: calculate water Intake
 
         var returnMessage = "Written successfully"
-        let updatedFields: [String:Any] = [
+        let updatedFields: [String: Any] = [
             "name": name as Any,
-             "weight": weight,
-             "height": height,
-             "metric": isMetric,
-             "waterIntake": waterIntake,
+            "weight": weight,
+            "height": height,
+            "metric": isMetric,
+            "waterIntake": waterIntake,
             "isCoffeeDrinker": isCoffeeDrinker
         ]
-        print("userID \(userID)")
         db.collection("users").document(userID).setData(updatedFields, merge: true, completion: { error in
             if error != nil {
                 returnMessage = error!.localizedDescription
@@ -93,60 +90,109 @@ class UserDocument: ObservableObject {
         })
         return returnMessage
     }
-    
+
     func changeEmail(email: String) {
         Auth.auth().currentUser?.updateEmail(to: email, completion: { error in
             if error != nil {
-                print ("error \(error.debugDescription)")
+                print("error \(error.debugDescription)")
             } else {
                 print("updated successfully")
             }
         })
     }
+
     func changeCredentials(newPassword: String?) -> String {
         var returnMessage = "Password has been updated"
 
-            Auth.auth().currentUser?.updatePassword(to: newPassword!, completion: { error in
-                if error != nil {
-                   return  returnMessage = error!.localizedDescription
-                } else {
-                   return  returnMessage += "Password has been updated"
-                }
-            })
+        Auth.auth().currentUser?.updatePassword(to: newPassword!, completion: { error in
+            if error != nil {
+                return returnMessage = error!.localizedDescription
+            } else {
+                return returnMessage += "Password has been updated"
+            }
+        })
         return returnMessage
     }
 
-
-    func previousDate(hydrationArray: [String: Double]) -> [String: Double] {
-        var previousDate: [String: Double] = ["":0]
+    func previousDate(hydrationArray: [String: Dictionary<String, Double>]) -> [String: Dictionary<String, Double>] {
+        var previousDate: [String: Dictionary<String, Double>] = ["": ["": 0]]
         var arrayElementNumber: Int = 0
         for element in user.hydration {
             if element == hydrationArray {
                 if (element == user.hydration.first) {
-                    previousDate  = element
+                    previousDate = element
                     return previousDate
                 } else {
-                    previousDate =  user.hydration[arrayElementNumber-1]
+                    previousDate = user.hydration[arrayElementNumber - 1]
                     return previousDate
                 }
             }
             arrayElementNumber += 1
         }
+        print("previous date: \(previousDate)")
         return previousDate
     }
-    
-    func nextDate(hydrationArray: [String: Double]) -> [String: Double] {
-        var previousDate: [String: Double] = ["":0]
+
+    func saveHydrationDictionaryToUserDefaults(hydrationInTheLoop: [[String: [String: Double]]]) {
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(hydrationInTheLoop)
+            UserDefaults.standard.set(data, forKey: "hydration")
+        } catch {
+            print("Unable to Encode hydration Array (\(error))")
+        }
+        if var data = UserDefaults.standard.data(forKey: "hydration") {
+            do {
+                // Create JSON Decoder
+                let decoder = JSONDecoder()
+                do {
+                    print("Hydration in the userdefaults after saving to it: \(try decoder.decode([[String: [String: Double]]].self, from: data).description)")
+                } catch {
+                    print("Unable to Decode hydration after saving it(\(error))")
+                }
+            }
+        }
+    }
+
+    func getHydrationArrayFromTheUserDefaults() -> [[String: [String:Double]]] {
+        var returnValue: [[String: [String: Double]]] = []
+        if var data = UserDefaults.standard.data(forKey: "hydration") {
+            do {
+                let decoder = JSONDecoder()
+                returnValue = try decoder.decode([[String: [String: Double]]].self, from: data)
+            } catch {
+                print("Unable to Decode hydration (\(error))")
+            }
+        }
+        return returnValue
+    }
+
+    func updateHydrationDictionaryInUserDefaults(currentHydration: [String: [String: Double]], newHydrationValues: [String: Double], key: String) {
+        var newHydration = [key: newHydrationValues]
+        var arrayOfHydration = getHydrationArrayFromTheUserDefaults()
+
+        for hydration in arrayOfHydration {
+            if hydration.keys == currentHydration.keys {
+                let index = arrayOfHydration.firstIndex(of: hydration)
+                arrayOfHydration[index!].updateValue(newHydrationValues, forKey: key)
+            }
+        }
+        saveHydrationDictionaryToUserDefaults(hydrationInTheLoop: arrayOfHydration)
+
+
+    }
+
+    func nextDate(hydrationArray: [String: Dictionary<String, Double>]) -> [String: Dictionary<String, Double>] {
+        var previousDate: [String: Dictionary<String, Double>] = ["": ["": 0]]
         var arrayElementNumber: Int = 0
-        
+
         for element in user.hydration {
             if element == hydrationArray {
                 if (element == user.hydration.last) {
-                    previousDate  = element
+                    previousDate = element
                     return previousDate
                 } else {
-                    previousDate =  user.hydration[arrayElementNumber+1]
-                    print("previousDate \(previousDate)")
+                    previousDate = user.hydration[arrayElementNumber + 1]
                     return previousDate
                 }
             }
@@ -154,6 +200,8 @@ class UserDocument: ObservableObject {
         }
         return previousDate
     }
+
+
 }
 
 

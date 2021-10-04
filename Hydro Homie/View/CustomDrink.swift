@@ -306,11 +306,7 @@ struct CustomDrink: View {
             cupMeasurement =  isMetric ? "ml" : "oz"
             CustomDrinkDocument.getAllDrinks()
             self.customDrinks = CustomDrinkDocument.customDrinks
-            print("custom drink displayed\(CustomDrinkDocument.customDrinks)")
         }
-        .onChange(of: isAlcohol, perform: { value in
-            print("isAlcohol \(isAlcohol)")
-        })
         .onChange(of: alcoholCupAmount, perform: { value in
             if alcoholPercentage != "" && alcoholCupAmount != "" {
                 let alcoholcupAmount = Double(alcoholCupAmount) ?? 0
@@ -330,12 +326,8 @@ struct CustomDrink: View {
             let alcoholpercentage = Double(alcoholPercentage) ?? 0
             let cupAmount = Double(alcoholCupAmount) ?? 0
             if !isWater {
-                print("cup amount \(alcoholcupAmount)")
-                print("additional beverage amount \(additionalBeverageAmount)")
                 alcoholcupAmount -= additionalBeverageAmount
-                print("cup amount after subtraction \(alcoholcupAmount)")
                 drinkAmount = cupAmount - ((alcoholcupAmount / 100) * alcoholpercentage)
-                print("drink amount \(drinkAmount)")
                 alcoholAmount = (alcoholcupAmount * mlConverter) * (alcoholpercentage / 100) * ethanolDensity // get the amount of alcohol in grams
             } else {
                 drinkAmount = Double(customWaterAmount) ?? 0
@@ -350,6 +342,8 @@ struct CustomDrink: View {
                 createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount, alcoholPercentage: alcoholpercentage, isCustomWater: isWater)
                 ErrorDetector = true
                 CustomDrinkDocument.getDrinkOpacity()
+                isCustomDrinkSheet = false
+                isDiureticSheet = false
             } else {
                 borderColor = Color.red
             }

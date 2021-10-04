@@ -76,6 +76,23 @@ struct ActionView: View {
                             })
                             
                         }.padding()
+                        
+                        Spacer()
+                        Text(" ")
+                        HStack{
+                            Button(action: {
+                                
+                            }, label: {
+                                Text("Contact the developer")
+                                    .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
+                                    .equalWidth()
+                                    .font(.system(size: fontSize))
+                                    .frame(width: width, alignment: .leading)
+                                Image(systemName: "info").foregroundColor(.blue)
+                                    .scaleEffect(CGSize(width: 1.5, height: 1.5))
+                            })
+                            
+                        }.padding()
                     }
                     .onPreferenceChange(WidthPreferenceKey.self) { widths in
                                     if let width = widths.max() {

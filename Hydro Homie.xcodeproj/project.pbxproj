@@ -21,6 +21,7 @@
 		9946C62A26C36FF500FF8846 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9946C62926C36FF500FF8846 /* AuthenticationViewModel.swift */; };
 		994F86142682822A00E38099 /* BarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F86132682822A00E38099 /* BarChart.swift */; };
 		995AEBFA266D752300FAD0CB /* WaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AEBF9266D752300FAD0CB /* WaterView.swift */; };
+		995AF79D270652300019AC83 /* HydrationDictionaryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995AF79C270652300019AC83 /* HydrationDictionaryModel.swift */; };
 		995D4110266EFC5600916F5C /* HeightPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995D410F266EFC5600916F5C /* HeightPicker.swift */; };
 		9965D7CD2637955400672D2E /* Hydro_HomieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */; };
 		9965D7CF2637955400672D2E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9965D7CE2637955400672D2E /* ContentView.swift */; };
@@ -89,6 +90,7 @@
 		9946C62926C36FF500FF8846 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		994F86132682822A00E38099 /* BarChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChart.swift; sourceTree = "<group>"; };
 		995AEBF9266D752300FAD0CB /* WaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterView.swift; sourceTree = "<group>"; };
+		995AF79C270652300019AC83 /* HydrationDictionaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationDictionaryModel.swift; sourceTree = "<group>"; };
 		995D410F266EFC5600916F5C /* HeightPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightPicker.swift; sourceTree = "<group>"; };
 		9965D7C92637955400672D2E /* Hydro Homie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hydro Homie.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hydro_HomieApp.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				99DE64D6266DBF1D0017015A /* Hydration.swift */,
 				99D60B82267124D600EE106B /* UserModel.swift */,
 				99234678269A8B9400785C7E /* CustomDrinkModel.swift */,
+				995AF79C270652300019AC83 /* HydrationDictionaryModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -348,6 +351,7 @@
 				99DE64DC266E7C8A0017015A /* RegisterView.swift in Sources */,
 				9936A33F269A40FD006FAF41 /* Extensions.swift in Sources */,
 				9965D7CF2637955400672D2E /* ContentView.swift in Sources */,
+				995AF79D270652300019AC83 /* HydrationDictionaryModel.swift in Sources */,
 				99234679269A8B9400785C7E /* CustomDrinkModel.swift in Sources */,
 				994096BD266D4BFE00830829 /* UserRepository.swift in Sources */,
 				99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */,

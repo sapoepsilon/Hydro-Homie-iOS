@@ -106,8 +106,7 @@ class CustomDrinkViewModel: ObservableObject {
             "caffeineAmount": newCustomDrink.caffeineAmount
         ]
         var Error: String = "Written successfully"
-        print("customDrink Dictionary values\(customDrinkDictionary.debugDescription)")
-        
+
         db.collection("users").document("customDrinks\(self.hydrationDocument.userID())").setData([
                 "customDrinks": FieldValue.arrayUnion([
                     customDrinkDictionary
@@ -152,8 +151,6 @@ class CustomDrinkViewModel: ObservableObject {
                    }
                 print("Document successfully written!")
             }
-//        print("custom Drinks array: \(self.customDrinks)")
-//        print("local Drinks array: \(self.drinksArray)"
         return Error
     }
     
@@ -169,9 +166,7 @@ class CustomDrinkViewModel: ObservableObject {
                 let document = querySnapshot!.data()
                 self.customDrinkDictionary = ((document!["customDrinks"] as? [[String:Any]])!)
             
-                print("document \(document.debugDescription)")
-                print("dictionary of custom drinks\(self.customDrinkDictionary.debugDescription)")
-                
+
                 for customDrink in self.customDrinkDictionary {
                     self.customDrinkObject.id = customDrink["id"] as? Int ?? 0
                     self.customDrinkObject.name = customDrink["name"] as? String ?? "none"
@@ -198,7 +193,6 @@ class CustomDrinkViewModel: ObservableObject {
                         print("Unable to Encode Note (\(error))")
                     }
                 
-                print("custom Drinks array\(self.customDrinks.debugDescription)")
             } else {
             print("Document does not exist")
           }
@@ -209,7 +203,6 @@ class CustomDrinkViewModel: ObservableObject {
     func getAllDrinks() {
 
         let fetch: Int = UserDefaults.standard.object(forKey: "fetchCustomDrink") as? Int ?? 1
-        print ("fetch \(fetch)")
         if fetch == 0 { // if the user hasn't changed the current device, and/or the userdefaults still keeps the customDrinks
             // Read/Get Data
             if let data = UserDefaults.standard.data(forKey: "customDrinksArray") {

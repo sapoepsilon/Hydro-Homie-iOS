@@ -21,18 +21,14 @@ struct NotificationTimer: View {
                     .font(.custom("Times", size: 36))
                     .foregroundColor(waterColor)
             }
-            .onAppear { print("TimerTabView appear")
+            .onAppear {
 
                 self.instoreTimer.defineTimeInterval(timeInterval: timeInterval)
                 self.instoreTimer.start()
             }
-           
-            .onDisappear {
-                print("TimerTabView disappear")
-            }
+
             .onChange(of: timeInterval, perform: { value in
                 self.instoreTimer.defineTimeInterval(timeInterval: timeInterval)
-                print("time Interval of the timer: \(timeInterval)")
 
             })
     }

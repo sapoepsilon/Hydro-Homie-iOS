@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 struct User: Encodable {
     var name: String
     var height: Int
@@ -13,7 +14,7 @@ struct User: Encodable {
     var metric: Bool
     var isCoffeeDrinker: Bool
     var waterIntake: Double
-    var hydration: [[String: Double]]
+    var hydration: [[String: [String:Double]]]
     var userUID: String
 }
 

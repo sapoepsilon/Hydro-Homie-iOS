@@ -131,6 +131,8 @@ struct DiureticView: View {
                                 .opacity(!isCustomDrink ? 1 : 0)
                                 VStack {
                                     Image(colorScheme == .light ? "waterDrop" : "waterDropDark" )
+                                            .renderingMode(.template)
+                                            .foregroundColor(colorScheme == .light ? .white : .white)
                                         .padding()
                                     Text("Log custom amount of water")
                                         .foregroundColor(colorScheme == .light ? .black : .white)

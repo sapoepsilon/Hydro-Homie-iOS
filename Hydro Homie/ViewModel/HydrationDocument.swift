@@ -11,11 +11,11 @@ class HydrationDocument: ObservableObject {
     
     @Published var document: HydrationModel = HydrationModel()
     
-    func updateHydration(cups: Double) {
-        document.uploadCups(cups: cups)
+    func updateHydration(cups: Double, alcohol: Double?, coffee: Double?) {
+        document.uploadCups(cups: cups, alcohol: alcohol, coffee: coffee)
     }
     
-    func getCups(hydrationDictionary: [String: Double], lastHydration: [String: Double]) -> Double {
+    func getCups(hydrationDictionary: [String: Dictionary<String, Double>], lastHydration: [String: Dictionary<String, Double>]) -> Double {
         return document.getCups(hydrationDictionary: hydrationDictionary, lastHydration: lastHydration)
     }
     
@@ -37,7 +37,6 @@ class HydrationDocument: ObservableObject {
         
             // removing notifications
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-            print("time interval: \(timeInterval)")
             let content = UNMutableNotificationContent()
             content.title = "Time to hydrate"
             content.subtitle = "Have one more cup of water"

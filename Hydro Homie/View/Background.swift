@@ -48,7 +48,7 @@ struct Background : View {
                     }
                 }
             }
-  
+
             VStack {
                 HStack {
                     Spacer()
@@ -114,14 +114,14 @@ struct Background : View {
                         //
                         if isCustomWater {
                             VStack {
-                                Spacer().frame(height: UIScreen.main.bounds.size.height / 2)
+                                Spacer().frame(height: UIScreen.main.bounds.size.height / 3)
                                 getDrinkView(drink: drink.water)
                             }.transition(AnyTransition.move(edge: .top))
                             
                         }
                         if isCustomCoffee {
                             VStack {
-                                Spacer().frame(height: UIScreen.main.bounds.size.height / 2)
+                                Spacer().frame(height: UIScreen.main.bounds.size.height / 3)
                                 getDrinkView(drink: drink.coffee)
                                 
                             }.transition(AnyTransition.move(edge: .top))
@@ -129,7 +129,7 @@ struct Background : View {
                         
                         if isCustomAlcohol {
                             VStack {
-                                Spacer().frame(height: UIScreen.main.bounds.size.height / 2)
+                                Spacer().frame(height: UIScreen.main.bounds.size.height / 3)
                                 getDrinkView(drink: drink.alcohol)
                                 
                             }.transition(AnyTransition.move(edge: .top))

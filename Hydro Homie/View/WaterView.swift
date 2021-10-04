@@ -97,7 +97,6 @@ struct WaterView: View {
                     .onAppear {
                         if(colorScheme == .light) {
                             UIToolbar.appearance().barTintColor = .clear
-                           
                         }
                         show = true
                         }
@@ -111,7 +110,7 @@ struct WaterView: View {
                         }
                         
                         if percent < factor {
-                            percent += 0.1
+                            percent += 0.5
                         } else if (percent > factor) {
                             percent -= 0.1
                             }
