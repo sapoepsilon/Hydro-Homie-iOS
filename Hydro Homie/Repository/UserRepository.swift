@@ -16,6 +16,7 @@ import SwiftUI
 class UserRepository: ObservableObject {
     
     @Published var loggedIn: Bool = false
+    @Published var isUploadFinished: Bool = true
     @Published var nonce = ""
     
     @AppStorage ("log_status") var appleLogStatus = false
@@ -25,7 +26,7 @@ class UserRepository: ObservableObject {
     @AppStorage ("appleFirestoreExists") var appleFireStoreExists: Bool = false
 
     var userID = ""
-    
+
     func checkUser() {
         Auth.auth().addStateDidChangeListener { auth, user in
             if user != nil {
@@ -53,9 +54,8 @@ class UserRepository: ObservableObject {
         }
     }
     func signUpUser(email: String, password: String, name: String, weight: Double, height: Double, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double, onSucces: @escaping() -> Void, onError: @escaping (_ errorMessage : String) -> Void ) {
-    
+            isUploadFinished = false
             Auth.auth().createUser(withEmail: email, password: password) { (authData, error) in
-        
                 if (error != nil) {
                     print(error!.localizedDescription)
                     onError(error!.localizedDescription)
@@ -70,12 +70,11 @@ class UserRepository: ObservableObject {
             }
     }
     
-    func appleAuthenticate(credintial: ASAuthorizationAppleIDCredential) {
+    func appleAuthenticate(credintial: ASAuthorizationAppleIDCredential, completionHandler: @escaping (Bool) -> Void)  {
         // obtain token
-        
+
         guard let token = credintial.identityToken else {
             print("error with firebase")
-            
             return
         }
         
@@ -86,13 +85,12 @@ class UserRepository: ObservableObject {
         
         let firebaseCredential = OAuthProvider.credential(withProviderID: "apple.com", idToken: tokenString, rawNonce: nonce)
         
-        Auth.auth().signIn(with: firebaseCredential) { [self] (result, err) in
+        Auth.auth().signIn(with: firebaseCredential) { (result, err) in
             
             if let error = err {
                 print(error.localizedDescription)
                 return
             }
-            
             print("Apple sign-in successful")
             
             self.appleEmail = result!.user.email!
@@ -104,13 +102,14 @@ class UserRepository: ObservableObject {
             
             appleFirestoreDocumentName.getDocument { (document, error) in
                 if let document = document, document.exists {
-                    appleFireStoreExists = true
+                    self.appleFireStoreExists = true
                     self.loggedIn = true
+                    self.isUploadFinished = true
+                    completionHandler(true)
                     print("document exists \(document.debugDescription)")
                 } else {
-                    appleFireStoreExists = false
-                    print("document does not exists \(document.debugDescription)")
-
+                    completionHandler(false)
+                    self.appleFireStoreExists = false
                 }
             }
         }
@@ -133,7 +132,6 @@ class UserRepository: ObservableObject {
     }
     
     func addUserInformation(name: String, weight: Double, height: Double, userID: String, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double) {
-        
         print("userID before adding it \(userID)")
         
         Firestore.firestore().collection("users").document(userID).setData([
@@ -145,7 +143,12 @@ class UserRepository: ObservableObject {
              "waterIntake": waterIntake,
             "isCoffeeDrinker": isCoffeeDrinker
         ]) { onError in
+            if onError != nil {
             print(onError.debugDescription)
+            } else {
+                print("Finished writing to Firebase ")
+                self.isUploadFinished = true
+            }
         } 
         
         //MARK: USERDEFAULTS: user infromation
@@ -161,12 +164,12 @@ class UserRepository: ObservableObject {
             print(data)
             // Write/Set Data
             UserDefaults.standard.set(data, forKey: "userInformation")
+
         
         } catch {
             print("Unable to Encode Note (\(error))")
         }
         // add the user information into UserDefaults
-
     }
     
 }

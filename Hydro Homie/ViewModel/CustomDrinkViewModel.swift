@@ -34,9 +34,7 @@ class CustomDrinkViewModel: ObservableObject {
         "alcoholPercentage": 0,
         "caffeineAmount": 0
     ]]
-    init() {
-        self.getAllDrinks()
-    }
+
     
     func deleteCustomDrink(customDrink: CustomDrinkModel) {
 //        db.collection("users").document("customDrinks").updateData([AnyHashable : Any])
@@ -194,7 +192,7 @@ class CustomDrinkViewModel: ObservableObject {
                     }
                 
             } else {
-            print("Document does not exist")
+            print("CustomDrink document does not exist")
           }
         }
     }

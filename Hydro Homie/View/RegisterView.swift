@@ -29,7 +29,6 @@ struct RegisterView: View {
     @State private var alert: Bool = false
     @State private var isCoffeeDrinker: Bool = false
     @State private var exerciseTimeAmount: Int = 0
-    
     @State private var isWorkoutActive: Bool = false
     @State private var weigthConverter: CGFloat = 30
     @State private var isCoffeeMessage: Bool = false
@@ -67,7 +66,7 @@ struct RegisterView: View {
                         .padding()
                 }
                 
-                VStack{
+                ScrollView{
                     SATextField(tag: 0, placeholder: "Name", changeHandler: { (name) in
                         self.name = name
                     }, onCommitHandler: {
@@ -169,7 +168,12 @@ struct RegisterView: View {
                     
                     HStack() {
                         Text(" ")
-                        TextField("Weight", text: $weight)
+                        SATextField(tag: 4, placeholder: "Weight", changeHandler: { (weight) in
+                            self.weight = weight
+                        }, returnKeyType: UIReturnKeyType.done, onCommitHandler: {
+                            print("weight")
+                        }, text: self.weight)
+                            .fixedSize(horizontal: false, vertical: true)
                             .keyboardType(.numberPad)
                             .onReceive(Just(weight)) { newValue in
                                 let filtered = newValue.filter { "0123456789.".contains($0) }
@@ -224,7 +228,6 @@ struct RegisterView: View {
                 
                 Button(action: {
                     var waterIntake = ((Double(self.weight) ?? 0) / 100) * waterIntakeCalculator()
-                    print("exercise hydration \(exerciseHydration()	)")
                     waterIntake += exerciseHydration()
                     if appleLogStatus {
                         if (email != "" && name != "" && height != 0 && weight != "" ) {
@@ -321,7 +324,6 @@ struct RegisterView: View {
         print("appleUID: \(appleUID)")
         UserDefaults.standard.set(appleUID, forKey: "userID")
         userCreation.addUserInformation(name: name, weight: weight, height: height, userID: appleUID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake)
-        registerView = true
     }
     
     func registerUser(email: String, name: String, password: String, rePassword: String, height: Double, weight: String, metric: Bool,isCoffeeDrinker: Bool, waterIntake: Double){

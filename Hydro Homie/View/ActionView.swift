@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import CoreLocation
+import UIKit
 
 struct ActionView: View {
     @State private var isStats: Bool = false
@@ -19,106 +19,111 @@ struct ActionView: View {
     @State private var width: CGFloat? = nil
     @State private var colorSCheme: ColorScheme = .light
     
+    @Binding  var backgroundColorTop: Color
+    @Binding  var backgroundColorBottom: Color
     @Binding var isMetric: Bool
-
+    
     var body: some View {
+        
         GeometryReader{ geometry in
             ZStack {
                 Rectangle()
                     .foregroundColor(colorScheme == .dark ?  Color.black.opacity(0.001) : Color.white.opacity(0.001))
-            
-                    VStack {
-                        HStack{
-                            Button(action: {
-                                isStats = true
-                            }, label: {
-                                Text("Stats")
-                                    .font(.system(size: fontSize))
-                                    .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
-                                    .equalWidth()
-                                    .frame(width: width, alignment: .leading)
-                                Image(systemName: "chart.bar").foregroundColor(.green)
-                                    .equalWidth()
-                                    .scaleEffect(CGSize(width: 1.5, height: 1.5))
-                                    
-                            })
-                        }
-                        Spacer()
-                        Text(" ")
-                        HStack {
-                            Button(action: {
-                                isEdit = true
-                            }, label: {
-                                Text("Edit your info")
-                                    .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
-                                    .equalWidth()
-                                    .frame(width: width, alignment: .leading)
-                                    .font(.system(size: fontSize))
-                                
-                                Image(systemName: "pencil")
-                                    .foregroundColor(.blue)
-                                    .scaleEffect(CGSize(width: 1.5, height: 1.5))
-                            })
-                        }
-                        Spacer()
-                        Text(" ")
-                        HStack{
-                            Button(action: {
-                                
-                            }, label: {
-                                Text("How hydration is calculated")
-                                    .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
-                                    .equalWidth()
-                                    .font(.system(size: fontSize))
-                                    .frame(width: width, alignment: .leading)
-                                Image(systemName: "info").foregroundColor(.blue)
-                                    .scaleEffect(CGSize(width: 1.5, height: 1.5))
-                            })
+                
+                VStack {
+                    HStack{
+                        Button(action: {
+                            isStats = true
+                        }, label: {
+                            Text("Stats")
+                                .font(.system(size: fontSize))
+                                .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
+                                .equalWidth()
+                                .frame(width: width, alignment: .leading)
+                            Image(systemName: "chart.bar").foregroundColor(.green)
+                                .equalWidth()
+
+                                .scaleEffect(CGSize(width: 1.5, height: 1.5))
                             
-                        }.padding()
-                        
-                        Spacer()
-                        Text(" ")
-                        HStack{
-                            Button(action: {
-                                
-                            }, label: {
-                                Text("Contact the developer")
-                                    .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
-                                    .equalWidth()
-                                    .font(.system(size: fontSize))
-                                    .frame(width: width, alignment: .leading)
-                                Image(systemName: "info").foregroundColor(.blue)
-                                    .scaleEffect(CGSize(width: 1.5, height: 1.5))
-                            })
-                            
-                        }.padding()
+                        })
                     }
-                    .onPreferenceChange(WidthPreferenceKey.self) { widths in
-                                    if let width = widths.max() {
-                                        self.width = width
-                                    }
-                                }
+                    Spacer().frame(height: geometry.size.height / 4)
+                    Text(" ")
+                    HStack {
+                        Button(action: {
+                            isEdit = true
+                        }, label: {
+                            Text("Edit your info")
+                                .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
+                                .font(.system(size: fontSize))
+                                .equalWidth()
+                                .frame(width: width, alignment: .leading)
+                            Image(systemName: "pencil")
+                                .equalWidth()
+
+                                .foregroundColor(.blue)
+                                .scaleEffect(CGSize(width: 1.5, height: 1.5))
+                        })
+                    }
+                    Spacer().frame(height: geometry.size.height / 4)
+                    Text(" ")
+                    HStack{
+                        Button(action: {
+                            let url = NSURL(string: "mailto:mailto:ismatullamansurov@gmail.com")
+                            UIApplication.shared.open(url! as URL)
+                            
+                        }, label: {
+                            Text("Contact the developer")
+                                .foregroundColor(colorScheme == .dark ? Color.gray : Color.black)
+                                .font(.system(size: fontSize))
+                                .equalWidth()
+                                .frame(width: width, alignment: .leading)
+                            Image(systemName: "info").foregroundColor(.blue)
+                                .equalWidth()
+
+                                .scaleEffect(CGSize(width: 1.5, height: 1.5))
+                        })
+                        
+                    }.padding()
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        Spacer().frame(height: geometry.size.height / 6)
+                    }
+                }
+                .onPreferenceChange(WidthPreferenceKey.self) { widths in
+                    if let width = widths.max() {
+                        self.width = width
+                        print("width is :\(width)")
+                    }
+                }
+                
             }
             .onAppear(perform: {
                 if UIDevice.current.userInterfaceIdiom == .pad {
                     fontSize = 50
                 }
             })
-            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
-            .sheet(isPresented: self.$isEdit, content: {
-                EditUserView(isMetric: $isMetric, isDashboard: $isEdit)
+//            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
+            .halfASheet(isPresented: self.$isEdit, content: {
+                EditUserView(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isMetric: $isMetric, isDashboard: $isEdit)
+                    .clearModalBackground()
                     .environmentObject(user)
-//                TextField(user.user.name, text: self.$userName)
-//                TextField(String(user.user.height), text: self.$userHeight)
+                    .minimumScaleFactor(0.01)
+
+                //                TextField(user.user.name, text: self.$userName)
+                //                TextField(String(user.user.height), text: self.$userHeight)
             }
             )
-            .formSheet(isPresented: self.$isStats, content: {
-                BarView().environmentObject(user)
-                    .clearModalBackground()
-            })
         }
-        
+        .fullScreenCover(isPresented: $isStats, content: {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                BarView(isStats: $isStats)
+                    .frame(height: UIScreen.main.bounds.height * 0.3)
+                    .clearModalBackground()
+                        } else {
+            BarView(isStats: $isStats)
+                .clearModalBackground()
+                        }
+        })
     }
 }
 

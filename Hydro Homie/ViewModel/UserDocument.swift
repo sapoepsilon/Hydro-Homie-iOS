@@ -28,6 +28,7 @@ class UserDocument: ObservableObject {
         // if not the return values from UserDefaults
 
         let currentUserID = Auth.auth().currentUser?.uid
+        print("userdID \(String(describing: currentUserID))")
 
         db.collection("users").document(currentUserID!).addSnapshotListener { (querySnapshot, error) in
             if (error != nil) {
@@ -77,8 +78,8 @@ class UserDocument: ObservableObject {
         var returnMessage = "Written successfully"
         let updatedFields: [String: Any] = [
             "name": name as Any,
-            "weight": weight,
-            "height": height,
+            "weight": weight as Any,
+            "height": height as Any,
             "metric": isMetric,
             "waterIntake": waterIntake,
             "isCoffeeDrinker": isCoffeeDrinker
@@ -91,27 +92,27 @@ class UserDocument: ObservableObject {
         return returnMessage
     }
 
-    func changeEmail(email: String) {
+    func changeEmail(email: String, completionHandler: @escaping (Bool, String) -> Void) {
         Auth.auth().currentUser?.updateEmail(to: email, completion: { error in
             if error != nil {
                 print("error \(error.debugDescription)")
+                completionHandler(false, error?.localizedDescription ?? "Error has occured, please try again!")
             } else {
+                completionHandler(true, "Email has benn updated successfully.")
                 print("updated successfully")
             }
         })
     }
 
-    func changeCredentials(newPassword: String?) -> String {
-        var returnMessage = "Password has been updated"
-
+    func changeCredentials(newPassword: String?, completionHandler: @escaping (Bool, String) -> Void) {
         Auth.auth().currentUser?.updatePassword(to: newPassword!, completion: { error in
             if error != nil {
-                return returnMessage = error!.localizedDescription
+                completionHandler(false, error?.localizedDescription ?? "Error has occured please try again!")
             } else {
-                return returnMessage += "Password has been updated"
+                completionHandler(true, "Password has been updated")
             }
         })
-        return returnMessage
+        
     }
 
     func previousDate(hydrationArray: [String: Dictionary<String, Double>]) -> [String: Dictionary<String, Double>] {
@@ -141,7 +142,7 @@ class UserDocument: ObservableObject {
         } catch {
             print("Unable to Encode hydration Array (\(error))")
         }
-        if var data = UserDefaults.standard.data(forKey: "hydration") {
+        if let data = UserDefaults.standard.data(forKey: "hydration") {
             do {
                 // Create JSON Decoder
                 let decoder = JSONDecoder()
@@ -156,7 +157,7 @@ class UserDocument: ObservableObject {
 
     func getHydrationArrayFromTheUserDefaults() -> [[String: [String:Double]]] {
         var returnValue: [[String: [String: Double]]] = []
-        if var data = UserDefaults.standard.data(forKey: "hydration") {
+        if let data = UserDefaults.standard.data(forKey: "hydration") {
             do {
                 let decoder = JSONDecoder()
                 returnValue = try decoder.decode([[String: [String: Double]]].self, from: data)
@@ -168,7 +169,6 @@ class UserDocument: ObservableObject {
     }
 
     func updateHydrationDictionaryInUserDefaults(currentHydration: [String: [String: Double]], newHydrationValues: [String: Double], key: String) {
-        var newHydration = [key: newHydrationValues]
         var arrayOfHydration = getHydrationArrayFromTheUserDefaults()
 
         for hydration in arrayOfHydration {
@@ -178,8 +178,6 @@ class UserDocument: ObservableObject {
             }
         }
         saveHydrationDictionaryToUserDefaults(hydrationInTheLoop: arrayOfHydration)
-
-
     }
 
     func nextDate(hydrationArray: [String: Dictionary<String, Double>]) -> [String: Dictionary<String, Double>] {

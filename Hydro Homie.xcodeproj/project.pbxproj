@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		99006C8C271C96A400A99238 /* PermissionsSwiftUIHealth in Frameworks */ = {isa = PBXBuildFile; productRef = 99006C8B271C96A400A99238 /* PermissionsSwiftUIHealth */; };
+		99006C8E271C96A400A99238 /* PermissionsSwiftUINotification in Frameworks */ = {isa = PBXBuildFile; productRef = 99006C8D271C96A400A99238 /* PermissionsSwiftUINotification */; };
 		99023361268248A200FACE04 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 99023360268248A200FACE04 /* FirebaseAuth */; };
 		99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 99023362268248A200FACE04 /* FirebaseFirestore */; };
 		99088D0826B223470091339F /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E786CF2639131100D13EC5 /* Dashboard.swift */; };
@@ -29,6 +31,7 @@
 		9965D7D42637955500672D2E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9965D7D32637955500672D2E /* Preview Assets.xcassets */; };
 		9968227926CDC7AA00C144B6 /* Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9968227826CDC7AA00C144B6 /* Background.swift */; };
 		997111B626E58088001EABD1 /* ResetPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997111B526E58088001EABD1 /* ResetPassword.swift */; };
+		998776D2271256F100D74287 /* OnboardScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998776D1271256F100D74287 /* OnboardScreen.swift */; };
 		99A3D89B26E59BA100D65063 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99A3D89A26E59BA100D65063 /* HealthKit.framework */; };
 		99ACBA1726816BFD0005A151 /* ActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99ACBA1626816BFD0005A151 /* ActionView.swift */; };
 		99AEA096268CF9BE004BD12D /* CustomDrink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AEA095268CF9BE004BD12D /* CustomDrink.swift */; };
@@ -41,7 +44,6 @@
 		99DE64D7266DBF1D0017015A /* Hydration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64D6266DBF1D0017015A /* Hydration.swift */; };
 		99DE64DA266DC4510017015A /* HydrationDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64D9266DC4510017015A /* HydrationDocument.swift */; };
 		99DE64DC266E7C8A0017015A /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DE64DB266E7C8A0017015A /* RegisterView.swift */; };
-		99F604A626EF007600DCB837 /* BarChart in Frameworks */ = {isa = PBXBuildFile; productRef = 99F604A526EF007600DCB837 /* BarChart */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +102,7 @@
 		9965D7D52637955500672D2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9968227826CDC7AA00C144B6 /* Background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Background.swift; sourceTree = "<group>"; };
 		997111B526E58088001EABD1 /* ResetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassword.swift; sourceTree = "<group>"; };
+		998776D1271256F100D74287 /* OnboardScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardScreen.swift; sourceTree = "<group>"; };
 		99A3D89A26E59BA100D65063 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		99ACBA1626816BFD0005A151 /* ActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionView.swift; sourceTree = "<group>"; };
 		99ACBA1D268180E00005A151 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -123,9 +126,10 @@
 			files = (
 				99A3D89B26E59BA100D65063 /* HealthKit.framework in Frameworks */,
 				99023361268248A200FACE04 /* FirebaseAuth in Frameworks */,
+				99006C8E271C96A400A99238 /* PermissionsSwiftUINotification in Frameworks */,
 				99BF620726F56F1300078CEE /* CareKitUI in Frameworks */,
 				99023363268248A200FACE04 /* FirebaseFirestore in Frameworks */,
-				99F604A626EF007600DCB837 /* BarChart in Frameworks */,
+				99006C8C271C96A400A99238 /* PermissionsSwiftUIHealth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,6 +233,7 @@
 				99B63EA226D2FDFD0099FB2A /* NotificationTimer.swift */,
 				9908B1A026D567910081A495 /* EditUserView.swift */,
 				997111B526E58088001EABD1 /* ResetPassword.swift */,
+				998776D1271256F100D74287 /* OnboardScreen.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -267,8 +272,9 @@
 			packageProductDependencies = (
 				99023360268248A200FACE04 /* FirebaseAuth */,
 				99023362268248A200FACE04 /* FirebaseFirestore */,
-				99F604A526EF007600DCB837 /* BarChart */,
 				99BF620626F56F1300078CEE /* CareKitUI */,
+				99006C8B271C96A400A99238 /* PermissionsSwiftUIHealth */,
+				99006C8D271C96A400A99238 /* PermissionsSwiftUINotification */,
 			);
 			productName = "Hydro Homie";
 			productReference = 9965D7C92637955400672D2E /* Hydro Homie.app */;
@@ -300,8 +306,8 @@
 			mainGroup = 9965D7C02637955400672D2E;
 			packageReferences = (
 				9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				99F604A426EF007500DCB837 /* XCRemoteSwiftPackageReference "BarChart" */,
 				99BF620526F56F1300078CEE /* XCRemoteSwiftPackageReference "CareKit" */,
+				99006C8A271C96A300A99238 /* XCRemoteSwiftPackageReference "PermissionsSwiftUI" */,
 			);
 			productRefGroup = 9965D7CA2637955400672D2E /* Products */;
 			projectDirPath = "";
@@ -349,6 +355,7 @@
 				99AEA096268CF9BE004BD12D /* CustomDrink.swift in Sources */,
 				99ACBA1726816BFD0005A151 /* ActionView.swift in Sources */,
 				99DE64DC266E7C8A0017015A /* RegisterView.swift in Sources */,
+				998776D2271256F100D74287 /* OnboardScreen.swift in Sources */,
 				9936A33F269A40FD006FAF41 /* Extensions.swift in Sources */,
 				9965D7CF2637955400672D2E /* ContentView.swift in Sources */,
 				995AF79D270652300019AC83 /* HydrationDictionaryModel.swift in Sources */,
@@ -431,7 +438,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -489,7 +496,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -579,6 +586,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		99006C8A271C96A300A99238 /* XCRemoteSwiftPackageReference "PermissionsSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jevonmao/PermissionsSwiftUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -595,17 +610,19 @@
 				minimumVersion = 2.0.2;
 			};
 		};
-		99F604A426EF007500DCB837 /* XCRemoteSwiftPackageReference "BarChart" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/dawigr/BarChart.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.2;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		99006C8B271C96A400A99238 /* PermissionsSwiftUIHealth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 99006C8A271C96A300A99238 /* XCRemoteSwiftPackageReference "PermissionsSwiftUI" */;
+			productName = PermissionsSwiftUIHealth;
+		};
+		99006C8D271C96A400A99238 /* PermissionsSwiftUINotification */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 99006C8A271C96A300A99238 /* XCRemoteSwiftPackageReference "PermissionsSwiftUI" */;
+			productName = PermissionsSwiftUINotification;
+		};
 		99023360268248A200FACE04 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -620,11 +637,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 99BF620526F56F1300078CEE /* XCRemoteSwiftPackageReference "CareKit" */;
 			productName = CareKitUI;
-		};
-		99F604A526EF007600DCB837 /* BarChart */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 99F604A426EF007500DCB837 /* XCRemoteSwiftPackageReference "BarChart" */;
-			productName = BarChart;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

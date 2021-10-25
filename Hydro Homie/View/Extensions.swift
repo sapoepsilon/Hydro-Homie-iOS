@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ClearBackgroundView: UIViewRepresentable {
     
@@ -362,17 +363,17 @@ struct EqualWidth: ViewModifier {
 }
 
 extension String {
-
+    
     func camelCaseToWords() -> String {
-
+        
         return unicodeScalars.reduce("") {
-
+            
             if CharacterSet.uppercaseLetters.contains($1) {
-
+                
                 return ($0 + " " + String($1))
             }
             else {
-
+                
                 return $0 + String($1)
             }
         }
@@ -380,18 +381,18 @@ extension String {
 }
 
 public extension UIImage {
-     convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
-       let rect = CGRect(origin: .zero, size: size)
-       UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
-       color.setFill()
-       UIRectFill(rect)
-       let image = UIGraphicsGetImageFromCurrentImageContext()
-       UIGraphicsEndImageContext()
-       
-       guard let cgImage = image?.cgImage else { return nil }
-       self.init(cgImage: cgImage)
-     }
-   }
+    convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
+        let rect = CGRect(origin: .zero, size: size)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+        color.setFill()
+        UIRectFill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        guard let cgImage = image?.cgImage else { return nil }
+        self.init(cgImage: cgImage)
+    }
+}
 
 extension UIToolbar {
     func setBackgroundColor(image: UIImage) {
@@ -413,7 +414,7 @@ struct CustomStepper : View {
     
     var body: some View {
         HStack {
-
+            
             Image(systemName: "minus.square")
                 .resizable()
                 .opacity(value >= 0 ? 1 : 0)
@@ -429,7 +430,7 @@ struct CustomStepper : View {
                 .frame(width: 32.0, height: 32.0)
             
             Image(systemName: "plus.square")
-                .resizable()    
+                .resizable()
                 .onTapGesture(perform: {
                     self.value += self.step
                     self.feedback()
@@ -450,9 +451,9 @@ struct CustomStepper : View {
 }
 struct ClearBackgroundMenuStyle : MenuStyle {
     @Environment(\.colorScheme) var colorScheme
-
+    
     init() {
-      
+        
     }
     func makeBody(configuration: Configuration) -> some View {
         Menu(configuration)
@@ -465,13 +466,13 @@ struct LoginButton : ButtonStyle {
     @Environment(\.colorScheme) var colorScheme
     @State private var waterColor: Color =  Color( red: 0, green: 0.5, blue: 0.7, opacity: 0.5)
     @State private var buttonWidth: CGFloat = 0.6
-
+    
     init() {
     }
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .frame(width: UIScreen.main.bounds.width * buttonWidth, height: UIScreen.main.bounds.height * 0.05)
+            .frame(width: 375, height: UIScreen.main.bounds.height * 0.05)
             .background(waterColor.currentWaterColor(colorScheme: colorScheme))
             .foregroundColor(.white)
             .clipShape(Rectangle())
@@ -479,7 +480,7 @@ struct LoginButton : ButtonStyle {
             .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
             .cornerRadius(26)
     }
-
+    
 }
 struct drinkAdditionBackground : Shape {
     var startAngle: Angle = Angle(degrees: 0)
@@ -488,12 +489,54 @@ struct drinkAdditionBackground : Shape {
     
     func path(in rect: CGRect) -> Path {
         var p = Path()
-
+        
         p.addArc(center: CGPoint(x: rect.maxX, y: rect.maxY), radius: rect.width / 3, startAngle: startAngle, endAngle: endAngle, clockwise: clockwise)
-
+        
         return p
     }
 }
+
+struct LoadingView: View {
+    
+      @State private var shouldAnimate = false
+    @State private var waterColor: Color = Color(red: 0, green: 0.5, blue: 0.75, opacity: 0.5)
+      
+      var body: some View {
+          
+          HStack(alignment: .center, spacing: shouldAnimate ? 15 : 5) {
+              Capsule(style: .continuous)
+                  .fill(Color.blue)
+                  .frame(width: 10, height: 50)
+              Capsule(style: .continuous)
+                  .fill(Color.blue)
+                  .frame(width: 10, height: 30)
+              Capsule(style: .continuous)
+                  .fill(Color.blue)
+                  .frame(width: 10, height: 50)
+              Capsule(style: .continuous)
+                  .fill(Color.blue)
+                  .frame(width: 10, height: 30)
+              Capsule(style: .continuous)
+                  .fill(Color.blue)
+                  .frame(width: 10, height: 50)
+          }
+          .frame(width: shouldAnimate ? 150 : 100)
+          .animation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: true))
+          .onAppear {
+              self.shouldAnimate = true
+          }
+    }
+    
+}
+
+struct LoadingPreview: PreviewProvider {
+    static var previews: some View {
+        LoadingView()
+    }
+    
+    
+}
+
 
 extension Color {
     
@@ -512,15 +555,15 @@ extension Color {
 
 
 struct AuthenticationButtonStyle: ButtonStyle {
-  func makeBody(configuration: Self.Configuration) -> some View {
-    configuration.label
-      .foregroundColor(.white)
-      .padding()
-      .frame(maxWidth: .infinity)
-      .background(Color(.systemIndigo))
-      .cornerRadius(12)
-      .padding()
-  }
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
+            .foregroundColor(.white)
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color(.systemIndigo))
+            .cornerRadius(12)
+            .padding()
+    }
 }
 
 
@@ -563,7 +606,7 @@ public struct HalfASheet<Content: View>: View {
                 
                 if isPresented {
                     
-                    Color.black.opacity(0.4)
+                    Color.clear.opacity(0.4)
                         .onTapGesture {
                             dismiss()
                         }
@@ -604,7 +647,7 @@ public struct HalfASheet<Content: View>: View {
                     .onDisappear {
                         dragOffset = 0
                     }
-             
+                    
                 }
             }
         }
@@ -801,30 +844,30 @@ extension HalfASheet {
     private var closeButton: AnyView {
         
         let button =
-            ZStack {
-                Rectangle()
-                    .frame(width: UIScreen.main.bounds.width / 6, height: 7.5)
-                    .cornerRadius(30)
+        ZStack {
+            Rectangle()
+                .frame(width: UIScreen.main.bounds.width / 6, height: 7.5)
+                .cornerRadius(30)
             
         }
         
         return AnyView(button)
     }
-     private func fullSize() {
+    private func fullSize() {
         height = .proportional(1)
     }
     
     private func halfSize() {
         height = .proportional(0.7)
-   }
+    }
     
     private func dismiss() {
         
-//        withAnimation {
-            height = .proportional(0.7)
-            hasAppeared = false
-            isPresented = false
-//        }
+        //        withAnimation {
+        height = .proportional(0.7)
+        hasAppeared = false
+        isPresented = false
+        //        }
     }
 }
 
@@ -942,7 +985,7 @@ class WrappableTextField: UITextField, UITextFieldDelegate {
 
 struct SATextField: UIViewRepresentable {
     private let tmpView = WrappableTextField()
-
+    
     //var exposed to SwiftUI object init
     var tag:Int = 0
     var placeholder:String?
@@ -954,7 +997,6 @@ struct SATextField: UIViewRepresentable {
     var text: String?
     
     func makeUIView(context: UIViewRepresentableContext<SATextField>) -> WrappableTextField {
-        
         tmpView.tag = tag
         tmpView.delegate = tmpView
         tmpView.placeholder = placeholder
@@ -976,38 +1018,38 @@ struct SATextField: UIViewRepresentable {
 }
 
 class FormSheetWrapper<Content: View>: UIViewController, UIPopoverPresentationControllerDelegate {
-
+    
     var content: () -> Content
     var onDismiss: (() -> Void)?
-
+    
     private var hostVC: UIHostingController<Content>?
-
+    
     required init?(coder: NSCoder) { fatalError("") }
-
+    
     init(content: @escaping () -> Content) {
         self.content = content
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     func show() {
         guard hostVC == nil else { return }
         let vc = UIHostingController(rootView: content())
-
-        vc.view.sizeToFit()
-        vc.preferredContentSize = vc.view.bounds.size
-
+        
+//        vc.view.sizeToFit()
+//        vc.preferredContentSize = vc.view.bounds.size
+//
         vc.modalPresentationStyle = .formSheet
         vc.presentationController?.delegate = self
         hostVC = vc
         self.present(vc, animated: true, completion: nil)
     }
-
+    
     func hide() {
         guard let vc = self.hostVC, !vc.isBeingDismissed else { return }
         dismiss(animated: true, completion: nil)
         hostVC = nil
     }
-
+    
     func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
         hostVC = nil
         self.onDismiss?()
@@ -1015,18 +1057,18 @@ class FormSheetWrapper<Content: View>: UIViewController, UIPopoverPresentationCo
 }
 
 struct FormSheet<Content: View> : UIViewControllerRepresentable {
-
+    
     @Binding var show: Bool
-
+    
     let content: () -> Content
-
+    
     func makeUIViewController(context: UIViewControllerRepresentableContext<FormSheet<Content>>) -> FormSheetWrapper<Content> {
-
+        
         let vc = FormSheetWrapper(content: content)
         vc.onDismiss = { self.show = false }
         return vc
     }
-
+    
     func updateUIViewController(_ uiViewController: FormSheetWrapper<Content>,
                                 context: UIViewControllerRepresentableContext<FormSheet<Content>>) {
         if show {
@@ -1040,9 +1082,111 @@ struct FormSheet<Content: View> : UIViewControllerRepresentable {
 
 extension View {
     public func formSheet<Content: View>(isPresented: Binding<Bool>,
-                                          @ViewBuilder content: @escaping () -> Content) -> some View {
+                                         @ViewBuilder content: @escaping () -> Content) -> some View {
         self.background(FormSheet(show: isPresented,
                                   content: content))
     }
 }
+struct Arrow: Shape {
+    
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+            let width = rect.width
+            let height = rect.height
+            
+            // 2.
+            path.addLines( [
+                CGPoint(x: width * 0.4, y: height),
+                CGPoint(x: width * 0.4, y: height * 0.4),
+                CGPoint(x: width * 0.2, y: height * 0.4),
+                CGPoint(x: width * 0.5, y: height * 0.1),
+                CGPoint(x: width * 0.8, y: height * 0.4),
+                CGPoint(x: width * 0.6, y: height * 0.4),
+                CGPoint(x: width * 0.6, y: height)
+                
+            ])
+            // 3.
+            path.closeSubpath()
+        }
+    }
+}
 
+extension UserDefaults {
+    var isWelcomePageShown: Bool {
+        get {
+            return (UserDefaults.standard.value(forKey: "welcomePage") as? Bool) ?? false
+        } set {
+            UserDefaults.standard.set(newValue, forKey: "welcomePage")
+        }
+    }
+}
+struct WelcomeBoardText: View {
+    @Environment(\.colorScheme) var colorScheme
+    var text:String
+    var body: some View {
+        VStack {
+            ZStack {
+                VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
+            }
+            Text(text)
+                    .padding()
+                    .font(.title3)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                .frame(width: UIScreen.main.bounds.width-50, height: 200)
+        }.frame(width: UIScreen.main.bounds.width-50, height: 200)
+            .background(Color.gray.opacity(0.2))
+            .cornerRadius(12)
+            .clipped()
+    }
+}
+
+
+
+struct OverlayModifier<OverlayView: View>: ViewModifier {
+    
+    func body(content: Content) -> some View {
+        content.overlay(isPresented ? overlayView() : nil)
+    }
+    
+    
+    @Binding var isPresented: Bool
+    @ViewBuilder var overlayView: () -> OverlayView
+    
+    init(isPresented: Binding<Bool>, @ViewBuilder overlayView: @escaping () -> OverlayView) {
+        self._isPresented = isPresented
+        self.overlayView = overlayView
+    }
+}
+
+extension View {
+    
+    func alertView<OverlayView: View>(isPresented: Binding<Bool>,
+                                  blurRadius: CGFloat = 3,
+                                  blurAnimation: Animation? = .linear,
+                                  @ViewBuilder overlayView: @escaping () -> OverlayView) -> some View {
+        blur(radius: isPresented.wrappedValue ? blurRadius : 0)
+            .animation(blurAnimation)
+            .allowsHitTesting(!isPresented.wrappedValue)
+            .modifier(OverlayModifier(isPresented: isPresented, overlayView: overlayView))
+    }
+}
+class DisplayLink: NSObject, ObservableObject {
+    @Published var frameDuration: CFTimeInterval = 0
+    @Published var frameChange: Bool = false
+    @Published var frameChanger: CGFloat = 0
+    
+    static let sharedInstance: DisplayLink = DisplayLink()
+    
+    func createDisplayLink() {
+        let displaylink = CADisplayLink(target: self, selector: #selector(frame))
+        displaylink.add(to: .current, forMode: RunLoop.Mode.default)
+    }
+    
+    @objc func frame(displaylink: CADisplayLink) {
+        frameDuration = displaylink.targetTimestamp
+        frameChanger = 1 / (displaylink.targetTimestamp - displaylink.timestamp)
+        frameChange.toggle()
+    }
+
+    
+}

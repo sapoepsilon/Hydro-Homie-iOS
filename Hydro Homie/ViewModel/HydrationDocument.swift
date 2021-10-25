@@ -23,16 +23,6 @@ class HydrationDocument: ObservableObject {
         document.getUserID()
     }
     
-    func requestNotifiactionPermission() {
-        
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-            if success {
-            } else if let error = error {
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
     func addNotification(timeInterval: Double) {
         
             // removing notifications
