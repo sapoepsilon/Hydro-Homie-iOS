@@ -1,6 +1,6 @@
 //
 //  CustomDrinkViewModel.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 7/10/21.
 //
@@ -89,7 +89,7 @@ class CustomDrinkViewModel: ObservableObject {
                 }
     }
     
-    func addCustomDrink(newCustomDrink: CustomDrinkModel) -> String {
+    func addCustomDrink(newCustomDrink: CustomDrinkModel, completionHandler: @escaping ((Bool, String)) -> ()) {
         self.customDrinks.append(newCustomDrink)
 
         let customDrinkDictionary: [String:Any] = [
@@ -103,7 +103,6 @@ class CustomDrinkViewModel: ObservableObject {
             "alcoholPercentage": newCustomDrink.alcoholPercentage,
             "caffeineAmount": newCustomDrink.caffeineAmount
         ]
-        var Error: String = "Written successfully"
 
         db.collection("users").document("customDrinks\(self.hydrationDocument.userID())").setData([
                 "customDrinks": FieldValue.arrayUnion([
@@ -113,8 +112,8 @@ class CustomDrinkViewModel: ObservableObject {
             { err in
                if let err = err {
                    print("Error writing document: \(err)")
-                return Error = err.localizedDescription
-               }
+                   completionHandler((false, err.localizedDescription))
+               } else {
                    // store the customDrink into the UserDefaults
                    var drinksArray: [CustomDrinkModel] = []
                    do {
@@ -148,8 +147,9 @@ class CustomDrinkViewModel: ObservableObject {
                        // Encode Note
                    }
                 print("Document successfully written!")
+                   completionHandler((true, "Your new drink has been added."))
             }
-        return Error
+            }
     }
     
     //MARK: Fetch from the Firebase

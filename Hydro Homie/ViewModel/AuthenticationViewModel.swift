@@ -1,6 +1,6 @@
 ////
 ////  AuthenticationViewModel.swift
-////  Hydro Homie
+////  Hydro Comrade
 ////
 ////  Created by Ismatulla Mansurov on 8/10/21.
 ////

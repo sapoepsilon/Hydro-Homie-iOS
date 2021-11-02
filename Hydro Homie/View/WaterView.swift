@@ -1,6 +1,6 @@
 //
 //  WaterView.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/6/21.
 //
@@ -70,6 +70,8 @@ struct WaterView: View {
     @State private var percent: Double = 0
     @Binding var backgroundColor: Color
     let timer = Timer.publish(every: 0.005, on: .main, in: .common).autoconnect()
+    @ObservedObject var displayLink = DisplayLink.sharedInstance
+
 
     var body: some View {
         GeometryReader { proxy in

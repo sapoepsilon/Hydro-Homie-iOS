@@ -1,6 +1,6 @@
 //
 //  HeightPicker.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/7/21.
 //

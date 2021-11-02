@@ -1,6 +1,6 @@
 //
 //  UserDocument.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/9/21.
 //
@@ -23,7 +23,7 @@ class UserDocument: ObservableObject {
 
     @Published var enumDocument: documentExist = documentExist.exist
 
-    func fetchData() {
+    func fetchData(completionHandler:@escaping (Bool, String) -> Void) {
         //check if the user has a new device
         // if not the return values from UserDefaults
 
@@ -46,6 +46,7 @@ class UserDocument: ObservableObject {
                 self.user.isCoffeeDrinker = document!["isCoffeeDrinker"] as? Bool ?? false
                 self.user.userUID = document!["userID"] as? String ?? ""
                 self.enumDocument = .exist
+                
             } else if (querySnapshot?.exists == nil) {
                 self.enumDocument = .doesNotExist
             }

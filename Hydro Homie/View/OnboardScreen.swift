@@ -1,6 +1,6 @@
 //
 //  OnboardScreen.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 10/9/21.
 //
@@ -32,7 +32,6 @@ struct OnboardScreen: View {
     @State private var dropOffset: CGSize = CGSize.zero
 
     var body: some View {
-        GeometryReader { geometry in
             ZStack {
                 LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
                     .edgesIgnoringSafeArea(.vertical)
@@ -41,46 +40,79 @@ struct OnboardScreen: View {
                         .foregroundColor(waterColor)
                         .rotationEffect(.degrees(-180))
                         .animation(.easeInOut(duration: 0.35)).transition(.verticalSlide(-180)).zIndex(1)
-                        .frame(width: geometry.size.width / 3, height: geometry.size.height / 6)
-                        .offset(x: arrowXValue, y: geometry.size.height / 2.8)
+                        .frame(width: UIScreen.main.bounds.width / 3, height: UIScreen.main.bounds .height / 6)
+                        .offset(x: arrowXValue, y: UIScreen.main.bounds.height / 2.8)
                         .transition(.slide)
                 }
                 VStack {
                     HStack{
-                        Spacer()
-                        skipButton()
-                        Spacer().frame(width: geometry.size.width / 10)
-                    }
-                    Text("Welcome to")
-                        .foregroundColor(.white)
-                        .font(.system(size: geometry.size.height * 0.04))
-                        .transition(.slide)
-                    
-                    Text("Hydro Homie")
-                        .foregroundColor(waterColor)
-                        .font(.system(size: geometry.size.height * 0.09))
-                        .transition(.slide)
-                    
-                    waterView()
-                        .offset(x: dropOffset.width * 5, y: dropOffset.height * 5)
-                        .transition(.slide)
-                        .offset(dropOffset)
-                    
-                    stepper()
-                    HStack {
-                        nextButton(geometry: geometry)
-                    }.padding(.vertical)
-                    HStack {
-                        Spacer().frame(width: UIScreen.main.bounds.size.width / 2 - (UIScreen.main.bounds.size.width / 48.75))
-                        drop()
-                        Spacer()
-                        plus().padding()
-                    }
+                                Spacer()
+                                skipButton()
+                                Spacer().frame(width: UIScreen.main.bounds.width / 10)
+                            }
+                            Text("Welcome to")
+                                .foregroundColor(.white)
+                                .font(.system(size: UIScreen.main.bounds.height * 0.04))
+                                .transition(.slide)
+                            
+                            Text("Hydro Comrade")
+                                .foregroundColor(waterColor)
+        //                        .font(.system(size: geometry.size.height * 0.09))
+                                .transition(.slide)
+
+                            
+                            waterView()
+                                .transition(.slide)
+                                .offset(dropOffset)
+                            
+                            stepper()
+                            HStack {
+                                nextButton()
+                            }.padding(.vertical)
+                            HStack {
+                                Spacer().frame(width: UIScreen.main.bounds.size.width / 2.2)
+                                drop().padding()
+                                Spacer()
+                                plus().padding()
+                            }
+
+
                 }
-                .navigationViewStyle(StackNavigationViewStyle())
+//                VStack(alignment: .center) {
+//                    HStack{
+//                )       Spacer()
+//                        skipButton()
+//                        Spacer().frame(width: geometry.size.width / 10)
+//                    }
+//                    Text("Welcome to")
+//                        .foregroundColor(.white)
+//                        .font(.system(size: geometry.size.height * 0.04))
+//                        .transition(.slide)
+//
+//                    Text("Hydro Homie")
+//                        .foregroundColor(waterColor)
+////                        .font(.system(size: geometry.size.height * 0.09))
+//                        .transition(.slide)
+//
+//
+//                    waterView()
+//                        .transition(.slide)
+//                        .offset(dropOffset)
+//
+//                    stepper()
+//                    HStack {
+//                        nextButton(geometry: geometry)
+//                    }.padding(.vertical)
+//                    HStack {
+//                        Spacer().frame(width: UIScreen.main.bounds.size.width / 2 - (UIScreen.main.bounds.size.width / 48.75))
+//                        drop()
+//                        Spacer()
+//                        plus().padding()
+//                    }
+//                }
             }
 
-        }
+        
     
         
     }
@@ -110,7 +142,7 @@ struct OnboardScreen: View {
             Text("Skip").zIndex(1)
         }).frame(width: UIScreen.main.bounds.width / 3)
     }
-    func nextButton(geometry: GeometryProxy) -> some View {
+    func nextButton() -> some View {
         return ZStack {
             Button(
                 action: {
@@ -145,7 +177,7 @@ struct OnboardScreen: View {
                             dropOpacity = 0
                             dropScale = 1.75
                             onBoardValue += 1
-                            arrowXValue = geometry.size.width / 2.2674
+                            arrowXValue = UIScreen.main.bounds .width / 2.2674
                         }
                         
                     } else if onBoardValue == 4 {

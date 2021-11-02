@@ -1,6 +1,6 @@
 //
 //  RegisterView.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/7/21.
 //
@@ -8,12 +8,19 @@
 import SwiftUI
 import Combine
 
-
+enum newAlert: String, Identifiable {
+    var id: String {
+        rawValue
+    }
+    case isError
+    case isCoffee
+}
 struct RegisterView: View {
-    
+    @State var onCompleteBlock: (() -> Void)
+
     @Binding var Dashboard: Bool
     @Binding var registerView: Bool
-    
+    @State var alert: newAlert?
     @Environment(\.colorScheme) var colorScheme
     @State private var barColor: Color = Color.black
     @State private var email: String = ""
@@ -26,7 +33,7 @@ struct RegisterView: View {
     @State private var borderColor: Color = Color.gray
     @State private var metric: Bool = false
     @State private var error: String = ""
-    @State private var alert: Bool = false
+//    @State private var alert: Bool = false
     @State private var isCoffeeDrinker: Bool = false
     @State private var exerciseTimeAmount: Int = 0
     @State private var isWorkoutActive: Bool = false
@@ -50,7 +57,9 @@ struct RegisterView: View {
     @State private var scrollValue: Int = 3
     
     @EnvironmentObject var userCreation: UserRepository
-    
+    var isZoomed: Bool {
+          return UIScreen.main.scale < UIScreen.main.nativeScale
+      }
     
     var body: some View {
         GeometryReader { geo in
@@ -64,6 +73,8 @@ struct RegisterView: View {
                     Text("Register").font(.headline)
                         .bold()
                         .padding()
+                }.onAppear {
+                    print("geo is \(geo.size.width)")
                 }
                 
                 ScrollView{
@@ -78,7 +89,6 @@ struct RegisterView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(self.name == "" ? borderColor : Color.green, lineWidth: 2)
                     )
-                    .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                     
                     SATextField(tag: 1, placeholder: "E-mail", changeHandler: { (email) in
                         self.email = email
@@ -91,7 +101,6 @@ struct RegisterView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
                     )
-                    .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                     
                     if !appleLogStatus {
                         SATextField(tag: 2, placeholder: "Password", changeHandler: {(password) in
@@ -105,7 +114,7 @@ struct RegisterView: View {
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.password == "" ? borderColor : Color.green, lineWidth: 2)
                         )
-                        .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
+                        
                         SATextField(tag: 3, placeholder: "Re-type password", changeHandler: { (pass) in
                             self.passwordMatch = pass
                         }, isSecureTextEntry: $isSecureReField, onCommitHandler: {
@@ -117,7 +126,6 @@ struct RegisterView: View {
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.passwordMatch == "" ? borderColor : Color.green, lineWidth: 2)
                         )
-                        .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                     }
                     Section{
                         HStack{
@@ -163,7 +171,6 @@ struct RegisterView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.height == 0 ? borderColor : Color.green, lineWidth: 2))
-                        .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                     }
                     
                     HStack() {
@@ -196,35 +203,29 @@ struct RegisterView: View {
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(self.weight == "" ? borderColor : Color.green, lineWidth: 2))
-                    .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                     
                     HStack {
-                        if !isWorkoutActive {
-                            HStack {
-                                Toggle("Do You Workout?", isOn: $isWorkoutActive).padding()
-                            }
-                        } else {
-                            HStack {
-                                //                                    Text(String(exerciseTimeAmount)).padding()
-                                //                                Text("Minutes")
-                                workoutPicker()
-                                Toggle("", isOn: $isWorkoutActive)
+                        VStack {
+                            Toggle("Do You Workout?", isOn: $isWorkoutActive).padding()
+                            if isWorkoutActive {
+                                    workoutPicker()
                             }
                         }
                     }
-                    .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
+                    
+                    
                     HStack() {
                         Toggle("Are you a coffee Drinker? ", isOn: $isCoffeeDrinker)
                             //                            .foregroundColor(.gray)
                             .padding()
                         Button(action: {
-                            self.isCoffeeMessage = true
+                            alert = .isCoffee
                         }, label: {
                             Image(systemName: "info")
                         }).padding()
                     }
                     .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
-                }
+                }.frame(width: geo.size.width * 0.85)
                 
                 Button(action: {
                     var waterIntake = ((Double(self.weight) ?? 0) / 100) * waterIntakeCalculator()
@@ -241,7 +242,7 @@ struct RegisterView: View {
                             if(password == passwordMatch) {
                                 registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, isCoffeeDrinker: self.isCoffeeDrinker, waterIntake: waterIntake )
                             } else {
-                                alert = true
+                                alert = .isError
                                 self.error = "Passwords do not match"
                             }
                         } else {
@@ -253,7 +254,8 @@ struct RegisterView: View {
                 }).padding()
                 .buttonStyle(LoginButton())
             }
-        }
+
+        }.padding(EdgeInsets(top: 0, leading: isZoomed ? -UIScreen.main.bounds.width / 7 : -10, bottom: 0, trailing: 0))
         .onAppear {
             if appleLogStatus {
                 self.email = appleEmail
@@ -266,12 +268,15 @@ struct RegisterView: View {
                 registerViewWidth = 0.6
             }
         }
-        .alert(isPresented: self.$alert, content: {
-            Alert(title: Text("Error"), message: Text(self.error), dismissButton: .default(Text("OK")))
-        })
-        .alert(isPresented: self.$isCoffeeMessage, content: {
-            Alert(title: Text("Coffee drinker"), message: Text("Do you consume 2 or more cups of coffeinated drinks per day?"), dismissButton: .default(Text("Ok")))
-        })
+        .alert(item:$alert) { alert in
+            switch alert {
+            case .isError:
+                return Alert(title: Text("Error"), message: Text(self.error), dismissButton: .default(Text("OK")))
+            case .isCoffee:
+                return Alert(title: Text("Coffee drinker"), message: Text("Do you consume 2 or more cups of coffeinated drinks per day?"), dismissButton: .default(Text("Ok")))
+            }
+        }
+
     }
     
     func exerciseHydration() -> Double {
@@ -284,6 +289,7 @@ struct RegisterView: View {
     
     func workoutPicker() -> some View {
         let workoutTime = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540]
+        
         
         return Menu( exerciseTimeAmount == 0 ? "How much do you workout a day?" : "\(exerciseTimeAmount) minutes") {
             ForEach(workoutTime, id: \.self) { action in
@@ -328,11 +334,13 @@ struct RegisterView: View {
     
     func registerUser(email: String, name: String, password: String, rePassword: String, height: Double, weight: String, metric: Bool,isCoffeeDrinker: Bool, waterIntake: Double){
         let weight: Double = Double(weight)!
-        userCreation.signUpUser(email: email, password: password, name: name, weight: weight, height: height, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, onSucces: {
-            registerView = true
-        }, onError: {error in
-            self.error = error.description
-            self.alert = true
+        userCreation.signUpUser(email: email, password: password, name: name, weight: weight, height: height, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, onSucces: { isRegistered, errorMessage in
+            if isRegistered {
+                onCompleteBlock()
+            } else {
+                error = errorMessage
+                alert = .isError
+            }
         })
     }
     

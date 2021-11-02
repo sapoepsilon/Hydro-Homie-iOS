@@ -1,6 +1,6 @@
 //
 //  DiureticView.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/28/21.
 //
@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct DiureticView: View {
-    
+    @State var onCompleteBlock: (() -> Void)
+
     @State private var customCoffeeName: String = ""
     @Binding var cups: Double
     @Environment(\.colorScheme) var colorScheme
@@ -41,11 +42,13 @@ struct DiureticView: View {
     
     
     var body: some View {
+        
+        ZStack {
+            Color.gray.opacity(0.2)
+            VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
+        
         GeometryReader { geometry in
-            ZStack {
-                Color.gray.opacity(0.2)
-                VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
-            }
+
             VStack {
                 if UIDevice.current.userInterfaceIdiom == .pad {
                     Spacer().frame(width: geometry.size.width, height: geometry.size.height / spacerAmount, alignment: .center)
@@ -61,15 +64,14 @@ struct DiureticView: View {
                             isCustomWater = false
                             isEdit = false
                         }
-                        print("button pressed")
                     }, label: {
                         Image(systemName: "house")
                     })
                     .padding()
                     .opacity(isCustomDrink || isCustomWater || showCustomDrink ? 1 : 0)
-                    
+
                     Spacer().frame(width: geometry.size.width / spacerCaluclator())
-                    
+
                     Button(action: {
                         customDrinkDocument.fetchFromServer()
                     }, label: {
@@ -78,22 +80,23 @@ struct DiureticView: View {
                                 .rotationEffect(Angle(degrees: 90))
                         }
                     }).opacity(showCustomDrink || isCustomWater ? 1 : 0)
-                    
+
                     Button(action: {
                         isEdit.toggle()
-                        
+
                     }, label: {
                         Image(systemName: "pencil")
                     }).opacity(showCustomDrink || isCustomWater ? 1 : 0)
-                    
+
                     Spacer().frame(width: geometry.size.width / spacerCaluclator())
-                    
+
                     Button(action: {
                         customDrinkDocument.getDrinkOpacity()
                         withAnimation() {
                             if isEdit {
                                 isEdit = false
                             } else {
+                                onCompleteBlock()
                                 isDiuretic = false
                                 isCustomWater = false
                                 isCustomDrink = false
@@ -108,7 +111,7 @@ struct DiureticView: View {
                     })
                     .padding(.horizontal, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
                 }
-                
+
                 VStack {
                     if !isCustomDrink && !showCustomDrink && !isCustomWater {
                         withAnimation() {
@@ -120,7 +123,7 @@ struct DiureticView: View {
                                             .foregroundColor(colorScheme == .light ? .white : .white)
                                     }
                                     .padding()
-                                    
+
                                     Text ("Log a cup of water")
                                         .foregroundColor(colorScheme == .light ? .black : .white)
                                 }.onTapGesture {
@@ -154,7 +157,7 @@ struct DiureticView: View {
                                     }
                                 }
                                 .padding()
-                                
+
                                 HStack {
                                     Button(action: {
                                         isCustomDrink = true
@@ -168,11 +171,11 @@ struct DiureticView: View {
                         }.transition(AnyTransition.move(edge: .bottom))
                     }
                 }
-                
+
                 //MARK: Custom Water
                 if showCustomDrink {
                     showCustomDrinks()
-                        
+
                         .onAppear {
                             if UIDevice.current.userInterfaceIdiom == .pad {
                                 editIndent = geometry.size.width  - geometry.size.width / 1.4
@@ -184,7 +187,7 @@ struct DiureticView: View {
                 if isCustomWater {
                     showCustomWater()
                         .transition(AnyTransition.move(edge: .bottom))
-                        
+
                         .onAppear {
                             if UIDevice.current.userInterfaceIdiom == .pad {
                                 editIndent = geometry.size.width  - geometry.size.width / 1.4
@@ -195,12 +198,17 @@ struct DiureticView: View {
                 }
                 //                }
                 //                //MARK: Custom Drink
-                
-                
+
+
             }
             .frame(width: geometry.size.width - 10)
+                
+            
         }
+   
+        
         .scaleEffect(scaleEffect)
+       
         .onAppear {
             if UIDevice.current.userInterfaceIdiom == .pad {
                 scaleEffect = 1.5
@@ -214,11 +222,10 @@ struct DiureticView: View {
             CustomDrink(isMetric: $isMetric, isCustomDrinkSheet: $isCustomDrink, isDiureticSheet: $isDiuretic)
                 .environmentObject(customDrinkDocument)
         })
-        .sheet(isPresented: $isCustomCoffee, content: {
-            TextField("Name of the coffee", text:
-                        $customCoffeeName)
-        })
+
         Spacer()
+    }
+    
     }
     
     func showCustomDrinks() -> some View {
@@ -284,7 +291,8 @@ struct DiureticView: View {
                                 self.amountOfAccumulatedAlcohol += drink.alcoholAmount
                                 percentageOfEachAlcohol  = drink.alcoholPercentage
                             } else if drink.isCaffeine {
-                                coffeeAmount = drink.caffeineAmount / 1000
+                                coffeeAmount = drink.caffeineAmount / 10000
+                                accumulatedCoffeeAmount += coffeeAmount / 10000
                                 print("caffeine in .mg \(coffeeAmount)")
                             }
                         }

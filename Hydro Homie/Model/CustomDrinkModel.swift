@@ -2,7 +2,7 @@
 
 //
 //  CustomDrinkModel.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 7/10/21.
 //

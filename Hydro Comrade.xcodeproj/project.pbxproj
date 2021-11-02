@@ -94,7 +94,7 @@
 		995AEBF9266D752300FAD0CB /* WaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterView.swift; sourceTree = "<group>"; };
 		995AF79C270652300019AC83 /* HydrationDictionaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationDictionaryModel.swift; sourceTree = "<group>"; };
 		995D410F266EFC5600916F5C /* HeightPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightPicker.swift; sourceTree = "<group>"; };
-		9965D7C92637955400672D2E /* Hydro Homie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hydro Homie.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9965D7C92637955400672D2E /* Hydro Comrade.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hydro Comrade.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9965D7CC2637955400672D2E /* Hydro_HomieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hydro_HomieApp.swift; sourceTree = "<group>"; };
 		9965D7CE2637955400672D2E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; usesTabs = 0; };
 		9965D7D02637955500672D2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -186,7 +186,7 @@
 		9965D7CA2637955400672D2E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9965D7C92637955400672D2E /* Hydro Homie.app */,
+				9965D7C92637955400672D2E /* Hydro Comrade.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -254,9 +254,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9965D7C82637955400672D2E /* Hydro Homie */ = {
+		9965D7C82637955400672D2E /* Hydro Comrade */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9965D7D82637955500672D2E /* Build configuration list for PBXNativeTarget "Hydro Homie" */;
+			buildConfigurationList = 9965D7D82637955500672D2E /* Build configuration list for PBXNativeTarget "Hydro Comrade" */;
 			buildPhases = (
 				9965D7C52637955400672D2E /* Sources */,
 				9965D7C62637955400672D2E /* Frameworks */,
@@ -268,7 +268,7 @@
 			);
 			dependencies = (
 			);
-			name = "Hydro Homie";
+			name = "Hydro Comrade";
 			packageProductDependencies = (
 				99023360268248A200FACE04 /* FirebaseAuth */,
 				99023362268248A200FACE04 /* FirebaseFirestore */,
@@ -277,7 +277,7 @@
 				99006C8D271C96A400A99238 /* PermissionsSwiftUINotification */,
 			);
 			productName = "Hydro Homie";
-			productReference = 9965D7C92637955400672D2E /* Hydro Homie.app */;
+			productReference = 9965D7C92637955400672D2E /* Hydro Comrade.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -294,7 +294,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 9965D7C42637955400672D2E /* Build configuration list for PBXProject "Hydro Homie" */;
+			buildConfigurationList = 9965D7C42637955400672D2E /* Build configuration list for PBXProject "Hydro Comrade" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -319,7 +319,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				9965D7C82637955400672D2E /* Hydro Homie */,
+				9965D7C82637955400672D2E /* Hydro Comrade */,
 			);
 		};
 /* End PBXProject section */
@@ -518,6 +518,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Hydro Homie/Hydro Homie.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Hydro Homie/Preview Content\"";
 				DEVELOPMENT_TEAM = NK28QT38A3;
 				ENABLE_PREVIEWS = YES;
@@ -527,6 +528,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -545,6 +547,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Hydro Homie/Hydro Homie.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Hydro Homie/Preview Content\"";
 				DEVELOPMENT_TEAM = NK28QT38A3;
 				ENABLE_PREVIEWS = YES;
@@ -554,6 +557,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izzylabs.Hydro-Homie";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -565,7 +569,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9965D7C42637955400672D2E /* Build configuration list for PBXProject "Hydro Homie" */ = {
+		9965D7C42637955400672D2E /* Build configuration list for PBXProject "Hydro Comrade" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9965D7D62637955500672D2E /* Debug */,
@@ -574,7 +578,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9965D7D82637955500672D2E /* Build configuration list for PBXNativeTarget "Hydro Homie" */ = {
+		9965D7D82637955500672D2E /* Build configuration list for PBXNativeTarget "Hydro Comrade" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9965D7D92637955500672D2E /* Debug */,

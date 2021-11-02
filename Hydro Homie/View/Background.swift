@@ -1,6 +1,6 @@
 //
 //  Background.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 8/18/21.
 //
@@ -45,11 +45,27 @@ struct Background : View {
                 if backgroundOpacity == 0.6 {
                     withAnimation() {
                         VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
+                            .onTapGesture {
+                                withAnimation {
+                                 backgroundOpacity = 0
+                                    isQuickDrink = false
+                                }
+                            }
                     }
                 }
             }
 
             VStack {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        backgroundOpacity = 0
+                        isQuickDrink = false
+                    }, label: {
+                        Text("Cancel")
+                            .foregroundColor(Color.white)
+                    })
+                }
                 HStack {
                     Spacer()
                     if isQuickDrink {
@@ -190,7 +206,8 @@ struct Background : View {
                                 cups += drink.amount
                                 isFirstMenu = false
                                 isQuickDrink = false // close the .sheet and go back to the dashboard
-                                coffeeAmount += drink.caffeineAmount / 1000 //parse grams into mg
+                                coffeeAmount = drink.caffeineAmount / 10000
+                                accumulatedCoffeeAmount += drink.caffeineAmount / 10000 //parse grams into mg
                             }
                         Spacer().frame(height: UIScreen.main.bounds.size.height / 22)
                     }

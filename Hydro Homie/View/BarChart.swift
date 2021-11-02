@@ -1,6 +1,6 @@
 //
 //  BarChart.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/22/21.
 //
@@ -58,7 +58,7 @@ struct BarView: View {
     var isIpad: Bool {
         UIDevice.current.userInterfaceIdiom == .pad ? true : false
     }
-    @State var orientation = UIDevice.current.orientation
+    @State var orientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation
 
     let orientationChanged = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
         .makeConnectable()
@@ -66,7 +66,7 @@ struct BarView: View {
 
     var body: some View {
         ZStack{
-            if orientation.isPortrait{
+            if orientation!.isPortrait {
         ZStack {
             ZStack {
                 waterColor
@@ -76,19 +76,20 @@ struct BarView: View {
                 VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
                         .edgesIgnoringSafeArea(.all)
                 waterColor.opacity(0.4)
+                    .onAppear {
+                        print("orientation \(orientation!.rawValue)")
+                    }
             }
             VStack {
                 VStack(spacing: 10) {
-                    if UIDevice.current.userInterfaceIdiom == .pad {
-                        Spacer().frame(height: UIScreen.main.bounds.height / 15)
-                    }
+                        Spacer().frame(height: UIScreen.main.bounds.height / 13)
+                    
                     Spacer()
                     HStack {
                             Spacer().frame(width: UIScreen.main.bounds.width / 7)
                         
                         Button(action: {
                             isStats = false
-                            presentationMode.wrappedValue.dismiss()
                         }, label: {
                             Text("Go back")
                                 .fontWeight(.bold)
@@ -150,6 +151,7 @@ struct BarView: View {
                 Spacer()
                 Text(getTheWeekDay(day: 0, isToday: true)).frame(alignment: .top)
                         .font(.title.bold())
+                        .padding()
                 mainRingView(percentageWater: getTheDrinkValue(hydrationDictionary: user.getHydrationArrayFromTheUserDefaults().last ?? ["Something": ["went wrong": 0]], drinkName: "water"), startColor: Color.blue, endColor: Color(UIColor.blue), percentageAlcohol: getTheDrinkValue(hydrationDictionary: user.getHydrationArrayFromTheUserDefaults().last ?? ["Something": ["went wrong": 0]], drinkName: "alcohol"), startColorAlcohol: Color.orange, endColorAlcohol: Color(UIColor.purple), percentageCoffee: getTheDrinkValue(hydrationDictionary: user.getHydrationArrayFromTheUserDefaults().last ?? ["Something": ["went wrong": 0]], drinkName: "coffee"), startColorCoffee: Color.yellow, endColorCoffee: Color(UIColor.brown))
                         .shadow(color: .blue.opacity(0.05), radius: 3, x: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, y: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/)
 
@@ -177,7 +179,7 @@ struct BarView: View {
 
      
         }
-            } else if orientation.isLandscape {
+            } else if orientation!.isLandscape {
                 ZStack {
                     ZStack {
                         waterColor
@@ -193,9 +195,9 @@ struct BarView: View {
                             if UIDevice.current.userInterfaceIdiom == .pad {
                                 Spacer().frame(height: UIScreen.main.bounds.height / 15)
                             } else {
-                                Spacer().frame(height: UIScreen.main.bounds.height / 10)
-
+                                Spacer().frame(height: UIScreen.main.bounds.height / 13)
                             }
+                        
                             HStack {
                                     Spacer().frame(width: UIScreen.main.bounds.width / 10)
                                 
@@ -208,34 +210,35 @@ struct BarView: View {
                                 })
                                 Spacer()
                             }
+                        }
                             HStack {
                                 Text(getTheWeekDay(day: 6))
                                         .font(.title.bold())
-                                        .padding(.bottom, isIpad ? 0 : -29)
+                                        .padding(.bottom, isIpad ? 0 : UIScreen.main.bounds.height / 12)
                                         .frame(width: UIScreen.main.bounds.width / 8.2)
                                 Text(getTheWeekDay(day: 5))
                                         .font(.title.bold())
-                                        .padding(.bottom, isIpad ? 0 : -29)
+                                        .padding(.bottom, isIpad ? 0 : UIScreen.main.bounds.height / 12)
                                         .frame(width: UIScreen.main.bounds.width / 8.2)
                                 Text(getTheWeekDay(day: 4))
                                         .font(.title.bold())
-                                        .padding(.bottom, isIpad ? 0 : -29)
+                                        .padding(.bottom, isIpad ? 0 : UIScreen.main.bounds.height / 12)
                                         .frame(width: UIScreen.main.bounds.width / 8.2)
                                 Text(getTheWeekDay(day: 3))
                                         .font(.title.bold())
-                                        .padding(.bottom, isIpad ? 0 : -29)
+                                        .padding(.bottom, isIpad ? 0 : UIScreen.main.bounds.height / 12)
                                         .frame(width: UIScreen.main.bounds.width / 8.2)
                                 Text(getTheWeekDay(day: 2))
                                         .font(.title.bold())
-                                        .padding(.bottom, isIpad ? 0 : -29)
+                                        .padding(.bottom, isIpad ? 0 : UIScreen.main.bounds.height / 12)
                                         .frame(width: UIScreen.main.bounds.width / 8.2)
                                 Text(getTheWeekDay(day: 1))
                                         .font(.title.bold())
-                                        .padding(.bottom, isIpad ? 0 : -29)
+                                        .padding(.bottom, isIpad ? 0 : UIScreen.main.bounds.height / 12)
                                         .frame(width: UIScreen.main.bounds.width / 8.2)
                                 Text(getTheWeekDay(day: 0))
                                         .font(.title.bold())
-                                        .padding(.bottom, isIpad ? 0 : -29)
+                                        .padding(.bottom, isIpad ? 0 : UIScreen.main.bounds.height / 12)
                                         .frame(width: UIScreen.main.bounds.width / 8.2)
                             }
                             HStack {
@@ -244,27 +247,26 @@ struct BarView: View {
                                     ForEach(statsDictionary.suffix(7), id: \.self) { dictionary in
                                         landscapeWeeklyRings(hydration: dictionary)
                                                 .shadow(color: .black, radius: 2, x: 0.0, y: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/)
-                                                .frame(width: UIScreen.main.bounds.width / 8.4).padding(.top)
+                                                .frame(width: UIScreen.main.bounds.width / 8.2)
 
                                     }
                                 } else if statsDictionary.count < 7 {
                                     ForEach(statsDictionary, id: \.self) { dictionary in
                                         landscapeWeeklyRings(hydration: dictionary)
                                                 .shadow(color: .black, radius: 2, x: 0.0, y: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/)
-                                                .frame(width: UIScreen.main.bounds.width / 8.4).padding(.top)
+                                                .frame(width: UIScreen.main.bounds.width / 8.2)
                                     }
                                 }
 
                             }
                                     .frame(width: UIScreen.main.bounds.width * 0.95)
-                                    .padding()
-                        }
+                        
                         Spacer()
                         HStack {
-                            VStack {
+                            VStack(spacing: -5) {
                         Text(getTheWeekDay(day: 0, isToday: true)).frame(alignment: .top)
                                 .font(.title.bold())
-                                .padding(.top, -10)
+                                .padding(.top, 10)
                         landscapeMainRingView(percentageWater: getTheDrinkValue(hydrationDictionary: user.getHydrationArrayFromTheUserDefaults().last ?? ["Something": ["went wrong": 0]], drinkName: "water"), startColor: Color.blue, endColor: Color(UIColor.blue), percentageAlcohol: getTheDrinkValue(hydrationDictionary: user.getHydrationArrayFromTheUserDefaults().last ?? ["Something": ["went wrong": 0]], drinkName: "alcohol"), startColorAlcohol: Color.orange, endColorAlcohol: Color(UIColor.purple), percentageCoffee: getTheDrinkValue(hydrationDictionary: user.getHydrationArrayFromTheUserDefaults().last ?? ["Something": ["went wrong": 0]], drinkName: "coffee"), startColorCoffee: Color.yellow, endColorCoffee: Color(UIColor.brown))
                                 .shadow(color: .blue.opacity(0.05), radius: 3, x: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, y: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/)
                                 Spacer()
@@ -289,7 +291,7 @@ struct BarView: View {
                                 .layoutPriority(1)
                                 .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.size.height * 0.6, alignment: .center)
                                 .padding()
-                            })
+                        }).padding(.bottom, isIpad ? 0 : -20)
                         }
                     }
 
@@ -297,10 +299,10 @@ struct BarView: View {
                 }
             }
         }.onReceive(orientationChanged) { _ in
-            self.orientation = UIDevice.current.orientation
+            self.orientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation
         }
         .onAppear {
-
+            print("orientation \(orientation!.rawValue)")
             changeDatesInArray()
             chartData = [OCKDataSeries(values: arrayOfWater, title: "Water", gradientStartColor: UIColor.blue, gradientEndColor: UIColor(red: 0, green: 0.5, blue: 0.75, alpha: 0.5)), ]
 //            month = Calendar.current.monthSymbols[monthInt - 1]

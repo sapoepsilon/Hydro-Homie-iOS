@@ -1,6 +1,6 @@
 //
 //  CustomDrink.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/30/21.
 //
@@ -8,20 +8,26 @@
 import SwiftUI
 import Combine
 
+enum CustomDrinkAlert: String, Identifiable {
+    var id: String {
+        rawValue
+    }
+    case coffee
+    case isError
+}
 struct CustomDrink: View {
-    
+    @State var activeAlert: CustomDrinkAlert?
     @State private var drinkName: String = ""
     @State private var drinkAmount: Double = 0
     @State private var isAlcohol: Bool = false
     @State private var isCoffee: Bool = false
     @State private var isWater: Bool = false
     @State private var isMilk: Bool = false
-    @State private var ErrorTestDeleteLater: String = "Everything seems to be working OK"
+    @State  var ErrorTestDeleteLater: String = "Everything seems to be working OK"
     @EnvironmentObject var CustomDrinkDocument: CustomDrinkViewModel
-    @State private var ErrorDetector: Bool = false
+    @State  var ErrorDetector: Bool = false
     @Binding var isMetric: Bool
     @State private var customWaterAmount: String = ""
-    
     @State private var additionalBeverageAmount: Double = 0
     @State private var maxAmountBeverageAmount: Double = 0
     //Border Color
@@ -214,7 +220,7 @@ struct CustomDrink: View {
                                     }
                                 Text("mg")
                                 Button(action: {
-                                    isCaffeineInfo = true
+                                    activeAlert = .coffee
                                 }, label: {
                                     Image(systemName: "info")
                                 })
@@ -270,35 +276,76 @@ struct CustomDrink: View {
             }
             if additionalLiquids {
                 if additionalBeverageAmount != 0 {
-                    addDrinkButton()
+                    addDrinkButton(completionHandler: { isError, feedback in
+                            if isError {
+                                        isCustomDrinkSheet = false
+                                        isDiureticSheet = false
+                                print(ErrorDetector)
+
+                                    } else {
+                                        ErrorTestDeleteLater = feedback
+                                        activeAlert = .isError
+                                    }
+                    })
                 }
             } else if !additionalLiquids {
                 if isCoffee {
-                    addDrinkButton()
-                        .opacity( caffeineAmount.isEmpty || alcoholCupAmount.isEmpty ? 0 : 1)
+                    addDrinkButton(completionHandler: { isDrink, feedback in
+                            if isDrink {
+                                ErrorTestDeleteLater = feedback
+                                activeAlert = .isError
+                                print(ErrorDetector)
+
+                                    } else {
+                                        ErrorTestDeleteLater = feedback
+                                        activeAlert = .isError
+                                    }
+                    })                        .opacity( caffeineAmount.isEmpty || alcoholCupAmount.isEmpty ? 0 : 1)
                 } else if isWater {
-                    addDrinkButton()
+                    addDrinkButton(completionHandler: { isDrink, feedback in
+                            if isDrink {
+                                ErrorTestDeleteLater = feedback
+                                activeAlert = .isError
+                                print(ErrorDetector)
+
+                                    } else {
+                                        ErrorTestDeleteLater = feedback
+                                        activeAlert = .isError
+                                    }
+                    })
                         .opacity(customWaterAmount.isEmpty ? 0 : 1)
+                    .padding()
+                   .buttonStyle(LoginButton())
                 } else {
-                    addDrinkButton()
-                        .opacity( alcoholPercentage.isEmpty || alcoholCupAmount.isEmpty ? 0 : 1)
+                    addDrinkButton(completionHandler: { isDrink, feedback in
+                            if isDrink {
+                                ErrorTestDeleteLater = feedback
+                                activeAlert = .isError
+                                print(ErrorDetector)
+
+                                    } else {
+                                        ErrorTestDeleteLater = feedback
+                                        activeAlert = .isError
+                                    }
+                    })                        .opacity( alcoholPercentage.isEmpty || alcoholCupAmount.isEmpty ? 0 : 1)
                 }
             }
         }
-        .alert(isPresented: $ErrorDetector, content: {
-            Alert(title: Text("Alert"), message: Text(ErrorTestDeleteLater), dismissButton: .default(Text("OK"), action: {
-                withAnimation {
-                    isCustomDrinkSheet = false
-                    isDiureticSheet = false
-                }
-            }))
-        })
-        .alert(isPresented: $isCaffeineInfo, content: {
-            Alert(title: Text("How to calculate caffeine amount"), message:
-                    Text(" For any amount of 'good strength' American-style coffee by any brew method, weigh the dry coffee in grams and multiply by 0.008, or 80mg of caffeine for each 10g of dry coffee.." ), primaryButton: Alert.Button.default(Text("Learn more"), action: {
-                        UIApplication.shared.open(URL(string: "https://coffee.stackexchange.com/a/324")!)
-                    }), secondaryButton: Alert.Button.cancel())
-        })
+        .alert(item: $activeAlert) { alert in
+       switch alert{
+       case .coffee:
+           return Alert(title: Text("How to calculate caffeine amount"), message:
+                   Text(" For any amount of 'good strength' American-style coffee by any brew method, weigh the dry coffee in grams and multiply by 0.008, or 80mg of caffeine for each 10g of dry coffee.." ), primaryButton: Alert.Button.default(Text("Learn more"), action: {
+                       UIApplication.shared.open(URL(string: "https://coffee.stackexchange.com/a/324")!)
+                   }), secondaryButton: Alert.Button.cancel())
+       case .isError:
+           return Alert(title: Text("Alert"), message: Text(ErrorTestDeleteLater), dismissButton: Alert.Button.default(Text("OK"), action: {
+                   activeAlert = nil
+                   isCustomDrinkSheet = false
+               }))
+       }
+   }
+
         .onAppear {
             if isMetric {
                 mlConverter = 1
@@ -320,8 +367,8 @@ struct CustomDrink: View {
             }
         })
     }
-    func addDrinkButton() -> some View {
-        return   Button(action: {
+    func addDrinkButton(completionHandler: @escaping (Bool, String) -> Void) -> some View {
+        return  Button(action: {
             var alcoholcupAmount = Double(alcoholCupAmount) ?? 0
             let alcoholpercentage = Double(alcoholPercentage) ?? 0
             let cupAmount = Double(alcoholCupAmount) ?? 0
@@ -339,11 +386,13 @@ struct CustomDrink: View {
                 drinkAmount /= 8
             }
             if drinkAmount != 0 {
-                createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount, alcoholPercentage: alcoholpercentage, isCustomWater: isWater)
-                ErrorDetector = true
+                createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount, alcoholPercentage: alcoholpercentage, isCustomWater: isWater, completionHandler: { isDrink, feedBack in
+                    completionHandler(isDrink, feedBack)
+                })
+//                ErrorDetector = true
                 CustomDrinkDocument.getDrinkOpacity()
-                isCustomDrinkSheet = false
-                isDiureticSheet = false
+//                isCustomDrinkSheet = false
+//                isDiureticSheet = false
             } else {
                 borderColor = Color.red
             }
@@ -351,10 +400,14 @@ struct CustomDrink: View {
         , label: {
             Text("Create the custom drink")
         })
+            .padding()
         .buttonStyle(LoginButton())
     }
-    func createCustomDrink(name: String, isAlcohol: Bool, isCaffeine: Bool, amount: Double, alcoholAmount: Double, caffeineAmount: Double, alcoholPercentage: Double, isCustomWater: Bool) {
-        
-        ErrorTestDeleteLater = CustomDrinkDocument.addCustomDrink(newCustomDrink: CustomDrinkModel(id: CustomDrinkDocument.customDrinks.count, name: name, isAlcohol: isAlcohol, isCaffeine: isCaffeine, amount: amount, alcoholAmount: alcoholAmount, alcoholPercentage: alcoholPercentage, caffeineAmount: caffeineAmount, isCustomWater: isCustomWater))
+    func createCustomDrink(name: String, isAlcohol: Bool, isCaffeine: Bool, amount: Double, alcoholAmount: Double, caffeineAmount: Double, alcoholPercentage: Double, isCustomWater: Bool, completionHandler: @escaping ((Bool, String)) -> ()) {
+//
+        CustomDrinkDocument.addCustomDrink(newCustomDrink: CustomDrinkModel(id: CustomDrinkDocument.customDrinks.count, name: name, isAlcohol: isAlcohol, isCaffeine: isCaffeine, amount: amount, alcoholAmount: alcoholAmount, alcoholPercentage: alcoholPercentage, caffeineAmount: caffeineAmount, isCustomWater: isCustomWater), completionHandler: { isError, feedback in
+            completionHandler((isError, feedback))
+            
+        })
     }
 }

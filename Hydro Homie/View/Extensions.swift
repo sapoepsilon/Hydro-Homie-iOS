@@ -1,6 +1,6 @@
 //
 //  ClearBackground.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 7/10/21.
 //
@@ -1061,10 +1061,13 @@ struct FormSheet<Content: View> : UIViewControllerRepresentable {
     @Binding var show: Bool
     
     let content: () -> Content
-    
+    internal var backgroundColor: UIColor = .clear
+
     func makeUIViewController(context: UIViewControllerRepresentableContext<FormSheet<Content>>) -> FormSheetWrapper<Content> {
         
+        
         let vc = FormSheetWrapper(content: content)
+    
         vc.onDismiss = { self.show = false }
         return vc
     }
@@ -1079,7 +1082,13 @@ struct FormSheet<Content: View> : UIViewControllerRepresentable {
         }
     }
 }
-
+extension FormSheet {
+    public func backgroundColor(_ backgroundColor: UIColor) -> Self {
+        var copy = self
+        copy.backgroundColor = backgroundColor
+        return copy
+    }
+}
 extension View {
     public func formSheet<Content: View>(isPresented: Binding<Bool>,
                                          @ViewBuilder content: @escaping () -> Content) -> some View {
@@ -1133,7 +1142,7 @@ struct WelcomeBoardText: View {
                     .font(.title3)
                     .foregroundColor(colorScheme == .dark ? .white : .black)
                 .frame(width: UIScreen.main.bounds.width-50, height: 200)
-        }.frame(width: UIScreen.main.bounds.width-50, height: 200)
+        }.frame(width: UIScreen.main.bounds.width-50, height: UIScreen.main.bounds.height / 5)
             .background(Color.gray.opacity(0.2))
             .cornerRadius(12)
             .clipped()

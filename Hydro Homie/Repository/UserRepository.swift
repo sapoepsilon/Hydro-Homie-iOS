@@ -1,6 +1,6 @@
 //
 //  UserRepository.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/6/21.
 //
@@ -39,30 +39,31 @@ class UserRepository: ObservableObject {
     
     
     
-    func signInUser(email: String, password: String, onSucces: @escaping() -> Void, onError: @escaping (_ errorMessage : String) -> Void ) {
+    func signInUser(email: String, password: String, onSucces: @escaping(Bool, String) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { (authData, error) in
 
                 if (error != nil) {
                     print(error!.localizedDescription)
-                    onError(error!.localizedDescription)
+                    onSucces(false, error!.localizedDescription)
                     return
                 } else {
                     self.userID = (authData?.user.uid)!
                     print(self.userID)
+                    onSucces(true, "")
                     UserDefaults.standard.set(self.userID, forKey: "userID")
                 }
         }
     }
-    func signUpUser(email: String, password: String, name: String, weight: Double, height: Double, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double, onSucces: @escaping() -> Void, onError: @escaping (_ errorMessage : String) -> Void ) {
+    func signUpUser(email: String, password: String, name: String, weight: Double, height: Double, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double, onSucces: @escaping(Bool, String) -> Void) {
             isUploadFinished = false
             Auth.auth().createUser(withEmail: email, password: password) { (authData, error) in
                 if (error != nil) {
                     print(error!.localizedDescription)
-                    onError(error!.localizedDescription)
+                    onSucces(false, error!.localizedDescription)
                     return
                 } else {
                     self.userID = (authData?.user.uid)!
-                    print(self.userID)
+                    onSucces(true, "")
                     UserDefaults.standard.set(self.userID, forKey: "userID")
 
                     self.addUserInformation(name: name, weight: weight, height: height, userID: self.userID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake)

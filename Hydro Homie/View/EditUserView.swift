@@ -45,10 +45,16 @@ struct EditUserView: View {
         ZStack {
             VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
             background().opacity(0.6)
-
-        }
+        
         VStack {
-            
+            HStack {
+                Spacer()
+                Button(action: {
+                    isDashboard = false
+                }, label: {
+                    Text("Cancel")
+                })
+            }
             ZStack{
                 Text("Edit your info").font(.headline)
                     .bold()
@@ -300,6 +306,7 @@ struct EditUserView: View {
                 Text("Edit")
             }).padding()
                 .buttonStyle(LoginButton())
+        }
         }
         .alert(isPresented: $isAlert, content: {
             Alert(title: Text("Alert"), message: Text(alertMessage), dismissButton: .default(Text("OK"), action: {

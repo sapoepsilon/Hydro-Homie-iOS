@@ -1,6 +1,6 @@
 //
 //  SwiftUIView.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/21/21.
 //
@@ -91,7 +91,9 @@ struct ActionView: View {
                 }
                 .onPreferenceChange(WidthPreferenceKey.self) { widths in
                     if let width = widths.max() {
-                        self.width = width
+                        if UIDevice.current.userInterfaceIdiom == .pad {
+                            self.width = width * 1.4
+                        }
                         print("width is :\(width)")
                     }
                 }
@@ -103,26 +105,16 @@ struct ActionView: View {
                 }
             })
 //            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
-            .halfASheet(isPresented: self.$isEdit, content: {
-                EditUserView(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isMetric: $isMetric, isDashboard: $isEdit)
-                    .clearModalBackground()
-                    .environmentObject(user)
-                    .minimumScaleFactor(0.01)
-
-                //                TextField(user.user.name, text: self.$userName)
-                //                TextField(String(user.user.height), text: self.$userHeight)
-            }
-            )
+         
         }
+        .sheet(isPresented: self.$isEdit, content: {
+            EditUserView(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isMetric: $isMetric, isDashboard: $isEdit)
+                .environmentObject(user)
+        }
+        )
         .fullScreenCover(isPresented: $isStats, content: {
-            if UIDevice.current.userInterfaceIdiom == .pad {
                 BarView(isStats: $isStats)
-                    .frame(height: UIScreen.main.bounds.height * 0.3)
                     .clearModalBackground()
-                        } else {
-            BarView(isStats: $isStats)
-                .clearModalBackground()
-                        }
         })
     }
 }

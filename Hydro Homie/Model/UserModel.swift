@@ -1,6 +1,6 @@
 //
 //  UserModel.swift
-//  Hydro Homie
+//  Hydro Comrade
 //
 //  Created by Ismatulla Mansurov on 6/9/21.
 //
