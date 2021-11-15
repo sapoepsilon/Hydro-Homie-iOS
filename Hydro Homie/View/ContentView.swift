@@ -57,7 +57,7 @@ struct ContentView: View {
                 LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
                     .edgesIgnoringSafeArea(.all)
                 if !isWelcomePageShown {
-                    OnboardScreen(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
+                    OnboardScreen(backgroundColorTop: $backgroundColorTop, waterColor: $waterColor)
                 } else {
                     if !user.loggedIn{
                         if isZoomed {
@@ -312,16 +312,31 @@ struct ContentView: View {
                     else {
                         VStack {
                             if user.isUploadFinished {
-                                Dashboard(isDocumentAddition: $registerView, customDrinkDocument: CustomDrinkViewModel(), userDocument: UserDocument(), backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
+                                Dashboard(isDocumentAddition: $registerView, isLoad: $isLoad, customDrinkDocument: CustomDrinkViewModel(), userDocument: UserDocument(), backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom)
                                     .environmentObject(HydrationDocument()).onAppear {
                                         print("Button should be true \(user.isUploadFinished)")
                                     }
-                            } else {
-                                LoadingView()
                             }
                         }
                     }
                 }
+            }
+            .onAppear{
+                if colorScheme == .dark {
+                    waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 0.5)
+                    borderColor = Color.white
+                } else {
+                    waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 0.5)
+                    borderColor = Color.gray
+                }
+                if appleLogStatus {
+                    if appleFireStoreExists {
+                        user.checkUser()
+                    }
+                } else {
+                    user.checkUser()
+                }
+                colorScheme = ColorScheme
             }
             .alertView(isPresented: $isLoad, overlayView: {
                 LoadingView()
@@ -329,8 +344,10 @@ struct ContentView: View {
             .sheet(item: $activeSheet) { sheet in
                 switch sheet {
                 case .isRegister:
-                    RegisterView(onCompleteBlock: {activeSheet = nil}, Dashboard: $signIn, registerView: self.$registerView)
+                    RegisterView(onCompleteBlock: {activeSheet = nil}, isLoad: $isLoad, Dashboard: $signIn, registerView: self.$registerView)
                             .environmentObject(user)
+                    
+                            .aspectRatio( contentMode: .fit)
                 case .isPasswordReset:
                     ResetPassword(onCompleteBlock: {activeSheet = nil}, resetPasswordView: $resetPasswordView)
                 }
@@ -356,25 +373,6 @@ struct ContentView: View {
                     self.timeRemaining += 0.1
                 }
             })
-            .onAppear{
-                print("Ios version is 15")
-
-                print("apple fire store exists \(appleFireStoreExists)")
-                if colorScheme == .dark {
-                    waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 0.5)
-                    borderColor = Color.white
-                } else {
-                    waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 0.5)
-                    borderColor = Color.gray
-                }
-                if appleLogStatus {
-                    if appleFireStoreExists {
-                        user.checkUser()
-                    }
-                } else {
-                    user.checkUser()
-                }
-                colorScheme = ColorScheme
-            }
+  
     }
 }

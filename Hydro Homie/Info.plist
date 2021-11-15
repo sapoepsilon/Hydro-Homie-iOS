@@ -36,7 +36,7 @@
 	<key>NSHealthShareUsageDescription</key>
 	<string>The app needs access to the Health app to sync the water and caffeine consumption.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Health is used to write the amount of water you drank into your health app</string>
+	<string>Health is used to write the amount of water you drank, and any caffeine you log into your health app</string>
 	<key>NSlocation</key>
 	<string></string>
 	<key>UIApplicationSceneManifest</key>

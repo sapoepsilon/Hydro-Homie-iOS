@@ -148,7 +148,7 @@ class UserDocument: ObservableObject {
                 // Create JSON Decoder
                 let decoder = JSONDecoder()
                 do {
-                    print("Hydration in the userdefaults after saving to it: \(try decoder.decode([[String: [String: Double]]].self, from: data).description)")
+//                    print("Hydration in the userdefaults after saving to it: \(try decoder.decode([[String: [String: Double]]].self, from: data).description)")
                 } catch {
                     print("Unable to Decode hydration after saving it(\(error))")
                 }

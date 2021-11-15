@@ -271,12 +271,16 @@ struct DiureticView: View {
                             isAlcoholConsumed = true
                             self.amountOfAccumulatedAlcohol += drink.alcoholAmount
                             percentageOfEachAlcohol  = drink.alcoholPercentage
+                            amountOfEachAlcohol = drink.alcoholAmount
+                            onCompleteBlock()
                         } else if drink.isCaffeine {
                             coffeeAmount = drink.caffeineAmount / 100
                             print("caffeine in .mg \(coffeeAmount)")
                         }
                         isDiuretic = false
                         popUp = false // close the .sheet and go back to the dashboard
+                        onCompleteBlock()
+
                     }
                     
                     Text(drink.name)
@@ -360,6 +364,7 @@ struct DiureticView: View {
                                 cups += drink.amount
                                 isDiuretic = false
                                 popUp = false // close the .sheet and go back to the dashboard
+                                onCompleteBlock()
                             }
                             .frame(width: editIndent)
                         

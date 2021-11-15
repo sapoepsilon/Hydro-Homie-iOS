@@ -194,6 +194,7 @@ struct Background : View {
                                 isAlcoholConsumed = true
                                 self.amountOfAccumulatedAlcohol += drink.alcoholAmount
                                 percentageOfEachAlcohol  = drink.alcoholPercentage
+                                
                             }
                         Spacer().frame(height: UIScreen.main.bounds.size.height / 22)
                     }

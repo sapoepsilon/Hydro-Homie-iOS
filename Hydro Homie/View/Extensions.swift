@@ -1013,7 +1013,7 @@ struct SATextField: UIViewRepresentable {
         }
         uiView.isSecureTextEntry = isSecureTextEntry?.wrappedValue ?? false
         uiView.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        uiView.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        uiView.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
     }
 }
 
@@ -1129,6 +1129,17 @@ extension UserDefaults {
         }
     }
 }
+
+extension UserDefaults {
+    var isFirstTimeLaunch: Bool {
+        get {
+            return (UserDefaults.standard.value(forKey: "isFirstTimeLaunch") as? Bool) ?? false
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey:  "isFirstTimeLaunch")
+        }
+    }
+}
 struct WelcomeBoardText: View {
     @Environment(\.colorScheme) var colorScheme
     var text:String
@@ -1198,4 +1209,28 @@ class DisplayLink: NSObject, ObservableObject {
     }
 
     
+}
+
+extension View {
+    func getRect()->CGRect {
+        return UIScreen.main.bounds
+    }
+}
+
+
+extension View {
+    func snapshot() -> UIImage {
+        let controller = UIHostingController(rootView: self)
+        let view = controller.view
+
+        let targetSize = controller.view.intrinsicContentSize
+        view?.bounds = CGRect(origin: .zero, size: targetSize)
+        view?.backgroundColor = .clear
+
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+
+        return renderer.image { _ in
+            view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+        }
+    }
 }

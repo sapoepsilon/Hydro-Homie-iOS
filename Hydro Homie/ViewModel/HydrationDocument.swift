@@ -42,5 +42,9 @@ class HydrationDocument: ObservableObject {
             UNUserNotificationCenter.current().add(request)
         
     }
+    
+    func removeNotification() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+    }
 }
 

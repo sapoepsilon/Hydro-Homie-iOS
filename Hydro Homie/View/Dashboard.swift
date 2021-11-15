@@ -19,13 +19,18 @@ enum sheet: String, Identifiable {
     case isDiuretic
     case isPopup
     case isDocumentAddition
-
+    
 }
 struct Dashboard: View {
     private var idiom : UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
     
-    @Binding var isDocumentAddition: Bool
+    @AppStorage("welcomePage") var isWelcomePageShown: Bool = UserDefaults.standard.isWelcomePageShown
+    @AppStorage("isFirstTimeLaunch") var isFirstTimeLaunch: Bool = UserDefaults.standard.isFirstTimeLaunch
     
+    @State private var previousWaterOpacity: Double = 1
+    @State private var isLastCup: Bool = false
+    @Binding var isDocumentAddition: Bool
+    @Binding var isLoad: Bool
     @Environment(\.colorScheme) var colorScheme
     @StateObject var customDrinkDocument: CustomDrinkViewModel
     @EnvironmentObject var hydration: HydrationDocument
@@ -37,6 +42,8 @@ struct Dashboard: View {
     @State var percentageWater: Double = 0
     let formatter = NumberFormatter()
     @State private var offset = CGSize.zero
+    @State private var previousOffset = CGSize.zero
+    
     let timer = Timer.publish(every: 0.001, on: .main, in: .common).autoconnect()
     @ObservedObject var displayLink = DisplayLink.sharedInstance
     @State var waterColor: Color =  Color( red: 0.09, green: 1, blue: 1, opacity: 1)
@@ -59,6 +66,8 @@ struct Dashboard: View {
     @State private var quickDrinkOpacity: Double = 1
     @State private var isQuickDrink: Bool = false
     @State private var waterBackgroundColor: Color = Color.black
+    @State private var diureticCount: [Int] = []
+
     
     // Coffee
     @State private var amountOfCoffee: Double = 0
@@ -109,6 +118,14 @@ struct Dashboard: View {
                     HStack{
                         homeAction().scaleEffect(1.5)
                         Spacer()
+                        if isLastCup {
+                            Button(action: {
+                                cancelTheLastDrink()
+                            }, label: {
+                                Text("Cancel the last drink")
+                            })
+                        }
+                        Spacer()
                         Button(action: {
                             activeSheet = .isPopup
                         }, label: {
@@ -124,9 +141,7 @@ struct Dashboard: View {
                         }
                     }
                     if isAlcoholConsumed {
-//
                         alcoholConsumed(reader: reader)
-//
                         
                     }
                     HStack{
@@ -136,14 +151,11 @@ struct Dashboard: View {
                             }
                         }
                         else {
-                            if waterViewOpacity == 1 {
                             waterDrop(reader: reader)
-                            }
-
                         }
                     }.onAppear {
                         print("native scale \(UIScreen.main.nativeScale) and the scaleed scale \(UIScreen.main.scale) isZoomed should be true \(isZoomed)")
-                        }
+                    }
                     if !isCurrentHydration {
                         Spacer()
                     }
@@ -168,7 +180,7 @@ struct Dashboard: View {
                         UIDevice.current.userInterfaceIdiom == .pad ? Spacer().frame(height: reader.size.height / 30) : Spacer().frame(height: reader.size.height / 14)                    }
                     HStack {
                         Spacer().frame(width: reader.size.width / 2.14)
-                        drop()
+                        drop().offset(CGSize.zero)
                         Spacer()
                         plus()
                     }
@@ -217,27 +229,28 @@ struct Dashboard: View {
             if(userDocument.user.metric == true) {
                 volumeMetric = "ml"
             }
+            isLoad = false
         })
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .isDiuretic:
                 ZStack {
-                DiureticView(onCompleteBlock: { self.activeSheet = nil }, cups: $cups, waterColor: $waterColor, isCustomWater: $isCustomWater, isMetric: $isMetric, isDiuretic: $isDiuretic, popUp: $popUp, isAlcoholConsumed: $isAlcoholConsumed, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, coffeeAmount: $amountOfCoffee ,accumulatedCoffeeAmount: $accumalatedAmountOfCoffee)
-                    .environmentObject(customDrinkDocument)
-                    .edgesIgnoringSafeArea(.bottom)
-                    .clearModalBackground()
+                    DiureticView(onCompleteBlock: { self.activeSheet = nil }, cups: $cups, waterColor: $waterColor, isCustomWater: $isCustomWater, isMetric: $isMetric, isDiuretic: $isDiuretic, popUp: $popUp, isAlcoholConsumed: $isAlcoholConsumed, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, coffeeAmount: $amountOfCoffee ,accumulatedCoffeeAmount: $accumalatedAmountOfCoffee)
+                        .environmentObject(customDrinkDocument)
+                        .edgesIgnoringSafeArea(.bottom)
+                        .clearModalBackground()
                 }
             case .isPopup:
                 NavigationView {
-                PopUp(onCompleteBlock: { self.activeSheet = nil }, active: $popUp, cups: $cups, customDrinkDocument: customDrinkDocument, waterColor: $waterColor, isMetric: $isMetric, isCustomWater: $isCustomWater, backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isAlcoholConsumed: $isAlcoholConsumed, percentageOfAlcohol: $percentageOfAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, coffeeAmount: $amountOfCoffee, accumulatedCoffeeAmount: $accumalatedAmountOfCoffee)
-                    .clearModalBackground()
-                    .environmentObject(customDrinkDocument)
-                    .environmentObject(user)
-                    .environmentObject(userDocument)
-                    .edgesIgnoringSafeArea(.bottom)
+                    PopUp(onCompleteBlock: { self.activeSheet = nil }, active: $popUp, cups: $cups, customDrinkDocument: customDrinkDocument, waterColor: $waterColor, isMetric: $isMetric, isCustomWater: $isCustomWater, backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isAlcoholConsumed: $isAlcoholConsumed, percentageOfAlcohol: $percentageOfAlcohol, percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, coffeeAmount: $amountOfCoffee, accumulatedCoffeeAmount: $accumalatedAmountOfCoffee)
+                        .clearModalBackground()
+                        .environmentObject(customDrinkDocument)
+                        .environmentObject(user)
+                        .environmentObject(userDocument)
+                        .edgesIgnoringSafeArea(.bottom)
                 }
             case .isDocumentAddition:
-                RegisterView(onCompleteBlock: {activeSheet = nil}, Dashboard: $user.loggedIn, registerView: $isDocumentAddition )
+                RegisterView(onCompleteBlock: {activeSheet = nil}, isLoad: $isLoad, Dashboard: $user.loggedIn, registerView: $isDocumentAddition )
                 
             }
             
@@ -257,7 +270,12 @@ struct Dashboard: View {
             waterBackgroundColor = backgroundColorTop
             
         })
-        
+        .onChange(of: amountOfEachAlcohol, perform: { value in
+            diureticCount.append(Int(amountOfEachAlcohol))
+            print("amount of each alcohol \(amountOfEachAlcohol)")
+            print("diuretic size \(diureticCount.count)")
+
+        })
         .onChange(of: amountOfCoffee, perform: { value in
             addCaffeineToHK(caffeine: value)
         })
@@ -299,6 +317,14 @@ struct Dashboard: View {
                 notificationCountDown = false
             }
         })
+        .onChange(of: notificationCountDown, perform: { _ in
+            if notificationCountDown {
+                isLastCup = true
+            } else {
+                isLastCup = false
+            }
+            
+        })
         .onChange(of: self.cups, perform: { value in
             let lastCup = UserDefaults.standard.double(forKey: "cups")
             
@@ -318,8 +344,8 @@ struct Dashboard: View {
                     }
                 }
             }
-            print("amount of coffee \(amountOfCoffee) amount of accumulatedCoffee \(accumalatedAmountOfCoffee)")
             userDocument.updateHydrationDictionaryInUserDefaults(currentHydration: currentHydrationDictionary, newHydrationValues: ["water": cups, "alcohol": amountOfAccumulatedAlcohol,"coffee": amountOfCoffee], key: userDocument.user.hydration.last!.first!.key)
+            isFirstTimeLaunch = true
         })
         .onChange(of: colorScheme, perform: { _ in
             if colorScheme == .dark {
@@ -448,6 +474,7 @@ struct Dashboard: View {
                 hydrationDate = userDocument.getTheLatestDate()
                 currentHydrationDictionary = userDocument.user.hydration.last ?? [today: ["":0]]
                 waterViewOpacity = 1
+                offset = CGSize.zero
             }
         }, label: {
             Image(systemName: "house")
@@ -492,20 +519,41 @@ struct Dashboard: View {
         if isCurrentHydration {
             let waterIntakeConverted = waterIntake / Double(cupConverter())
             let cuplocal = UserDefaults.standard.double(forKey: "cups")
+            UserDefaults.standard.set(cuplocal, forKey: "previousDrink")
             if cups > cuplocal && cups != 0 {
                 let updateTheTimerView = cups - cuplocal
                 if updateTheTimerView == 1 {
                     let number = Int.random(in: 0..<10)
                     notificationInterval -= Double(number)
                 }
-                notificationInterval = calculateNotificationInterval(waterIntake: waterIntakeConverted, awakeness: 16)
-                hydration.addNotification(timeInterval: notificationInterval)
-                notificationCountDown = true
+                if isFirstTimeLaunch {
+                    notificationInterval = calculateNotificationInterval(waterIntake: waterIntakeConverted, awakeness: 16)
+                    hydration.addNotification(timeInterval: notificationInterval)
+                    notificationCountDown = true
+                }
             }
             UserDefaults.standard.set(cups, forKey: "cups")
         }
     }
-    
+    func cancelTheLastDrink() {
+        let previousCups = UserDefaults.standard.double(forKey: "previousDrink")
+        print("previous Drink amount: \(previousCups)")
+        print("Current cups amount: \(cups)")
+        cups = previousCups
+        if(diureticCount.count == 0) {
+            amountOfEachAlcohol = 0
+            amountOfAccumulatedAlcohol = 0
+            isDiureticMode = false
+            isAlcoholConsumed = false
+        } else if diureticCount.count >= 1 {
+            amountOfAccumulatedAlcohol -= amountOfEachAlcohol
+            amountOfEachAlcohol = 0
+        }
+        hydration.removeNotification()
+        notificationCountDown = false
+        waterColor = currentWaterColor(colorScheme: colorScheme)
+
+    }
     func cupConverter() -> Int {
         var cupConverter: Int = 1
         if isMetric {
@@ -557,10 +605,86 @@ struct Dashboard: View {
         
         
     }
+    //    func pastWaterDrop(reader: GeometryProxy) -> some View {
+    //        return VStack {
+    //            WaterView(factor: self.$percentageWater, waterColor: $waterColor, backgroundColor: $waterBackgroundColor)
+    //                .opacity(previousWaterOpacity)
+    //        }.transition(.slide)
+    //            .frame(width: reader.size.width, height: reader.size.height / 2)
+    //            .scaleEffect(waterScaleEffect)
+    //            .onTapGesture {
+    //                if waterScaleEffect == 1.5 {
+    //                    withAnimation() {
+    //                        waterScaleEffect = 1
+    //                    }
+    //                    let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+    //                    impactHeavy.impactOccurred()
+    //
+    //                } else {
+    //                    if isCurrentHydration{
+    //                        let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+    //                        impactHeavy.impactOccurred()
+    //                        activeSheet = .isDiuretic
+    //                    }
+    //                }
+    //            }
+    //            .shadow(color: colorScheme == .dark ? .white : .black, radius: 6)
+    //            .offset(x: previousOffset.width * 5, y: previousOffset.height * 5)
+    //            .gesture(
+    //                DragGesture()
+    //                    .onChanged { gesture in
+    //                        if waterScaleEffect == 1 {
+    //                            self.previousOffset.width = gesture.translation.width / 3
+    //                            self.previousOffset.height = gesture.translation.height / 3
+    //                            print(previousOffset.width )
+    //
+    //                            if self.previousOffset.width > 90 {
+    //                                previousWaterOpacity = 0
+    //                                if previousWaterOpacity == 0 {
+    //                                    previousOffset.width = -180
+    //                                    self.currentHydrationDictionary = userDocument.previousDate(hydrationArray: self.currentHydrationDictionary)
+    //                                    previousOffset.height = 0
+    //                                }
+    //
+    //                            } else if self.previousOffset.width < -90 {
+    //                                previousWaterOpacity = 0
+    //                                if previousWaterOpacity == 0 {
+    //                                    previousOffset.width = 180
+    //                                    self.currentHydrationDictionary = userDocument.nextDate(hydrationArray: self.currentHydrationDictionary)
+    //                                    previousOffset.height = 0
+    //                                }
+    //                                }
+    //                        } else {
+    //                            self.cups = Double((-gesture.translation.height / 50))
+    //                        }
+    //                    }
+    //                    .onEnded { _ in
+    //                        if previousOffset.height < -30 {
+    //                            waterViewOpacity = 0 // if the user swipes right waterView disappears
+    //                            previousOffset.height = 230
+    //                            previousOffset.width = 0
+    //                            withAnimation(.linear(duration: 0.5)) {
+    //                                actionView = true
+    //                            }
+    //                        } else if previousOffset.width < -1 {
+    //                            withAnimation {
+    //                                previousOffset.width = 0
+    //                            }
+    //                        } else if previousOffset.width > 1 {
+    //                            withAnimation {
+    //                                previousOffset.width = 0
+    //                            }
+    //                        }
+    //
+    //                        }
+    //                )
+    //
+    //    }
+    
     func waterDrop(reader: GeometryProxy) -> some View {
         return VStack {
-            WaterView(factor: self.$percentageWater, waterColor: $waterColor, backgroundColor: $waterBackgroundColor)        .opacity(waterViewOpacity)
-
+            WaterView(factor: self.$percentageWater, waterColor: $waterColor, backgroundColor: $waterBackgroundColor)
+                .opacity(waterViewOpacity)
         }
         .frame(width: reader.size.width, height: reader.size.height / 2)
         .scaleEffect(waterScaleEffect)
@@ -591,60 +715,96 @@ struct Dashboard: View {
                     } else {
                         self.cups = Double((-gesture.translation.height / 50))
                     }
+
                 }
                 .onEnded { _ in
-                    if offset.height < -30 {
-                        waterViewOpacity = 0 // if the user swipes right waterView disappears
+                    if offset.width <= 45 && offset.width > 0 {
+                        offset.width = 0
+                    } else if offset.width >= -45 && offset.width < 0 {
+                        offset.width = 0
+                    }
+                    
+                    if offset.height > -40 && offset.height < 0 {
+                        offset.height = 0
+                    }
+                    if offset.height < -40 {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             offset.height = 230
-                            offset.width = 0
+                        }
                         withAnimation(.linear(duration: 0.5)) {
                             actionView = true
                         }
-                        
-                    } else if self.offset.width > 50 {
-                        
+                    }
+                    if self.offset.width > 45 {
                         self.currentHydrationDictionary = userDocument.previousDate(hydrationArray: self.currentHydrationDictionary)
                         waterViewOpacity = 0
-                        offset.width = -189.5
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            waterViewOpacity = 1
+                        if _waterViewOpacity.wrappedValue == 0 {
+                            print("water view opacity: \(waterViewOpacity)")
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                self.offset.width = -250
+                            }
                         }
                         offset.height = 0
-                        
                     } else if self.offset.width < -50 {
-                        
+                        self.currentHydrationDictionary = userDocument.nextDate(hydrationArray: self.currentHydrationDictionary)
                         waterViewOpacity = 0
                         if waterViewOpacity == 0 {
-                        self.currentHydrationDictionary = userDocument.nextDate(hydrationArray: self.currentHydrationDictionary)
-                        offset.width = 189.5
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                waterViewOpacity = 1
+                                self.offset.width = 250
                             }
-                        offset.height = 0
                         }
+                        offset.height = 0
                     }
-                    
+                })
+        .onChange(of: offset, perform: { value in
+            
+            print("value right now \(value)")
+            if offset.width < -249 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    offset.width = 0
+                    waterViewOpacity = 1
                 }
-        )
-        .onChange(of: displayLink.frameChange) { time in
-            for _ in 0...10 {
-                if offset.width < -1 {
-                    
-                    offset.width += 0.7
-
-                } else if offset.width > 1 {
-                        
-                    offset.width -= 0.7
-
-                } else if offset.height > 1 {
-                        waterViewOpacity = 1
-                    
-                    if !actionView {
-                        offset.height -= 1.2
-                    }
+            } else if offset.width > 249 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    offset.width = 0
+                    waterViewOpacity = 1
                 }
             }
-        }
+            
+            if offset.width < -30 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    offset.width = 0
+                    waterViewOpacity = 1
+                }
+            }
+        })
+        //        .onChange(of: displayLink.frameChange) { time in
+        //            for _ in 0...3 {
+        //                if offset.width < -119 {
+        //                    withAnimation(.easeIn(duration: 4)) {
+        //                        offset.width = 0
+        //                            waterViewOpacity = 1
+        //
+        //                        }
+        //
+        ////                    offset.width += 1
+        //
+        //                } else if offset.width > 1 {
+        //                    if offset.width > 119 {
+        //                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        ////                            waterViewOpacity = 1
+        //                        }
+        //                    }
+        //                    offset.width -= 1
+        //
+        //                } else if offset.height > 1 {
+        //
+        //                    if !actionView {
+        //                        offset.height -= 1.2
+        //                    }
+        //                }
+        //            }
+        //        }
     }
     
     //MARK: Display stats
@@ -664,8 +824,9 @@ struct Dashboard: View {
                             actionOffset.height = 230
                             actionOffset.width = 0
                             withAnimation(.linear(duration: 0.5)) {
-                                waterViewOpacity = 1 // if the user swipes right waterView disappears
+                                //                                waterViewOpacity = 1 // if the user swipes right waterView disappears
                                 actionView.toggle()
+                                offset = CGSize.zero
                             }
                         } else {
                             actionOffset = CGSize.zero
@@ -676,6 +837,8 @@ struct Dashboard: View {
                 for _ in 0...10 {
                     if actionOffset.height > 1 {
                         actionOffset.height -= 1.2
+                    } else if offset.height > 1 {
+                        offset.height -= 1
                     }
                 }
             }
@@ -700,7 +863,7 @@ struct Dashboard: View {
     
     //MARK: alcohol Consumed
     func alcoholConsumed(reader: GeometryProxy) -> some View {
-       return  VStack {
+        return  VStack {
             Text(isDiureticMode ? "Diuretic mode is on" : "Alchol mode is on")
                 .foregroundColor(waterColor)
                 .font(.system(.headline))
@@ -758,58 +921,58 @@ struct PopUp: View {
     
     
     var body: some View {
-
-            NavigationView {
-                ZStack{
-                    LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
-                        .edgesIgnoringSafeArea(.all)
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Button("Done", action: {
-                                active = false
-                                onCompleteBlock()
-                            })
-                                .padding()
-                        }
-                        NavigationLink(
-                            destination: ActionView(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isMetric: $isMetric)
-                                .environmentObject(userDocument),
-                            label: {
-                                Text("Action Control")
-                                    .font(.system(size: 35))
-                            })
-                            .onTapGesture {
-                                isPrecise.toggle()
-                            }
+        
+        NavigationView {
+            ZStack{
+                LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
+                    .edgesIgnoringSafeArea(.all)
+                VStack {
+                    HStack {
                         Spacer()
-                        Text("Log diuretic")
-                            .onTapGesture {
-                                withAnimation() {
-                                    isDiuretic.toggle()
-                                }
-                            }
-                            .font(.system(size: 35))
-                        
-                        Spacer()
-                        Text("Sign out")
-                            .onTapGesture {
-                                user.signOut()
-                                appleLogStatus = false
-                                appleUID = ""
-                                appleName = ""
-                                appleEmail = ""
-                            }
-                            .padding(.vertical)
-                            .cornerRadius(23)
-                            .font(.system(size: 35))
-                        Spacer()
+                        Button("Done", action: {
+                            active = false
+                            onCompleteBlock()
+                        })
+                            .padding()
                     }
+                    NavigationLink(
+                        destination: ActionView(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isMetric: $isMetric)
+                            .environmentObject(userDocument),
+                        label: {
+                            Text("Action Control")
+                                .font(.system(size: 35))
+                        })
+                        .onTapGesture {
+                            isPrecise.toggle()
+                        }
+                    Spacer()
+                    Text("Log diuretic")
+                        .onTapGesture {
+                            withAnimation() {
+                                isDiuretic.toggle()
+                            }
+                        }
+                        .font(.system(size: 35))
+                    
+                    Spacer()
+                    Text("Sign out")
+                        .onTapGesture {
+                            user.signOut()
+                            appleLogStatus = false
+                            appleUID = ""
+                            appleName = ""
+                            appleEmail = ""
+                        }
+                        .padding(.vertical)
+                        .cornerRadius(23)
+                        .font(.system(size: 35))
+                    Spacer()
                 }
-                .navigationBarHidden(self.isNavigationBarHidden)
             }
-            .navigationViewStyle(StackNavigationViewStyle())
-            .navigationBarHidden(true)
+            .navigationBarHidden(self.isNavigationBarHidden)
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationBarHidden(true)
         
         .onAppear {
             isNavigationBarHidden = true

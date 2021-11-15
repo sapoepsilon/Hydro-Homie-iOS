@@ -38,6 +38,8 @@
 		99B63EA326D2FDFD0099FB2A /* NotificationTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B63EA226D2FDFD0099FB2A /* NotificationTimer.swift */; };
 		99B63EA826D308BE0099FB2A /* NotificationTimerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B63EA726D308BE0099FB2A /* NotificationTimerModel.swift */; };
 		99BF620726F56F1300078CEE /* CareKitUI in Frameworks */ = {isa = PBXBuildFile; productRef = 99BF620626F56F1300078CEE /* CareKitUI */; };
+		99C646422736F60E00FCECAA /* PaperOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = 99C646412736F60E00FCECAA /* PaperOnboarding */; };
+		99C646442736F71D00FCECAA /* OnBoardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C646432736F71D00FCECAA /* OnBoardModel.swift */; };
 		99C86513268ADCBA006B4802 /* DiureticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C86512268ADCBA006B4802 /* DiureticView.swift */; };
 		99D60B83267124D600EE106B /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B82267124D600EE106B /* UserModel.swift */; };
 		99D60B852671255D00EE106B /* UserDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D60B842671255D00EE106B /* UserDocument.swift */; };
@@ -110,6 +112,7 @@
 		99AEA095268CF9BE004BD12D /* CustomDrink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDrink.swift; sourceTree = "<group>"; };
 		99B63EA226D2FDFD0099FB2A /* NotificationTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTimer.swift; sourceTree = "<group>"; };
 		99B63EA726D308BE0099FB2A /* NotificationTimerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTimerModel.swift; sourceTree = "<group>"; };
+		99C646432736F71D00FCECAA /* OnBoardModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardModel.swift; sourceTree = "<group>"; };
 		99C86512268ADCBA006B4802 /* DiureticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticView.swift; sourceTree = "<group>"; };
 		99D60B82267124D600EE106B /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		99D60B842671255D00EE106B /* UserDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDocument.swift; sourceTree = "<group>"; };
@@ -124,6 +127,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99C646422736F60E00FCECAA /* PaperOnboarding in Frameworks */,
 				99A3D89B26E59BA100D65063 /* HealthKit.framework in Frameworks */,
 				99023361268248A200FACE04 /* FirebaseAuth in Frameworks */,
 				99006C8E271C96A400A99238 /* PermissionsSwiftUINotification in Frameworks */,
@@ -162,6 +166,7 @@
 				99D60B82267124D600EE106B /* UserModel.swift */,
 				99234678269A8B9400785C7E /* CustomDrinkModel.swift */,
 				995AF79C270652300019AC83 /* HydrationDictionaryModel.swift */,
+				99C646432736F71D00FCECAA /* OnBoardModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -275,6 +280,7 @@
 				99BF620626F56F1300078CEE /* CareKitUI */,
 				99006C8B271C96A400A99238 /* PermissionsSwiftUIHealth */,
 				99006C8D271C96A400A99238 /* PermissionsSwiftUINotification */,
+				99C646412736F60E00FCECAA /* PaperOnboarding */,
 			);
 			productName = "Hydro Homie";
 			productReference = 9965D7C92637955400672D2E /* Hydro Comrade.app */;
@@ -308,6 +314,7 @@
 				9902335F268248A200FACE04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				99BF620526F56F1300078CEE /* XCRemoteSwiftPackageReference "CareKit" */,
 				99006C8A271C96A300A99238 /* XCRemoteSwiftPackageReference "PermissionsSwiftUI" */,
+				99C646402736F60E00FCECAA /* XCRemoteSwiftPackageReference "paper-onboarding" */,
 			);
 			productRefGroup = 9965D7CA2637955400672D2E /* Products */;
 			projectDirPath = "";
@@ -366,6 +373,7 @@
 				99088D0826B223470091339F /* Dashboard.swift in Sources */,
 				9946C62A26C36FF500FF8846 /* AuthenticationViewModel.swift in Sources */,
 				99D60B852671255D00EE106B /* UserDocument.swift in Sources */,
+				99C646442736F71D00FCECAA /* OnBoardModel.swift in Sources */,
 				995D4110266EFC5600916F5C /* HeightPicker.swift in Sources */,
 				99B63EA326D2FDFD0099FB2A /* NotificationTimer.swift in Sources */,
 				9968227926CDC7AA00C144B6 /* Background.swift in Sources */,
@@ -614,6 +622,14 @@
 				minimumVersion = 2.0.2;
 			};
 		};
+		99C646402736F60E00FCECAA /* XCRemoteSwiftPackageReference "paper-onboarding" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Ramotion/paper-onboarding.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.1.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -641,6 +657,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 99BF620526F56F1300078CEE /* XCRemoteSwiftPackageReference "CareKit" */;
 			productName = CareKitUI;
+		};
+		99C646412736F60E00FCECAA /* PaperOnboarding */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 99C646402736F60E00FCECAA /* XCRemoteSwiftPackageReference "paper-onboarding" */;
+			productName = PaperOnboarding;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
