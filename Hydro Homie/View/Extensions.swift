@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import Combine
 
 struct ClearBackgroundView: UIViewRepresentable {
     
@@ -1123,7 +1124,7 @@ struct Arrow: Shape {
 extension UserDefaults {
     var isWelcomePageShown: Bool {
         get {
-            return (UserDefaults.standard.value(forKey: "welcomePage") as? Bool) ?? false
+            return (UserDefaults.standard.value(forKey: "welcomePage") as? Bool) ?? true
         } set {
             UserDefaults.standard.set(newValue, forKey: "welcomePage")
         }
@@ -1140,6 +1141,27 @@ extension UserDefaults {
         }
     }
 }
+
+
+extension UserDefaults {
+    /// Return false if Sync with the Firebase hasn't occured.
+    ///
+    /// - Author: Ismatulla Mansurov
+    ///
+    /// - Returns: Boolean
+    ///
+    ///  - Version: 1.0
+    ///
+    var isSyncFirebase: Bool {
+        get {
+            return (UserDefaults.standard.value(forKey: "isSyncFirebase") as? Bool) ?? false
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey:  "isSyncFirebase")
+        }
+    }
+}
+
 struct WelcomeBoardText: View {
     @Environment(\.colorScheme) var colorScheme
     var text:String
@@ -1232,5 +1254,93 @@ extension View {
         return renderer.image { _ in
             view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
         }
+    }
+}
+
+
+// Date Listener
+class TimeCounter: ObservableObject {
+    @Published var time = 0
+    
+    lazy var timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in self.time += 1 }
+    init() { timer.fire() }
+}
+
+
+
+// swiftlint:disable empty_parentheses_with_trailing_closure multiple_closures_with_trailing_closure
+class BulletinModel: ObservableObject {
+    @Published var show: Bool
+
+    init(show: Bool) {
+        self.show = show
+    }
+}
+
+
+
+struct BulletinBoard<Presenting, Board>: View where Presenting: View, Board: View {
+    @Binding var isShowing: Bool
+    let presenting: Presenting
+    let boardItem: () -> Board
+    @GestureState private var offset: CGSize = .zero
+    @State private var text = ""
+
+    var body: some View {
+        let drag = DragGesture()
+            .updating($offset) { value, state, _ in
+                if value.translation.height >= -(UIScreen.main.bounds.height - 500) {
+                    state = value.translation
+                }
+            }
+            .onEnded({ value in
+                print(value.translation.height)
+                if value.translation.height >= 200 {
+                    print("dismiss")
+                    self.isShowing = false
+                    self.dismissKeyboard()
+                }
+            })
+        return ZStack() {
+                GeometryReader { geo in
+                    VStack() {
+                        Spacer()
+                        VStack() {
+                            self.boardItem()
+                                .padding([.bottom], 35)
+                                .frame(minWidth: 0, maxWidth: geo.size.width, minHeight: 300, alignment: Alignment.bottom)
+                        }
+                        .frame(minWidth: 0, maxWidth: geo.size.width, minHeight: 300, alignment: Alignment.center)
+                         .background(Color("background"))
+                         .cornerRadius(35)
+                         .offset(y: self.offset.height)
+                         .padding(5)
+                         .gesture(drag)
+                         .animation(.spring())
+                    }
+                    .opacity(isShowing ? 1 : 0)
+                    .animation(.spring())
+                }.zIndex(2)
+
+                presenting
+                    .overlay(
+                    EmptyView()
+                        .background(Color.black)
+                        .edgesIgnoringSafeArea([.all])
+                        .opacity(self.isShowing ? 0.65 : 0)
+                        .animation(.easeInOut(duration: 0.1))
+                )
+        }.edgesIgnoringSafeArea(.bottom)
+    }
+
+    func dismissKeyboard() {
+        UIApplication.shared.windows.first?.endEditing(true)
+    }
+
+}
+
+extension View {
+    func addBoard<Board: View>(@ViewBuilder board: @escaping () -> Board, isShowing: Binding<Bool>) -> some View {
+        BulletinBoard(isShowing: isShowing, presenting: self, boardItem: board)
     }
 }

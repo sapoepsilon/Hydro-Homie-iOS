@@ -77,21 +77,25 @@ struct CustomDrink: View {
             
             TextField("Name of your drink", text: $drinkName)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(self.drinkName == "" ? borderColor : Color.green, lineWidth: 2)
+                )
+                .keyboardType(UIKeyboardType.alphabet   )
                 .padding()
             VStack(alignment: .leading, spacing: 0) {
                 Form {
                     if !isCoffee && !isAlcohol {
-                        Section(header: Text("Is it pure Water ?")) {
-                            Picker("Is it Water ?", selection: $isWater.animation(), content: {
-                                Text("Yes") .tag(true)
+                        HStack {
+                            Text("Is it pure Water ?")
+                            Picker("Is it pure Water ?", selection: $isWater.animation(.linear(duration: 0.03)), content: {
+                                Text("Yes").tag(true)
                                 Text("No").tag(false)
                             })
-                                .fixedSize()
-                                .pickerStyle(SegmentedPickerStyle())
-                        }
+                            .pickerStyle(MenuPickerStyle())
+                        }.transition(.slide)
                     }
                     if isWater && !isCoffee && !isAlcohol {
-                        Section(header: Text("Amount")) {
                             HStack {
                                 TextField("Amount of Water", text: $customWaterAmount)
                                     .keyboardType(.numberPad)
@@ -101,34 +105,31 @@ struct CustomDrink: View {
                                             customWaterAmount = filtered
                                         }
                                     }
+                                    
                                 Text(cupMeasurement)
-                            }
-                        }
+                            }.transition(.slide)
                     }
                     
                     if !isWater && !isCoffee {
-                        Section(header: Text("Is it alcohol?")) {
-                            Picker("Is it alcohol ?", selection: $isAlcohol.animation(), content: {
+                        HStack {
+                            Text("Is it alcohol?")
+                                Picker("Is it alcohol ?", selection: $isAlcohol.animation(.linear(duration: 0.03)), content: {
+                                    Text("Yes").tag(true)
+                                    Text("No").tag(false)
+                                })
+                                    .foregroundColor(.white)
+                                    .pickerStyle(MenuPickerStyle())
+                        }.transition(.slide)
+                    }
+                    if !isWater && !isAlcohol {
+                        HStack {
+                            Text("Is it coffeinated beverage?")
+                            Picker("Is it caffeinated beverage ?", selection: $isCoffee.animation(.linear(duration: 0.03)), content: {
                                 Text("Yes").tag(true)
                                 Text("No").tag(false)
                             })
-                                .foregroundColor(.white)
-                                .pickerStyle(SegmentedPickerStyle())
-                                .fixedSize()
-                        }
-                        
+                                .pickerStyle(MenuPickerStyle())
                     }
-                    if !isWater && !isAlcohol {
-                        Section(header: Text("Is it coffeinated beverage?")) {
-                            Picker("Is it caffeinated beverage ?", selection: $isCoffee.animation(), content: {
-                                Text("Yes")
-                                    .animation(.easeInOut)
-                                    .tag(true)
-                                Text("No").tag(false)
-                            })
-                                .fixedSize()
-                                .pickerStyle(SegmentedPickerStyle())
-                        }
                     }
                     if isAlcohol {
                         Section(header: Text("Alcoholic beverage: ") ) {
@@ -197,7 +198,7 @@ struct CustomDrink: View {
                                     }
                                 }
                             }
-                        }
+                        }.transition(.slide)
                     }
                     
                     if isCoffee {
@@ -264,9 +265,9 @@ struct CustomDrink: View {
                                     })
                                 }
                             }
-                        }
+                        }.transition(.slide)
                     }
-                }
+                }.transition(.slide)
             }
             if additionalLiquids {
                 if additionalBeverageAmount != 0 {
@@ -378,30 +379,34 @@ struct CustomDrink: View {
     }
     func addDrinkButton(completionHandler: @escaping (Bool, String) -> Void) -> some View {
         return  Button(action: {
-            var alcoholcupAmount = Double(alcoholCupAmount) ?? 0
-            let alcoholpercentage = Double(alcoholPercentage) ?? 0
-            let cupAmount = Double(alcoholCupAmount) ?? 0
-            if !isWater {
-                alcoholcupAmount -= additionalBeverageAmount
-                drinkAmount = cupAmount - ((alcoholcupAmount / 100) * alcoholpercentage)
-                alcoholAmount = (alcoholcupAmount * mlConverter) * (alcoholpercentage / 100) * ethanolDensity // get the amount of alcohol in grams
-            } else {
-                drinkAmount = Double(customWaterAmount) ?? 0
-            }
-            let caffeineAmount = Double(caffeineAmount) ?? 0
-            if isMetric {
-                drinkAmount /= 237
-            } else {
-                drinkAmount /= 8
-            }
-            if drinkAmount != 0 {
-                createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount, alcoholPercentage: alcoholpercentage, isCustomWater: isWater, completionHandler: { isDrink, feedBack in
-                    completionHandler(isDrink, feedBack)
-                })
-                //                ErrorDetector = true
-                CustomDrinkDocument.getDrinkOpacity()
-                //                isCustomDrinkSheet = false
-                //                isDiureticSheet = false
+            if drinkName != "" {
+                var alcoholcupAmount = Double(alcoholCupAmount) ?? 0
+                let alcoholpercentage = Double(alcoholPercentage) ?? 0
+                let cupAmount = Double(alcoholCupAmount) ?? 0
+                if !isWater {
+                    alcoholcupAmount -= additionalBeverageAmount
+                    drinkAmount = cupAmount - ((alcoholcupAmount / 100) * alcoholpercentage)
+                    alcoholAmount = (alcoholcupAmount * mlConverter) * (alcoholpercentage / 100) * ethanolDensity // get the amount of alcohol in grams
+                } else {
+                    drinkAmount = Double(customWaterAmount) ?? 0
+                }
+                let caffeineAmount = Double(caffeineAmount) ?? 0
+                if isMetric {
+                    drinkAmount /= 237
+                } else {
+                    drinkAmount /= 8
+                }
+                if drinkAmount != 0 {
+                    createCustomDrink(name: drinkName, isAlcohol: isAlcohol, isCaffeine: isCoffee, amount: drinkAmount, alcoholAmount: alcoholAmount, caffeineAmount: caffeineAmount, alcoholPercentage: alcoholpercentage, isCustomWater: isWater, completionHandler: { isDrink, feedBack in
+                        completionHandler(isDrink, feedBack)
+                    })
+                    //                ErrorDetector = true
+                    CustomDrinkDocument.getDrinkOpacity()
+                    //                isCustomDrinkSheet = false
+                    //                isDiureticSheet = false
+                } else {
+                    borderColor = Color.red
+                }
             } else {
                 borderColor = Color.red
             }

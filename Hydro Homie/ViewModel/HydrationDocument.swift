@@ -11,34 +11,39 @@ class HydrationDocument: ObservableObject {
     
     @Published var document: HydrationModel = HydrationModel()
     
-    func updateHydration(cups: Double, alcohol: Double?, coffee: Double?) {
-        document.uploadCups(cups: cups, alcohol: alcohol, coffee: coffee)
+    func updateHydration(hydration: FetchedResults<LocalHydration>) {
+        
+        let hydrationTodayID = hydration.last?.id ?? 1
+        var hydrationPreviousDay = hydration.last
+        for hydro in hydration {
+            print("hydration id in the loop \(hydro)")
+            if hydro.id == hydrationTodayID - 1 {
+                hydrationPreviousDay = hydro
+            }
+        }
+
+        document.uploadCups(cups: hydrationPreviousDay!.water, alcohol: hydrationPreviousDay!.alcohol, coffee: hydrationPreviousDay!.coffee, date: hydrationPreviousDay?.date ?? "error")
     }
     
-    func getCups(hydrationDictionary: [String: Dictionary<String, Double>], lastHydration: [String: Dictionary<String, Double>]) -> Double {
-        return document.getCups(hydrationDictionary: hydrationDictionary, lastHydration: lastHydration)
+    func updateHydrationLocally(hydration: [[String: [String:Double]]]) {
+        
     }
+    
+
     
     func userID() -> String {
         document.getUserID()
     }
     
     func addNotification(timeInterval: Double) {
-        
-            // removing notifications
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             let content = UNMutableNotificationContent()
             content.title = "Time to hydrate"
             content.subtitle = "Have one more cup of water"
             content.sound = UNNotificationSound.default
-
-            // show this notification five seconds from now
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-
-            // choose a random identifier
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
 
-            // add our notification request
             UNUserNotificationCenter.current().add(request)
         
     }

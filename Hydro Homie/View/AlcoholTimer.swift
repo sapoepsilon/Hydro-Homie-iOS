@@ -13,9 +13,9 @@ struct AlcoholTimer: View {
     @Binding var waterColor: Color
     @State private var toxicityColor: Color = Color(red: 130 / 255, green: 98 / 255, blue: 222 / 255, opacity: 0.5)
     @ObservedObject var instoreTimer = timerBackground
-
+    @Binding var localTimeLeft: Date
+    @Binding var isLocalTime: Bool
     
-
     var body: some View {
             VStack {
                 Text(timeString(accumulatedTime: instoreTimer.totalAccumulatedTime))
@@ -24,6 +24,9 @@ struct AlcoholTimer: View {
             }
             .onAppear { print("TimerTabView appear")
                 self.instoreTimer.start()
+                if isLocalTime {
+                    self.instoreTimer.startDate = localTimeLeft
+                }
             }
             .onDisappear {
                 print("TimerTabView disappear")

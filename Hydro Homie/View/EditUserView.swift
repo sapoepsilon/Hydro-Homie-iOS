@@ -8,6 +8,9 @@
 import SwiftUI
 import Combine
 import FirebaseAuth
+import SwiftUI
+import Combine
+import FirebaseAuth
 
 struct EditUserView: View {
     
@@ -42,18 +45,20 @@ struct EditUserView: View {
     @AppStorage ("log_status") var appleLogStatus = false
     
     var body: some View {
-        ZStack {
-            VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
-            background().opacity(0.6)
+        ZStack(alignment: .top) {
+            GeometryReader { geo in
+                Color.gray.opacity(0.2)
+                VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
+            }
         
-        VStack {
+        ScrollView(.vertical, showsIndicators: false) {
             HStack {
                 Spacer()
                 Button(action: {
                     isDashboard = false
                 }, label: {
                     Text("Cancel")
-                })
+                }).padding()
             }
             ZStack{
                 Text("Edit your info").font(.headline)
@@ -104,7 +109,6 @@ struct EditUserView: View {
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(self.changePassword == "" ? borderColor : Color.green, lineWidth: 2)
                                 )
-                                .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                             SATextField(tag: 3, placeholder: "repeat Password", changeHandler: { (pass) in
                                 self.changePasswordMatch = pass
                             }, isSecureTextEntry: $isSecureField, onCommitHandler: {
@@ -116,7 +120,6 @@ struct EditUserView: View {
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(self.changePasswordMatch == "" ? borderColor : Color.green, lineWidth: 2)
                                 )
-                                .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                             
                         }
                         if isChangeEmail {
@@ -131,7 +134,6 @@ struct EditUserView: View {
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(self.changeEmail == "" ? borderColor : Color.green, lineWidth: 2)
                                 )
-                                .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                         }
                     }
                 }
@@ -148,11 +150,8 @@ struct EditUserView: View {
                                 RoundedRectangle(cornerRadius: 16)
                                     .stroke(self.changeName == "" ? borderColor : Color.green, lineWidth: 2)
                             )
-                            .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
-                        
                         
                         Section{
-                            
                             HStack{
                                 Spacer(minLength: 15)
                                 if(changeHeight == 0){
@@ -196,7 +195,6 @@ struct EditUserView: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: 16)
                                     .stroke(self.changeHeight == 0 ? borderColor : Color.green, lineWidth: 2))
-                            .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                         }
                         
                         HStack() {
@@ -221,12 +219,9 @@ struct EditUserView: View {
                             Spacer()
                             
                         }
-                        
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.changeWeight == "" ? borderColor : Color.green, lineWidth: 2))
-                        .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
-                        
                         
                         HStack {
                             Text(" ")
@@ -239,16 +234,13 @@ struct EditUserView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.changeExerciseTimeAmount == 0 ? borderColor : Color.green, lineWidth: 2))
-                        .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                         HStack() {
                             Toggle("Are you a coffee Drinker? ", isOn: $changeIsCoffeDrinker)
                         }
-                        .padding(.horizontal, UIScreen.main.bounds.size.width * 0.05)
                         }
                     }.transition(.slide)
-                    
                 }
-            
+            .frame(width: UIDevice.current.userInterfaceIdiom == .pad ? UIScreen.main.bounds.width * 0.6 : UIScreen.main.bounds.width * 0.9     , alignment: .center)
             //MARK: EDIT BUTTON
             Button(action: {
                 var waterIntakeCalculator: Double {
@@ -296,7 +288,7 @@ struct EditUserView: View {
                     }
                 } else {
                     if (changeHeight != 0 && changeWeight != "" ) {
-                        alertMessage = 	user.changeData(userID: usedUID, name: changeName, weight: weight, height: changeHeight, isMetric: isMetric, isCoffeeDrinker: changeIsCoffeDrinker, waterIntake: waterIntake)
+                        alertMessage = user.changeData(userID: usedUID, name: changeName, weight: weight, height: changeHeight, isMetric: isMetric, isCoffeeDrinker: changeIsCoffeDrinker, waterIntake: waterIntake)
                         isAlert = true
                     } else {
                         self.borderColor = Color.red
@@ -307,9 +299,9 @@ struct EditUserView: View {
             }).padding()
                 .buttonStyle(LoginButton())
         }
-        }
+        }.clipped()
         .alert(isPresented: $isAlert, content: {
-            Alert(title: Text("Alert"), message: Text(alertMessage), dismissButton: .default(Text("OK"), action: {
+            Alert(title: Text("Alert"), message: Text(alertMessage + " Changes in your account will take 1 business day to reflect."), dismissButton: .default(Text("OK"), action: {
                 withAnimation {
                     print("is Dashboard \(isDashboard)")
                     isDashboard = false
@@ -320,13 +312,14 @@ struct EditUserView: View {
             LoadingView()
         })
         .onAppear(perform: {
+            print("user name: \(user.user.name)")
             changeEmail = (Auth.auth().currentUser?.email) ?? ""
             changeName = self.user.user.name
             changeWeight = String(self.user.user.weight)
             changeHeight = Double(self.user.user.height)
             isMetric = self.user.user.metric
             changeIsCoffeDrinker = self.user.user.isCoffeeDrinker
-            usedUID = self.user.user.userUID
+            usedUID = Auth.auth().currentUser!.uid 
             print("Used id: \(usedUID)")
         })
     }

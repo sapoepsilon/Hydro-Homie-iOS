@@ -26,6 +26,7 @@ struct Background : View {
     @Binding var backgroundOpacity: Double
     @Binding var isQuickDrink: Bool
     @Binding var isFirstMenu:Bool
+    @Binding var amountOfEachAlcohol: Double
     
     //Coffee
     @Binding var coffeeAmount: Double
@@ -70,10 +71,8 @@ struct Background : View {
                     Spacer()
                     if isQuickDrink {
                         if isFirstMenu {
-                            
                             VStack {
                                 Spacer().frame(height: UIScreen.main.bounds.size.height / 2)
-                                
                                 if UIDevice.current.userInterfaceIdiom == .pad {
                                     Spacer().frame(height: UIScreen.main.bounds.size.height / 22)
                                 }
@@ -126,14 +125,17 @@ struct Background : View {
                                 }
                             }
                             .transition(AnyTransition.move(edge: .bottom))
-                        }
+                            .background(Color.black.opacity(0.01))
+                            }
+                            
                         //
                         if isCustomWater {
                             VStack {
                                 Spacer().frame(height: UIScreen.main.bounds.size.height / 3)
                                 getDrinkView(drink: drink.water)
                             }.transition(AnyTransition.move(edge: .top))
-                            
+                                .background(Color.black.opacity(0.01))
+
                         }
                         if isCustomCoffee {
                             VStack {
@@ -141,6 +143,8 @@ struct Background : View {
                                 getDrinkView(drink: drink.coffee)
                                 
                             }.transition(AnyTransition.move(edge: .top))
+                                .background(Color.black.opacity(0.01))
+
                         }
                         
                         if isCustomAlcohol {
@@ -149,8 +153,11 @@ struct Background : View {
                                 getDrinkView(drink: drink.alcohol)
                                 
                             }.transition(AnyTransition.move(edge: .top))
+                                .background(Color.black.opacity(0.01))
+
                         }
                     }
+
                 }.padding()
             }
         }
@@ -194,7 +201,7 @@ struct Background : View {
                                 isAlcoholConsumed = true
                                 self.amountOfAccumulatedAlcohol += drink.alcoholAmount
                                 percentageOfEachAlcohol  = drink.alcoholPercentage
-                                
+                                amountOfEachAlcohol = drink.alcoholAmount
                             }
                         Spacer().frame(height: UIScreen.main.bounds.size.height / 22)
                     }
@@ -209,6 +216,7 @@ struct Background : View {
                                 isQuickDrink = false // close the .sheet and go back to the dashboard
                                 coffeeAmount = drink.caffeineAmount / 10000
                                 accumulatedCoffeeAmount += drink.caffeineAmount / 10000 //parse grams into mg
+
                             }
                         Spacer().frame(height: UIScreen.main.bounds.size.height / 22)
                     }

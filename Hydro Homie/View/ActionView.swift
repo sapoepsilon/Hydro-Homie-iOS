@@ -11,7 +11,7 @@ import UIKit
 struct ActionView: View {
     @State private var isStats: Bool = false
     @State private var isEdit: Bool = false
-    @EnvironmentObject var user: UserDocument
+    @EnvironmentObject var userDocument: UserDocument
     @State private var userName: String = ""
     @State private var userHeight: String = ""
     @Environment(\.colorScheme) var colorScheme
@@ -109,7 +109,7 @@ struct ActionView: View {
         }
         .sheet(isPresented: self.$isEdit, content: {
             EditUserView(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isMetric: $isMetric, isDashboard: $isEdit)
-                .environmentObject(user)
+                .environmentObject(userDocument)
         }
         )
         .fullScreenCover(isPresented: $isStats, content: {

@@ -11,6 +11,7 @@ import UserNotifications
 import HealthKit
 import PermissionsSwiftUINotification
 import PermissionsSwiftUIHealth
+import CoreData
 
 enum sheet: String, Identifiable {
     var id: String {
@@ -21,12 +22,20 @@ enum sheet: String, Identifiable {
     case isDocumentAddition
     
 }
+
 struct Dashboard: View {
-    private var idiom : UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
     
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(sortDescriptors:[ NSSortDescriptor(keyPath: \LocalHydration.id, ascending: true)]) var localHydration: FetchedResults<LocalHydration>
+    @State var orientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation
+
+    private var idiom : UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
     @AppStorage("welcomePage") var isWelcomePageShown: Bool = UserDefaults.standard.isWelcomePageShown
     @AppStorage("isFirstTimeLaunch") var isFirstTimeLaunch: Bool = UserDefaults.standard.isFirstTimeLaunch
+    @AppStorage("isSyncFirebase") var isSyncFirebase: Bool = UserDefaults.standard.isSyncFirebase
     
+    //user Exists, but document doesn't
+    @State private var isUserExist: Bool = true
     @State private var previousWaterOpacity: Double = 1
     @State private var isLastCup: Bool = false
     @Binding var isDocumentAddition: Bool
@@ -35,7 +44,7 @@ struct Dashboard: View {
     @StateObject var customDrinkDocument: CustomDrinkViewModel
     @EnvironmentObject var hydration: HydrationDocument
     @EnvironmentObject var user: UserRepository
-    @ObservedObject var userDocument: UserDocument
+    @EnvironmentObject var userDocument: UserDocument
     @State var cups: Double = 0
     @State private var cupsLeft: Double = 0
     var cupsArray: Array<Int> = Array()
@@ -67,7 +76,9 @@ struct Dashboard: View {
     @State private var isQuickDrink: Bool = false
     @State private var waterBackgroundColor: Color = Color.black
     @State private var diureticCount: [Int] = []
-
+    
+    @State var isLocalTime: Bool = false
+    @State var isLocalTimeAlcohol: Date = Date()
     
     // Coffee
     @State private var amountOfCoffee: Double = 0
@@ -103,108 +114,211 @@ struct Dashboard: View {
     @ObservedObject var notificationTimerDocument = notificationTimeInterval
     @ObservedObject var alcoholTimer = timerBackground
     
+    
+    
+    
+    // delete later starts
+    @State private var isSheet: Bool = false //delete later
+    @State var water: String = ""
+    @State var coffee: String = ""
+    @State var alcohol: String = ""
+    @State var currentHydrationID: NSManagedObjectID = NSManagedObjectID()
+    //delete later ends
+    @StateObject var timeCounter = TimeCounter()
+    @State var dateChanger = Date()
+    
+    @State var newID: Int64 = 0
+    @State var waveOffset = Angle(degrees: 0)
+
+    
+    
+    // True if the data been fetched
+    @State var isDataFetched: Bool = false
+    
     @State var isPersmission: Bool = false
     let healthStore = HKHealthStore()
     let healthTypes = Set([HKSampleType.quantityType(forIdentifier: .dietaryWater)!, HKSampleType.quantityType(forIdentifier: .dietaryCaffeine)!])
     var isZoomed: Bool {
         return UIScreen.main.scale != UIScreen.main.nativeScale
     }
+    let calendar = Calendar.current
     
+//        var body: some View {
+//            VStack {
+//            HStack {
+//                Button(action: {
+//                    withAnimation {
+//                    let newHydration = LocalHydration(context: viewContext)
+//                        newHydration.water = Double.random(in: 1...20)
+//                        newHydration.alcohol = Double.random(in: 1...20)
+//                        newHydration.coffee = Double.random(in: 1...20)
+//                        newHydration.id = newID
+//                    newHydration.date = "today"
+//                        newID += 1
+//                        print("new id: \(newID)")
+//                    do { try viewContext.save() } catch
+//                         {
+//                             let error = error as NSError
+//                             fatalError("Unresolved Error: \(error)")
+//                         }
+//                    }
+//                }, label: {Text("Add item")})
+//                Spacer()
+//                Button(action: {
+//                    let item = localHydration[0]
+//                    PersistenceController.shared.delete(object: item)
+//                }, label: {
+//                    Text("Delete item")
+//                })
+//            }
+//            List {
+//                ForEach(localHydration, id: \.self) { hydration in
+//                    HStack{ Text("water \(hydration.water.rounded()),alcohol: \(hydration.isAlcoholLocalTime) coffee: \(hydration.coffee.rounded()), \(hydration.date ?? "no date") alcohol time: \(hydration.alcoholTimeDate)")                }.onTapGesture {
+//                        hydration.water = 2
+//                        hydration.date = "Updated by tapping"
+//
+//                    }
+//                }
+//            }
+//        }.onAppear(perform: {
+//
+//            print(localHydration)
+//        })
+//        }
+//    }
+    let orientationChanged = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
+        .makeConnectable()
+        .autoconnect()
     var body: some View {
-        GeometryReader { reader in
-            ZStack{
-                background()
-                VStack(spacing: isZoomed ? 0 : 5) {
-                    HStack{
-                        homeAction().scaleEffect(1.5)
-                        Spacer()
-                        if isLastCup {
+        ZStack {
+                GeometryReader { reader in
+                ZStack{
+                    background()
+                    VStack(spacing: isZoomed ? 0 : 5) {
+                        HStack{
+                            homeAction().scaleEffect(1.5)
+                            Spacer()
+                            if isLastCup && !actionView {
+                                Button(action: {
+                                    cancelTheLastDrink()
+                                }, label: {
+                                    Text("Cancel the last drink")
+                                })
+                            }
+                            Spacer()
                             Button(action: {
-                                cancelTheLastDrink()
+                                activeSheet = .isPopup
                             }, label: {
-                                Text("Cancel the last drink")
+                                Image(systemName: "gear").scaleEffect(1.5)
                             })
+                        }.padding(.horizontal)
+                        hydrationInfromation(reader: reader)
+                        if !isAlcoholConsumed && !actionView && isCurrentHydration && orientation?.isPortrait ?? false {
+                            UIDevice.current.userInterfaceIdiom == .pad ? Spacer().frame(height: reader.size.height / 10) : Spacer().frame(height: reader.size.height / 12)
                         }
-                        Spacer()
-                        Button(action: {
-                            activeSheet = .isPopup
-                        }, label: {
-                            Image(systemName: "gear").scaleEffect(1.5)
-                        })
-                    }.padding(.horizontal)
-                    hydrationInfromation(reader: reader)
-                    if !isAlcoholConsumed && !actionView && !notificationCountDown && isCurrentHydration {
-                        UIDevice.current.userInterfaceIdiom == .pad ? Spacer().frame(height: reader.size.height / 9) : Spacer().frame(height: reader.size.height / 10)
-                    } else {
-                        if UIDevice.current.userInterfaceIdiom == .pad {
-                            Spacer().frame(height: reader.size.height / 9)
-                        }
-                    }
-                    if isAlcoholConsumed {
-                        alcoholConsumed(reader: reader)
-                        
-                    }
-                    HStack{
-                        if actionView {
-                            VStack{
-                                stats()
+                        if isAlcoholConsumed { alcoholConsumed(reader: reader)}
+                        HStack{
+                            if actionView {
+                                VStack{ stats() }
+                            }
+                            else {
+                                waterDrop(reader: reader)
                             }
                         }
-                        else {
-                            waterDrop(reader: reader)
+                        //
+                        if isCurrentHydration && !actionView {
+                            withAnimation(){
+                                Text("cups left today: \(formattedFloat)")
+                                    .foregroundColor(colorScheme == .dark ? .gray : waterColor)
+                                    .opacity(waterViewOpacity)
+                                    .padding(.top)
+                            }
+                            //                            //MARK: Stepper
+                            VStack {
+                                stepper()
+                                    .opacity(waterViewOpacity)
+                                    .opacity(waterScaleEffect == 1.5 ? 0 : 1)
+                                    .opacity(actionView ? 0 : 1)
+                                notificationTimer()
+                                    .opacity(actionView ? 0 : 1)
+                                    .padding(.bottom, isZoomed ? -reader.size.height / 10 : 0)
+                                if !notificationCountDown && UIDevice.current.userInterfaceIdiom == .pad && !isZoomed {
+                                    Spacer()
+                                }
+                            }
+                            //                                    .animation(.easeInOut)
                         }
-                    }.onAppear {
-                        print("native scale \(UIScreen.main.nativeScale) and the scaleed scale \(UIScreen.main.scale) isZoomed should be true \(isZoomed)")
-                    }
-                    if !isCurrentHydration {
-                        Spacer()
-                    }
-                    //
-                    if isCurrentHydration {
-                        withAnimation(){
-                            Text("cups left today: \(formattedFloat)")
-                                .foregroundColor(colorScheme == .dark ? .gray : waterColor)
-                                .opacity(waterViewOpacity)
-                                .padding()
-                        }
-                        //                            //MARK: Stepper
-                        stepper()
-                            .opacity(waterViewOpacity)
-                            .opacity(waterScaleEffect == 1.5 ? 0 : 1)
-                        notificationTimer()
-                            .opacity(actionView ? 0 : 1)
-                            .padding(.bottom, isZoomed ? -reader.size.height / 10 : 0)
-                        //                                    .animation(.easeInOut)
-                    }
-                    if !isAlcoholConsumed || !actionView || !notificationCountDown || isCurrentHydration{
-                        UIDevice.current.userInterfaceIdiom == .pad ? Spacer().frame(height: reader.size.height / 30) : Spacer().frame(height: reader.size.height / 14)                    }
-                    HStack {
-                        Spacer().frame(width: reader.size.width / 2.14)
-                        drop().offset(CGSize.zero)
-                        Spacer()
-                        plus()
+                        if !isAlcoholConsumed || !actionView || !notificationCountDown || isCurrentHydration{
+                            UIDevice.current.userInterfaceIdiom == .pad ? Spacer().frame(height: reader.size.height / 30) : Spacer().frame(height: reader.size.height / 14)                    }
+                        HStack {
+
+                            drop().offset(x: reader.size.width / 2)
+                            Spacer()
+                            plus().padding(.horizontal)
+                        }                        .padding(.bottom , orientation?.isLandscape ?? false ? reader.size.height / 9 : 0)
                     }
                 }
+                .onAppear(perform: {
+                    isPersmission.toggle()
+                })
+                //                .JMModal(showModal: $isPersmission, for: UIDevice.current.userInterfaceIdiom == .pad ? [.notification] : [.notification, .health(categories: .init(write: healthTypes))], restrictDismissal: true)
+                .JMAlert(showModal: $isPersmission, for: UIDevice.current.userInterfaceIdiom == .pad ? [.notification] : [.notification, .health(categories: .init(write: healthTypes))],restrictDismissal: false, autoDismiss: true)
+                .changeHeaderTo(UIDevice.current.userInterfaceIdiom == .pad ? "Notification access" : "Health App and Notification access")
+                .changeHeaderDescriptionTo("Hydro Comrade needs the notification access to inform you when is the right time for your next drink.")
+                .changeBottomDescriptionTo(
+                    UIDevice.current.userInterfaceIdiom != .pad ?     "Hydro Comrade also needs the access to your Health app. So, it can synchronize all your water and caffeine consumption." : "")
+                .navigationViewStyle(StackNavigationViewStyle())
+                Background(percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, isAlcoholConsumed: $isAlcoholConsumed, cups: $cups, backgroundOpacity: $backgroundOpacity, isQuickDrink: $isQuickDrink,   isFirstMenu: $isFirstMenu, amountOfEachAlcohol: $amountOfEachAlcohol, coffeeAmount: $amountOfCoffee, accumulatedCoffeeAmount: $accumalatedAmountOfCoffee )
+                    .environmentObject(customDrinkDocument)
+                    .opacity(isQuickDrink ? 1 : 0)
             }
-            
-            .onAppear(perform: {
-                isPersmission.toggle()
-            })
-            .JMModal(showModal: $isPersmission, for: UIDevice.current.userInterfaceIdiom == .pad ? [.notification] : [.notification, .health(categories: .init(write: healthTypes))], restrictDismissal: false)
-            .changeHeaderTo(UIDevice.current.userInterfaceIdiom == .pad ? "Notification access" : "Health App and Notification access")
-            .changeHeaderDescriptionTo("Hydro Comrade needs the notification access to inform you when is the right time for your next drink.")
-            .changeBottomDescriptionTo(
-                UIDevice.current.userInterfaceIdiom != .pad ?     "Hydro Comrade also needs the access to your Health app. So, it can synchronize all your water and caffeine consumption." : "")
-            
-            .navigationViewStyle(StackNavigationViewStyle())
-            
-            Background(percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol, isAlcoholConsumed: $isAlcoholConsumed, cups: $cups, backgroundOpacity: $backgroundOpacity, isQuickDrink: $isQuickDrink,   isFirstMenu: $isFirstMenu, coffeeAmount: $amountOfCoffee, accumulatedCoffeeAmount: $accumalatedAmountOfCoffee )
-                .environmentObject(customDrinkDocument)
-                .opacity(isQuickDrink ? 1 : 0)
-        }
+        }.clipped()
+            .onReceive(orientationChanged) { _ in
+                self.orientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation
+            }
         .onAppear{
+          
+
             userDocument.fetchData(completionHandler: { (isLoadView, fetchErrorMessage) in
-                
+                if isLoadView {
+                    isLoad = false
+                    isDataFetched = true
+                    print(fetchErrorMessage)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+                        print("Coffee starting to execute")
+                        self.cups = getLocalCups()
+                        self.isDiureticMode = getLocalDiuretic()
+                        self.amountOfAccumulatedAlcohol = getLocalAlcohol()
+                        self.accumalatedAmountOfCoffee = getLocalCoffee()
+                        self.isLocalTime = getLocalDiuretic()
+                        self.isLocalTimeAlcohol = getLocalAlcoholTime()
+                    }
+                    self.isMetric = userDocument.user.metric
+                    let cupsDate = Date()
+                    format.dateFormat = "yyyy-MM-dd"
+                    let today = format.string(from: cupsDate)
+                    self.currentHydrationDictionary = userDocument.user.hydration.last ?? [today: ["water": 0.0, "alcohol":0.0, "coffee":0.0]]
+                    self.userName = userDocument.getUser().name
+                    self.waterIntake = userDocument.getUser().waterIntake
+                    self.hydrationDate = userDocument.getTheLatestDate()
+                    self.cupsLeft = waterIntake / Double(cupConverter())
+                    self.cupsLeft -= cups
+                    print("oafter change \(userName)")
+                    isLoad = false
+                    if(userDocument.user.metric == true) {
+                        volumeMetric = "ml"
+                    }
+                } else {
+                    print(fetchErrorMessage)
+                    userDocument.fetchData(completionHandler: { (isLoadView, fetchErrorMessage) in
+                        if isLoadView {
+                            isLoad = false
+                            isDataFetched = true
+                        } else {
+                            activeSheet = .isDocumentAddition
+                        }
+                    })
+                }
             })
             customDrinkDocument.getAllDrinks()
             customDrinkDocument.getDrinkOpacity()
@@ -212,8 +326,32 @@ struct Dashboard: View {
             waterBackgroundColor = backgroundColorTop
             waterColor = currentWaterColor(colorScheme: colorScheme)
             isCoffeeDrinker = userDocument.user.isCoffeeDrinker
-            
+            let components = calendar.dateComponents([.day], from: dateChanger)
+            let dayOfMonth = components.day
+            UserDefaults.standard.set(dayOfMonth, forKey: "dateChanger")
+            if colorScheme == .dark {
+                backgroundColorTop = Color(red: 63/255, green: 101/255, blue: 131/255, opacity: 51/100)
+                backgroundColorBottom = Color(red: 115/255, green: 116/255, blue: 117/255, opacity: 46/100)
+            } else {
+                backgroundColorTop = Color(red: 148/255, green: 189/255, blue: 227/255, opacity: 89/100)
+                backgroundColorBottom = Color(red: 197/255, green: 197/255, blue: 237/255, opacity: 93/100)
+            }
         }
+        .onReceive(timeCounter.$time, perform: { val in
+            //check if the date has changed
+            let lastDate = UserDefaults.standard.integer(forKey: "dateChanger")
+            let newDate = Date()
+            let components = calendar.dateComponents([.day], from: newDate)
+            let dayOfMonth = components.day
+            if lastDate != dayOfMonth ?? 0 {
+                self.cups = getLocalCups()
+                self.isDiureticMode = getLocalDiuretic()
+                self.amountOfAccumulatedAlcohol = getLocalAlcohol()
+                self.accumalatedAmountOfCoffee = getLocalCoffee()
+                UserDefaults.standard.set(dayOfMonth, forKey: "dateChanger")
+            }
+        })
+        
         .onChange(of: userDocument.user.name, perform: { newValue in
             self.isMetric = userDocument.user.metric
             let cupsDate = Date()
@@ -225,11 +363,10 @@ struct Dashboard: View {
             self.hydrationDate = userDocument.getTheLatestDate()
             self.cupsLeft = waterIntake / Double(cupConverter())
             self.cupsLeft -= cups
-            print("userName after change \(userName)")
+            isLoad = false
             if(userDocument.user.metric == true) {
                 volumeMetric = "ml"
             }
-            isLoad = false
         })
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
@@ -250,16 +387,59 @@ struct Dashboard: View {
                         .edgesIgnoringSafeArea(.bottom)
                 }
             case .isDocumentAddition:
-                RegisterView(onCompleteBlock: {activeSheet = nil}, isLoad: $isLoad, Dashboard: $user.loggedIn, registerView: $isDocumentAddition )
-                
+                RegisterView(isUserExist: $isUserExist, onCompleteBlock: {activeSheet = nil
+                    isLoad = false
+                    userDocument.fetchData(completionHandler: { (isLoadView, fetchErrorMessage) in
+                        if isLoadView {
+                            isLoad = false
+                            isDataFetched = true
+
+                            print(fetchErrorMessage)
+                            self.isMetric = userDocument.user.metric
+                            let cupsDate = Date()
+                            format.dateFormat = "yyyy-MM-dd"
+                            let today = format.string(from: cupsDate)
+                            self.currentHydrationDictionary = userDocument.user.hydration.last ?? [today: ["water": 0.0, "alcohol":0.0, "coffee":0.0]]
+                            self.userName = userDocument.getUser().name
+                            self.waterIntake = userDocument.getUser().waterIntake
+                            self.hydrationDate = userDocument.getTheLatestDate()
+                            self.cupsLeft = waterIntake / Double(cupConverter())
+                            self.cupsLeft -= cups
+                            print("oafter change \(userName)")
+                            isLoad = false
+                            if(userDocument.user.metric == true) {
+                                volumeMetric = "ml"
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+                                print("Coffee starting to execute")
+                                self.cups = getLocalCups()
+                                self.isDiureticMode = getLocalDiuretic()
+                                self.amountOfAccumulatedAlcohol = getLocalAlcohol()
+                                self.accumalatedAmountOfCoffee = getLocalCoffee()
+                            }
+                        } else {
+                            print(fetchErrorMessage)
+                            userDocument.fetchData(completionHandler: { (isLoadView, fetchErrorMessage) in
+                                if isLoadView {
+                                    isLoad = false
+                                    isDataFetched = true
+
+                                } else {
+                                    activeSheet = .isDocumentAddition
+                                }
+                            })
+                        }
+
+
+                    })
+                }, isLoad: $isLoad, Dashboard: $user.loggedIn, registerView: $isDocumentAddition )
             }
-            
+
         }
         .onChange(of: userDocument.enumDocument, perform: { value in
             if value == .doesNotExist {
                 isDocumentAddition = true
                 activeSheet = .isDocumentAddition
-                print("Custom drink document enum \(value)")
             } else {
                 isDocumentAddition = false
             }
@@ -268,42 +448,41 @@ struct Dashboard: View {
             waterBackgroundColor = backgroundColorTop
             waterColor = currentWaterColor(colorScheme: colorScheme)
             waterBackgroundColor = backgroundColorTop
-            
         })
         .onChange(of: amountOfEachAlcohol, perform: { value in
-            diureticCount.append(Int(amountOfEachAlcohol))
-            print("amount of each alcohol \(amountOfEachAlcohol)")
-            print("diuretic size \(diureticCount.count)")
-
+            if value != 0 {
+                diureticCount.append(Int(amountOfEachAlcohol))
+            }
         })
         .onChange(of: amountOfCoffee, perform: { value in
-            addCaffeineToHK(caffeine: value)
+            if amountOfCoffee != 0 {
+                addCaffeineToHK(caffeine: value)
+            }
         })
         .onChange(of: isDiureticMode, perform: { value in
             waterColor = currentWaterColor(colorScheme: colorScheme)
+            if accumalatedAmountOfCoffee != getLocalCoffee() || amountOfAccumulatedAlcohol != getLocalAlcohol() {
+                addWaterLocalHydration(cups: cups, alcohol: amountOfAccumulatedAlcohol, coffee: accumalatedAmountOfCoffee, isDiureticMode: isDiureticMode, isLocalTime: true)
+            }
+            if isDiureticMode {
+                isAlcoholConsumed = true
+            }
         })
         .onChange(of: self.currentHydrationDictionary, perform: { newValue in
-            
             for hydration in currentHydrationDictionary {
                 self.hydrationDate = hydration.key
             }
-            
-            if (currentHydrationDictionary != userDocument.user.hydration.last) {
-                waterColor = Color(red: 103 / 255, green: 146 / 255, blue: 103 / 255, opacity: 0.5)
-                isCurrentHydration = false
-            } else {
-                waterColor = currentWaterColor(colorScheme: colorScheme)
-                isCurrentHydration = true
-            }
-            
+
+            waterColor = currentWaterColor(colorScheme: colorScheme)
+            isCurrentHydration = true
+
+
             format.dateFormat = "MMM d, yyyy"
             let cupsDate = Date()
-            let today = format.string(from: cupsDate)
-            print("format of the date in the dashboard \(today)")
-            self.cups = hydration.getCups(hydrationDictionary: currentHydrationDictionary, lastHydration: userDocument.user.hydration.last ?? [today : ["": 0]])
+            //                        self.cups = hydration.getCups(hydrationDictionary: currentHydrationDictionary, lastHydration: userDocument.user.hydration.last ?? [today : ["": 0]])
             //            self.calculatedPercentage = userDocument.waterPercentageCalculator(hydrationDictionary: currentHydrationDictionary)
-            //            let percentageWaterMultiply = ((100 / (Int(waterIntake) / cupConverter())) * calculatedPercentage)
-            //            percentageWater = Double(percentageWaterMultiply)
+            //                        let percentageWaterMultiply = ((100 / (Int(waterIntake) / cupConverter())) * calculatedPercentage)
+            //                        percentageWater = Double(percentageWaterMultiply)
         })
         .onChange(of: alcoholTimer.totalAccumulatedTime , perform: { value in
             if value < 1 || alcoholTimer.isStopped {
@@ -323,14 +502,34 @@ struct Dashboard: View {
             } else {
                 isLastCup = false
             }
-            
+        })
+        .onChange(of: colorScheme, perform: { _ in
+            if colorScheme == .dark {
+                backgroundColorTop = Color(red: 63/255, green: 101/255, blue: 131/255, opacity: 51/100)
+                backgroundColorBottom = Color(red: 115/255, green: 116/255, blue: 117/255, opacity: 46/100)
+            } else {
+                backgroundColorTop = Color(red: 148/255, green: 189/255, blue: 227/255, opacity: 89/100)
+                backgroundColorBottom = Color(red: 197/255, green: 197/255, blue: 237/255, opacity: 93/100)
+            }
+        })
+        .onChange(of: isDataFetched, perform: { isFetched in
+            if isFetched {
+                if !isSyncFirebase {
+                    syncLocalWithFirebase()
+                }
+            }
         })
         .onChange(of: self.cups, perform: { value in
+            let cupsDate = Date()
+            format.dateFormat = "yyyy-MM-dd"
+            let today = format.string(from: cupsDate)
             let lastCup = UserDefaults.standard.double(forKey: "cups")
-            
             previousCup = cups - lastCup
             percentageWater = (100 / ((waterIntake) / Double(cupConverter())) * self.cups)
-            hydration.updateHydration(cups: cups, alcohol: amountOfAccumulatedAlcohol, coffee: accumalatedAmountOfCoffee)
+            //upload the hydration to Firebase starting the second day:
+            if localHydration.count > 2 && isDataFetched {
+                hydration.updateHydration(hydration: localHydration)
+            } // end of the Hydration update to the Firebase.
             cupsLeft = (waterIntake / Double(cupConverter())) - cups
             formattedFloat = String(format: "%.1f", cupsLeft)
             cupsFormattedFloat = String(format: "%.1f", cups)
@@ -344,15 +543,20 @@ struct Dashboard: View {
                     }
                 }
             }
-            userDocument.updateHydrationDictionaryInUserDefaults(currentHydration: currentHydrationDictionary, newHydrationValues: ["water": cups, "alcohol": amountOfAccumulatedAlcohol,"coffee": amountOfCoffee], key: userDocument.user.hydration.last!.first!.key)
             isFirstTimeLaunch = true
+
+            if amountOfAccumulatedAlcohol != getLocalAlcohol() {
+                addWaterLocalHydration(cups: cups, alcohol: amountOfAccumulatedAlcohol, coffee: accumalatedAmountOfCoffee, isDiureticMode: isDiureticMode, isLocalTime: true)
+            } else {
+                addWaterLocalHydration(cups: cups, alcohol: amountOfAccumulatedAlcohol, coffee: accumalatedAmountOfCoffee, isDiureticMode: isDiureticMode, isLocalTime: false)
+            }
         })
         .onChange(of: colorScheme, perform: { _ in
             if colorScheme == .dark {
                 backgroundColorTop = Color(red: 148/255, green: 189/255, blue: 227/255, opacity: 89/100)
                 backgroundColorBottom = Color(red: 197/255, green: 197/255, blue: 237/255, opacity: 93/100)
                 waterColor = currentWaterColor(colorScheme: colorScheme)
-                
+
             } else {
                 waterColor = currentWaterColor(colorScheme: colorScheme)
                 backgroundColorTop = Color(red: 63/255, green: 101/255, blue: 131/255, opacity: 51/100)
@@ -361,18 +565,24 @@ struct Dashboard: View {
                 //                UIToolbar.appearance().setBackgroundColor(image: UIImage(color: .red, size: CGSize(width: UIScreen.main.bounds.width, height: 34))!)
             }
         })
+
         .onChange(of: amountOfAccumulatedAlcohol, perform: { value in
-            var amountOfExtraWater: Double = 0
-            if self.percentageOfEachAlcohol > 10 || self.amountOfAccumulatedAlcohol > 30 {
-                amountOfExtraWater = amountOfAccumulatedAlcohol / 14
-                withAnimation {
-                    isDiureticMode  = true
-                    waterColor = currentWaterColor(colorScheme: colorScheme)
-                    waterIntake += (Double(cupConverter()) * amountOfExtraWater)
+            if amountOfAccumulatedAlcohol != 0 {
+                var amountOfExtraWater: Double = 0
+                if self.percentageOfEachAlcohol > 10 || self.amountOfAccumulatedAlcohol > 30 {
+                    amountOfExtraWater = amountOfEachAlcohol / 14
+                    withAnimation {
+                        isDiureticMode  = true
+                        waterColor = currentWaterColor(colorScheme: colorScheme)
+                        waterIntake += (Double(cupConverter()) * amountOfExtraWater)
+                        UserDefaults.standard.set((Double(cupConverter()) * amountOfExtraWater), forKey: "extraWater")
+                    }
                 }
             }
+        
         })
-        .alert(isPresented: self.$isInformation, content: {
+
+        .alert(isPresented: $isInformation, content: {
             Alert(title: Text("Diuretic effect"), message:
                     Text(isDiureticMode ? "Alcohol is a diuretic, which means it promotes water loss through urine. It does this by inhibiting the production of a hormone called vasopressin, which plays a large role in the regulation of water excretion." : "Small amounts of alcohol in your drink hydrates your body as much as water does." )
                   , primaryButton: Alert.Button.default(Text("Learn more"), action: {
@@ -384,17 +594,16 @@ struct Dashboard: View {
             }) , secondaryButton: Alert.Button.cancel())
         })
     }
-    
+
     //MARK: Stepper function
     func stepper() -> some View {
         return HStack{
             CustomStepper(value: $cups, isDiuretic: $isDiuretic, textColor: $waterColor, isCustomWater: $isCustomWater)
+                .aspectRatio(orientation?.isPortrait ?? false ? 1 : 2/3, contentMode: .fit)
+
         }
     }
-    func update() {
-        print("Updating!")
-    }
-    
+
     func getDictionaryFromNested(dictionary: [String: [String:Double]]) -> [String:Double] {
         var returnDictionary: [String:Double] = ["": 0.0]
         for goodDictionary in dictionary.values {
@@ -402,7 +611,7 @@ struct Dashboard: View {
         }
         return returnDictionary
     }
-    
+
     func calculateNotificationInterval(waterIntake: Double, awakeness: Double) -> Double {
         let minutes: Double = 60
         let seconds: Double = 60
@@ -410,47 +619,107 @@ struct Dashboard: View {
         notificationInterval *= previousCup
         return notificationInterval
     }
-    
+
     func background() -> some View {
         return LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
             .edgesIgnoringSafeArea(.vertical)
     }
-    
+
     func currentWaterColor(colorScheme: ColorScheme) -> Color {
         var waterColor: Color = Color( red: 0, green: 0, blue: 0, opacity: 0)
-        
+
         if !isDiureticMode {
-            if colorScheme == .light {
-                waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 1)
-            } else {
-                waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 1)
-            }
+            if colorScheme == .light { waterColor = Color( red: 0, green: 0.5, blue: 0.8, opacity: 1) }
+            else { waterColor = Color( red: 0, green: 0.5, blue: 0.7, opacity: 1) }
         } else {
             waterColor = Color(red: 130 / 255, green: 98 / 255, blue: 222 / 255, opacity: 0.5)
         }
         return waterColor
     }
-    
-    func plus() -> some View {
-        return  Image(systemName: "plus")
-            .opacity(customDrinkDocument.drinkOpacity)
-            .scaleEffect(2)
-            .foregroundColor(waterColor)
-            .onTapGesture {
-                withAnimation() {
-                    isQuickDrink.toggle()
-                    if isQuickDrink {
-                        backgroundOpacity = 0.6
-                        isFirstMenu = true
+
+    /// Store all the data from firebase locally.
+    ///
+    /// - Author: Ismatulla Mansurov
+    ///
+    /// - Returns: No return
+    ///
+    /// - Throws: Completion handler, can accept Boolean, which
+    /// shows if the sync was succseful
+    ///     ///
+    /// - Parameters:
+    ///     - hydration document: [String: [String: Double]]
+    ///
+    ///  - Note:[Reference](https://stackoverflow.com)
+    ///
+    ///  - Important: make sure to do something ....
+    ///
+    ///  - Summary: sdfsdfdsf
+    ///
+    ///  - Version: 0.1
+    ///
+    func syncLocalWithFirebase() {
+        var localID: Int64 = 0
+        let hydrationSyncRemoteToLocal =  userDocument.user.hydration
+        for dictionary in hydrationSyncRemoteToLocal {
+
+
+            for eachDictionary in dictionary {
+
+                let newLocalHydration = LocalHydration(context: viewContext)
+                print(eachDictionary.key)
+
+                for (name, cups) in eachDictionary.value {
+                    if name != "water" {
+                        name == "alcohol" ? newLocalHydration.alcohol + cups : newLocalHydration.coffee + cups
                     } else {
-                        backgroundOpacity = 0.00
+                        newLocalHydration.coffee = cups
                     }
                 }
+                newLocalHydration.date = eachDictionary.key
+                newLocalHydration.id = localID
+                localID += 1
+                print("synced hydration from the firebase to local SQL: \(newLocalHydration.description)")
+                saveContext()
             }
-            .padding()
+        }
+        isSyncFirebase = true
+    }
+    func plus() -> some View {
+        return Menu(content: {
+            ForEach(customDrinkDocument.customDrinks, id: \.self   ) { liquid in
+                Button(action: {
+                    if liquid.isAlcohol {
+                        amountOfAccumulatedAlcohol += liquid.alcoholAmount
+                        percentageOfEachAlcohol = liquid.alcoholPercentage
+                        amountOfEachAlcohol = liquid.alcoholAmount
+                        cups += liquid.amount
+                    } else if liquid.isCaffeine {
+                        accumalatedAmountOfCoffee += liquid.caffeineAmount
+                        amountOfCoffee = liquid.caffeineAmount
+                        cups += liquid.amount
+                    } else if liquid.isCustomWater  {
+                        cups += liquid.amount
+                    }
+                }, label: {
+                    Text(liquid.name)
+                })
+            }
+        }, label: {
+            Text("Custom Drinks")
+        })
+//                withAnimation() {
+//                    isQuickDrink.toggle()
+//                    if isQuickDrink {
+//                        backgroundOpacity = 0.6
+//                        isFirstMenu = true
+//                    } else {
+//                        backgroundOpacity = 0.00
+//                    }
+//                }
+//    }
     }
     //MARK: Quick Menu functions
-    
+
     func drop() -> some View {
         return Image(systemName: "drop")
             .scaleEffect(2)
@@ -459,8 +728,9 @@ struct Dashboard: View {
                     activeSheet = .isDiuretic
                 }
             }
+            .opacity(actionView ? 0 : 1)
     }
-    
+
     //MARK: HOME ACTION
     func homeAction() -> some View {
         return Button(action: {
@@ -480,9 +750,11 @@ struct Dashboard: View {
             Image(systemName: "house")
         })
     }
-    
+
     //MARK: Notifcation Timer View
+
     func notificationTimer() -> some View {
+
         return   HStack {
             if notificationCountDown {
                 Text("Next Drink in: ")
@@ -495,6 +767,7 @@ struct Dashboard: View {
             }
         }.opacity(isCurrentHydration ? 1 : 0)
     }
+
     func customWaters() -> some View {
         ForEach(customDrinkDocument.customDrinks, id: \.self) { drink in
             if drink.isCustomWater {
@@ -514,7 +787,119 @@ struct Dashboard: View {
         }
     }
     //MARK: function to save and retrieve cups in UserDefaults
+
+
     
+    func addWaterLocalHydration(cups: Double, alcohol: Double, coffee: Double, isDiureticMode: Bool, isLocalTime: Bool) {
+
+        let cupsDate = Date()
+        format.dateFormat = "MMM d, yyyy"
+        let today = format.string(from: cupsDate)
+        let lastObject = localHydration.last
+        
+        if lastObject?.date != today && !localHydration.isEmpty {
+            var newId = lastObject?.id ?? 0
+            newId += 1
+            let newLocalHydration = LocalHydration(context: viewContext)
+            newLocalHydration.water = cups
+            newLocalHydration.coffee = coffee
+            newLocalHydration.alcohol = alcohol
+            newLocalHydration.date = today
+            newLocalHydration.id = newId
+            newLocalHydration.isDiureticMode = isDiureticMode
+            newLocalHydration.isAlcoholLocalTime = isDiureticMode
+            if isLocalTime{
+                newLocalHydration.alcoholTimeDate = cupsDate
+            }
+            saveContext()
+        } else {
+            lastObject?.alcohol = alcohol
+            lastObject?.water = cups
+            lastObject?.coffee = coffee
+            lastObject?.isDiureticMode = isDiureticMode
+            if isLocalTime {
+                lastObject?.alcoholTimeDate = cupsDate
+            }
+            saveContext()
+        }
+    }
+
+    func saveContext()
+    {
+        do { try viewContext.save() } catch
+        {
+            let error = error as NSError
+            fatalError("Unresolved Error: \(error)")
+        }
+    }
+
+    func deleteLastLocalHydration()
+    {
+        if localHydration.last != nil {
+            viewContext.delete(localHydration.last!)
+        }
+    }
+
+    func getLocalCups() -> Double {
+        let cupsDate = Date()
+        format.dateFormat = "MMM d, yyyy"
+        let today = format.string(from: cupsDate)
+        let localHydration = localHydration.last
+        if localHydration?.date != today {
+            return 0
+        } else {
+            return localHydration?.water ?? 0
+        }
+    }
+
+    func getLocalAlcohol() -> Double {
+        let cupsDate = Date()
+        format.dateFormat = "MMM d, yyyy"
+        let today = format.string(from: cupsDate)
+        let localHydration = localHydration.last
+        if localHydration?.date != today {
+            return 0
+        } else {
+            return localHydration?.alcohol ?? 0
+        }
+    }
+    
+    func getLocalAlcoholTime() -> Date {
+        let cupsDate = Date()
+        format.dateFormat = "MMM d, yyyy"
+        let today = format.string(from: cupsDate)
+        let localHydration = localHydration.last
+        if localHydration?.date != today {
+            return Date()
+        } else {
+            return localHydration?.alcoholTimeDate ?? Date()
+        }
+    }
+
+    func getLocalDiuretic() -> Bool {
+        let cupsDate = Date()
+        format.dateFormat = "MMM d, yyyy"
+        let today = format.string(from: cupsDate)
+        let localHydration = localHydration.last
+        if localHydration?.date != today {
+            return false
+        } else {
+            return localHydration?.isDiureticMode ?? false
+        }
+    }
+
+    func getLocalCoffee() -> Double {
+        let cupsDate = Date()
+        format.dateFormat = "MMM d, yyyy"
+        let today = format.string(from: cupsDate)
+        let localHydration = localHydration.last
+        if localHydration?.date != today {
+            return 0
+        } else {
+            return localHydration?.coffee ?? 0
+        }
+    }
+
     func cupLocal() {
         if isCurrentHydration {
             let waterIntakeConverted = waterIntake / Double(cupConverter())
@@ -527,9 +912,11 @@ struct Dashboard: View {
                     notificationInterval -= Double(number)
                 }
                 if isFirstTimeLaunch {
-                    notificationInterval = calculateNotificationInterval(waterIntake: waterIntakeConverted, awakeness: 16)
-                    hydration.addNotification(timeInterval: notificationInterval)
-                    notificationCountDown = true
+                    if cups != getLocalCups() {
+                        notificationInterval = calculateNotificationInterval(waterIntake: waterIntakeConverted, awakeness: 16)
+                        hydration.addNotification(timeInterval: notificationInterval)
+                        notificationCountDown = true
+                    }
                 }
             }
             UserDefaults.standard.set(cups, forKey: "cups")
@@ -537,34 +924,32 @@ struct Dashboard: View {
     }
     func cancelTheLastDrink() {
         let previousCups = UserDefaults.standard.double(forKey: "previousDrink")
+        let amountOfExtraWater = UserDefaults.standard.double(forKey: "extraWater")
         print("previous Drink amount: \(previousCups)")
         print("Current cups amount: \(cups)")
         cups = previousCups
-        if(diureticCount.count == 0) {
-            amountOfEachAlcohol = 0
-            amountOfAccumulatedAlcohol = 0
+        if(diureticCount.count == 1) {
             isDiureticMode = false
             isAlcoholConsumed = false
-        } else if diureticCount.count >= 1 {
+            waterIntake -= amountOfExtraWater
+            amountOfEachAlcohol = 0
+            amountOfAccumulatedAlcohol = 0
+            diureticCount.removeLast() }
+        else if diureticCount.count >= 2 {
             amountOfAccumulatedAlcohol -= amountOfEachAlcohol
             amountOfEachAlcohol = 0
-        }
+            waterIntake -= amountOfExtraWater
+            diureticCount.removeLast() }
+        deleteLastLocalHydration()
         hydration.removeNotification()
         notificationCountDown = false
-        waterColor = currentWaterColor(colorScheme: colorScheme)
-
-    }
+        waterColor = currentWaterColor(colorScheme: colorScheme) }
     func cupConverter() -> Int {
         var cupConverter: Int = 1
-        if isMetric {
-            cupConverter = 237
-        } else {
-            cupConverter = 8
-        }
+        if isMetric { cupConverter = 237 } else { cupConverter = 8 }
         return cupConverter
     }
-    
-    
+
     func addCaffeineToHK(caffeine: Double) {
         let caffeineQuantityType = HKQuantityType.quantityType(forIdentifier: .dietaryCaffeine)
         let caffeineQuantityUnit = HKUnit(from: .gram)
@@ -576,114 +961,24 @@ struct Dashboard: View {
         // Send water intake data to healthStore…aka ‘Health’ app
         // 5
         self.healthStore.save(waterCorrelationForWaterAmount, withCompletion: { (success, error) in
-            if (error != nil) {
-                NSLog(String("error occurred saving water data"))
-            }
+            if (error != nil) { NSLog(String("error occurred saving water data")) }
         })
     }
+
     func addWaterAmountToHealthKit(ounces : Double) {
-        // 1
         let quantityType = HKQuantityType.quantityType(forIdentifier: .dietaryWater)
-        
-        // string value represents US fluid
-        // 2
         let quanitytUnit = HKUnit(from: "fl_oz_us")
         let quantityAmount = HKQuantity(unit: quanitytUnit, doubleValue: ounces)
         let now = Date()
-        // 3
         let sample = HKQuantitySample(type: quantityType!, quantity: quantityAmount, start: now, end: now)
         let correlationType = HKObjectType.correlationType(forIdentifier: HKCorrelationTypeIdentifier.food)
-        // 4
         let waterCorrelationForWaterAmount = HKCorrelation(type: correlationType!, start: now, end: now, objects: [sample])
-        // Send water intake data to healthStore…aka ‘Health’ app
-        // 5
-        self.healthStore.save(waterCorrelationForWaterAmount, withCompletion: { (success, error) in
-            if (error != nil) {
-                NSLog(String("error occurred saving water data"))
-            }
-        })
-        
-        
+        self.healthStore.save(waterCorrelationForWaterAmount, withCompletion: { (success, error) in if (error != nil) { NSLog(String("error occurred saving water data"))} })
     }
-    //    func pastWaterDrop(reader: GeometryProxy) -> some View {
-    //        return VStack {
-    //            WaterView(factor: self.$percentageWater, waterColor: $waterColor, backgroundColor: $waterBackgroundColor)
-    //                .opacity(previousWaterOpacity)
-    //        }.transition(.slide)
-    //            .frame(width: reader.size.width, height: reader.size.height / 2)
-    //            .scaleEffect(waterScaleEffect)
-    //            .onTapGesture {
-    //                if waterScaleEffect == 1.5 {
-    //                    withAnimation() {
-    //                        waterScaleEffect = 1
-    //                    }
-    //                    let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
-    //                    impactHeavy.impactOccurred()
-    //
-    //                } else {
-    //                    if isCurrentHydration{
-    //                        let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
-    //                        impactHeavy.impactOccurred()
-    //                        activeSheet = .isDiuretic
-    //                    }
-    //                }
-    //            }
-    //            .shadow(color: colorScheme == .dark ? .white : .black, radius: 6)
-    //            .offset(x: previousOffset.width * 5, y: previousOffset.height * 5)
-    //            .gesture(
-    //                DragGesture()
-    //                    .onChanged { gesture in
-    //                        if waterScaleEffect == 1 {
-    //                            self.previousOffset.width = gesture.translation.width / 3
-    //                            self.previousOffset.height = gesture.translation.height / 3
-    //                            print(previousOffset.width )
-    //
-    //                            if self.previousOffset.width > 90 {
-    //                                previousWaterOpacity = 0
-    //                                if previousWaterOpacity == 0 {
-    //                                    previousOffset.width = -180
-    //                                    self.currentHydrationDictionary = userDocument.previousDate(hydrationArray: self.currentHydrationDictionary)
-    //                                    previousOffset.height = 0
-    //                                }
-    //
-    //                            } else if self.previousOffset.width < -90 {
-    //                                previousWaterOpacity = 0
-    //                                if previousWaterOpacity == 0 {
-    //                                    previousOffset.width = 180
-    //                                    self.currentHydrationDictionary = userDocument.nextDate(hydrationArray: self.currentHydrationDictionary)
-    //                                    previousOffset.height = 0
-    //                                }
-    //                                }
-    //                        } else {
-    //                            self.cups = Double((-gesture.translation.height / 50))
-    //                        }
-    //                    }
-    //                    .onEnded { _ in
-    //                        if previousOffset.height < -30 {
-    //                            waterViewOpacity = 0 // if the user swipes right waterView disappears
-    //                            previousOffset.height = 230
-    //                            previousOffset.width = 0
-    //                            withAnimation(.linear(duration: 0.5)) {
-    //                                actionView = true
-    //                            }
-    //                        } else if previousOffset.width < -1 {
-    //                            withAnimation {
-    //                                previousOffset.width = 0
-    //                            }
-    //                        } else if previousOffset.width > 1 {
-    //                            withAnimation {
-    //                                previousOffset.width = 0
-    //                            }
-    //                        }
-    //
-    //                        }
-    //                )
-    //
-    //    }
-    
+
     func waterDrop(reader: GeometryProxy) -> some View {
         return VStack {
-            WaterView(factor: self.$percentageWater, waterColor: $waterColor, backgroundColor: $waterBackgroundColor)
+            WaterView(factor: self.percentageWater, waterColor: $waterColor, backgroundColor: $waterBackgroundColor)
                 .opacity(waterViewOpacity)
         }
         .frame(width: reader.size.width, height: reader.size.height / 2)
@@ -695,7 +990,7 @@ struct Dashboard: View {
                 }
                 let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
                 impactHeavy.impactOccurred()
-                
+
             } else {
                 if isCurrentHydration{
                     let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
@@ -718,13 +1013,8 @@ struct Dashboard: View {
 
                 }
                 .onEnded { _ in
-                    if offset.width <= 45 && offset.width > 0 {
-                        offset.width = 0
-                    } else if offset.width >= -45 && offset.width < 0 {
-                        offset.width = 0
-                    }
-                    
-                    if offset.height > -40 && offset.height < 0 {
+
+                    if offset.height >= -45 && offset.height < 0 {
                         offset.height = 0
                     }
                     if offset.height < -40 {
@@ -735,29 +1025,13 @@ struct Dashboard: View {
                             actionView = true
                         }
                     }
-                    if self.offset.width > 45 {
-                        self.currentHydrationDictionary = userDocument.previousDate(hydrationArray: self.currentHydrationDictionary)
-                        waterViewOpacity = 0
-                        if _waterViewOpacity.wrappedValue == 0 {
-                            print("water view opacity: \(waterViewOpacity)")
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                self.offset.width = -250
-                            }
-                        }
-                        offset.height = 0
-                    } else if self.offset.width < -50 {
-                        self.currentHydrationDictionary = userDocument.nextDate(hydrationArray: self.currentHydrationDictionary)
-                        waterViewOpacity = 0
-                        if waterViewOpacity == 0 {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                self.offset.width = 250
-                            }
-                        }
+                    if offset.width != 0  {
+                        offset.width = 0
                         offset.height = 0
                     }
                 })
         .onChange(of: offset, perform: { value in
-            
+
             print("value right now \(value)")
             if offset.width < -249 {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -770,49 +1044,22 @@ struct Dashboard: View {
                     waterViewOpacity = 1
                 }
             }
-            
-            if offset.width < -30 {
+            if offset.height < -30 {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     offset.width = 0
                     waterViewOpacity = 1
                 }
             }
         })
-        //        .onChange(of: displayLink.frameChange) { time in
-        //            for _ in 0...3 {
-        //                if offset.width < -119 {
-        //                    withAnimation(.easeIn(duration: 4)) {
-        //                        offset.width = 0
-        //                            waterViewOpacity = 1
-        //
-        //                        }
-        //
-        ////                    offset.width += 1
-        //
-        //                } else if offset.width > 1 {
-        //                    if offset.width > 119 {
-        //                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-        ////                            waterViewOpacity = 1
-        //                        }
-        //                    }
-        //                    offset.width -= 1
-        //
-        //                } else if offset.height > 1 {
-        //
-        //                    if !actionView {
-        //                        offset.height -= 1.2
-        //                    }
-        //                }
-        //            }
-        //        }
     }
-    
+
     //MARK: Display stats
     func stats() -> some View {
         return  ActionView(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isMetric: $isMetric)//display the ActionView when the user swipes up
             .offset(x: actionOffset.width * 5, y: actionOffset.height * 5)
             .frame(width: UIScreen.main.bounds.width - 20)
             .environmentObject(userDocument)
+            .environment(\.managedObjectContext, viewContext)
             .gesture(
                 DragGesture()
                     .onChanged { gesture in
@@ -831,7 +1078,7 @@ struct Dashboard: View {
                         } else {
                             actionOffset = CGSize.zero
                         }
-                        
+
                     })
             .onChange(of: displayLink.frameChange) { time in
                 for _ in 0...10 {
@@ -843,7 +1090,7 @@ struct Dashboard: View {
                 }
             }
     }
-    
+
     //MARK: hydration information
     func hydrationInfromation(reader: GeometryProxy) -> some View {
         return VStack {
@@ -856,23 +1103,26 @@ struct Dashboard: View {
                 Text("You have drank \(cupsFormattedFloat) on: \(hydrationDate)")
                     .foregroundColor(colorScheme == .dark ? .gray : waterColor)
                     .font(Font.title.bold())
-                Spacer().frame(height: reader.size.height / 20)
+                Spacer().frame(height: orientation?.isPortrait ?? false ? reader.size.height / 20 : 0)
             }
         }
     }
-    
+
     //MARK: alcohol Consumed
     func alcoholConsumed(reader: GeometryProxy) -> some View {
         return  VStack {
+            HStack {
             Text(isDiureticMode ? "Diuretic mode is on" : "Alchol mode is on")
                 .foregroundColor(waterColor)
                 .font(.system(.headline))
+   
+            }
             HStack {
-                AlcoholTimer(isDiureticMode: $isDiureticMode, waterColor: $waterColor)
+                    AlcoholTimer(isDiureticMode: $isDiureticMode, waterColor: $waterColor,localTimeLeft: $isLocalTimeAlcohol, isLocalTime: $isLocalTime)
             }
         }
     }
-    
+
     func cup() -> String {
         if self.cups == 1 || self.cups == 0 {
             return "cup"
@@ -883,7 +1133,7 @@ struct Dashboard: View {
 }
 
 struct PopUp: View {
-    
+
     @State var onCompleteBlock: (() -> Void)
     @Binding var active: Bool
     @Binding var cups: Double
@@ -896,14 +1146,14 @@ struct PopUp: View {
     @Binding var waterColor: Color
     @Binding var isMetric: Bool
     @Binding var isCustomWater: Bool
-    
+
     @State var isNavigationBarHidden: Bool = true
-    
+
     //Background colors
     @Binding  var backgroundColorTop: Color
     @Binding  var backgroundColorBottom: Color
-    
-    
+
+
     @AppStorage ("log_status") var appleLogStatus = false
     @AppStorage ("appleName") var appleName: String = ""
     @AppStorage ("appleEmail") var appleEmail: String = ""
@@ -918,44 +1168,36 @@ struct PopUp: View {
     @State private var actionControlColor: Color = Color.black
     @Binding var coffeeAmount: Double
     @Binding var accumulatedCoffeeAmount: Double
-    
-    
+
+
     var body: some View {
-        
-        NavigationView {
-            ZStack{
-                LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
-                    .edgesIgnoringSafeArea(.all)
+        ZStack{
+            LinearGradient(gradient: Gradient(colors: [backgroundColorTop , backgroundColorBottom]), startPoint: .top, endPoint: .bottom)
+                .edgesIgnoringSafeArea(.all)
+
+            NavigationView {
                 VStack {
+
                     HStack {
                         Spacer()
                         Button("Done", action: {
                             active = false
                             onCompleteBlock()
-                        })
-                            .padding()
+                        }).padding()
                     }
                     NavigationLink(
-                        destination: ActionView(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isMetric: $isMetric)
-                            .environmentObject(userDocument),
-                        label: {
-                            Text("Action Control")
-                                .font(.system(size: 35))
-                        })
-                        .onTapGesture {
-                            isPrecise.toggle()
-                        }
+                        destination: ActionView(backgroundColorTop: $backgroundColorTop, backgroundColorBottom: $backgroundColorBottom, isMetric:$isMetric)
+                            .environmentObject(userDocument),label: {Text("Action Control").font(.system(size: 35))})
+                        .onTapGesture { isPrecise.toggle()}
                     Spacer()
+
                     Text("Log diuretic")
-                        .onTapGesture {
-                            withAnimation() {
-                                isDiuretic.toggle()
-                            }
-                        }
+                        .onTapGesture { withAnimation() { isDiuretic.toggle() } }
                         .font(.system(size: 35))
-                    
                     Spacer()
+
                     Text("Sign out")
+
                         .onTapGesture {
                             user.signOut()
                             appleLogStatus = false
@@ -963,24 +1205,27 @@ struct PopUp: View {
                             appleName = ""
                             appleEmail = ""
                         }
+
                         .padding(.vertical)
                         .cornerRadius(23)
                         .font(.system(size: 35))
                     Spacer()
+
                 }
+                .navigationBarHidden(self.isNavigationBarHidden)
+
             }
-            .navigationBarHidden(self.isNavigationBarHidden)
-        }
-        .navigationViewStyle(StackNavigationViewStyle())
-        .navigationBarHidden(true)
-        
-        .onAppear {
-            isNavigationBarHidden = true
-            if colorScheme == .dark {
-                isDarkMode = true
-                actionControlColor = .white
-            } else {
-                isDarkMode = false
+
+            .navigationViewStyle(StackNavigationViewStyle())
+            .navigationBarHidden(true)
+            .onAppear {
+                isNavigationBarHidden = true
+                if colorScheme == .dark {
+                    isDarkMode = true
+                    actionControlColor = .white
+                } else {
+                    isDarkMode = false
+                }
             }
         }
         .onChange(of: isDarkMode, perform: { value in
@@ -990,7 +1235,6 @@ struct PopUp: View {
                 colorScheme = .light
             }
         })
-        
         .sheet(isPresented: $isDiuretic, content: {
             DiureticView(onCompleteBlock: {}, cups: $cups, waterColor: $waterColor, isCustomWater: $isCustomWater, isMetric: $isMetric, isDiuretic: $isDiuretic, popUp: $active, isAlcoholConsumed: $isAlcoholConsumed, amountOfAccumulatedAlcohol: $amountOfAccumulatedAlcohol , percentageOfEachAlcohol: $percentageOfEachAlcohol, amountOfEachAlcohol: $amountOfEachAlcohol, coffeeAmount: $coffeeAmount, accumulatedCoffeeAmount: $accumulatedCoffeeAmount)
                 .environmentObject(customDrinkDocument)
@@ -999,3 +1243,4 @@ struct PopUp: View {
         })
     }
 }
+

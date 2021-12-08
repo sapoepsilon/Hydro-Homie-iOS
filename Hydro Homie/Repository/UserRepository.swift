@@ -59,14 +59,15 @@ class UserRepository: ObservableObject {
             Auth.auth().createUser(withEmail: email, password: password) { (authData, error) in
                 if (error != nil) {
                     print(error!.localizedDescription)
-                    onSucces(false, error!.localizedDescription)
+                    onSucces(true, error!.localizedDescription)
                     return
                 } else {
                     self.userID = (authData?.user.uid)!
-                    onSucces(true, "")
                     UserDefaults.standard.set(self.userID, forKey: "userID")
 
-                    self.addUserInformation(name: name, weight: weight, height: height, userID: self.userID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake)
+                    self.addUserInformation(name: name, weight: weight, height: height, userID: self.userID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, completionHandler: { isAuth in
+                        onSucces(true, "")
+                    })
                 }
             }
     }
@@ -123,7 +124,7 @@ class UserRepository: ObservableObject {
             return currentUserID
         }else {
             print("getting the userID from the Firebase \(currentUserID)")
-	            currentUserID = Auth.auth().currentUser!.uid
+                currentUserID = Auth.auth().currentUser!.uid
             return currentUserID
         }
      }
@@ -132,7 +133,7 @@ class UserRepository: ObservableObject {
        try! Auth.auth().signOut()
     }
     
-    func addUserInformation(name: String, weight: Double, height: Double, userID: String, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double) {
+    func addUserInformation(name: String, weight: Double, height: Double, userID: String, metric: Bool, isCoffeeDrinker: Bool, waterIntake: Double, completionHandler: @escaping (Bool) -> Void ) {
         print("userID before adding it \(userID)")
         
         Firestore.firestore().collection("users").document(userID).setData([
@@ -146,11 +147,13 @@ class UserRepository: ObservableObject {
         ]) { onError in
             if onError != nil {
             print(onError.debugDescription)
+                completionHandler(false)
             } else {
                 print("Finished writing to Firebase ")
                 self.isUploadFinished = true
+                completionHandler(true)
             }
-        } 
+        }
         
         //MARK: USERDEFAULTS: user infromation
         let userInfo: User = User(name: name, height: Int(height), weight: weight, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, hydration: [], userUID: userID)

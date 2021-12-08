@@ -27,7 +27,7 @@ class TimerViewModel: ObservableObject {
     // shut down; what state is it in; and how much time had it accumulated before
     // it last started up.
     private var previouslyAccumulatedTime: TimeInterval = 14400
-    private var startDate: Date? = nil
+    var startDate: Date? = nil
     private var lastStopDate: Date? = nil
     private var state: SLTimerMode = .stopped
             

@@ -12,10 +12,10 @@ import CoreLocation
 class UserDocument: ObservableObject {
 
     let db = Firestore.firestore()
-    let today = Date()
+    let date = Date()
     var locationManager: CLLocationManager?
     @Published var user: User = User(name: "", height: 1, weight: 1, metric: false, isCoffeeDrinker: false, waterIntake: 1, hydration: [["": ["water": 0.0, "alcohol": 0.0, "coffee": 0.0]]], userUID: "")
-
+    @Published var changeDate: Date = Date()
     enum documentExist {
         case exist
         case doesNotExist
@@ -26,34 +26,121 @@ class UserDocument: ObservableObject {
     func fetchData(completionHandler:@escaping (Bool, String) -> Void) {
         //check if the user has a new device
         // if not the return values from UserDefaults
+        enough = true
+        format.dateFormat = "MMM d, yyyy"
+        let today = format.string(from: date)
+        
+//        if(UserDefaults.standard.string(forKey: "today") != today) {
+            print("today's date: \(today)")
+            print("getting info from the firebase")
+            let currentUserID = Auth.auth().currentUser?.uid
+            print("userdID \(String(describing: currentUserID))")
+        if currentUserID != nil {
+            db.collection("users").document(currentUserID!).addSnapshotListener { (querySnapshot, error) in
+                if (error != nil) {
+                    print(error!.localizedDescription)
+                    self.enumDocument = .doesNotExist
+                    print("no such document")
+                    print("enum document \(self.enumDocument)")
+                    completionHandler(false, "An error occured when fetching your data! Please, try again!")
+                    return
+                } else if (querySnapshot!.data() != nil) {
+                    let document = querySnapshot!.data()
+                    self.user.name = document!["name"] as? String ?? ""
+                    self.user.height = document!["height"] as? Int ?? 1
+                    self.user.weight = document!["weight"] as? Double ?? 1
+                    self.user.metric = document!["metric"] as? Bool ?? false
+                    self.user.waterIntake = document!["waterIntake"] as? Double ?? 1
+                    self.user.hydration = document!["hydration"] as? [[String: Dictionary<String, Double>]] ?? [[today: ["water": 0, "alcohol": 0, "coffee": 0]]]
+                    self.saveHydrationDictionaryToUserDefaults(hydrationInTheLoop: self.user.hydration)
+                    self.user.isCoffeeDrinker = document!["isCoffeeDrinker"] as? Bool ?? false
+                    self.user.userUID = document!["userID"] as? String ?? ""
+                    self.enumDocument = .exist
 
-        let currentUserID = Auth.auth().currentUser?.uid
-        print("userdID \(String(describing: currentUserID))")
-
-        db.collection("users").document(currentUserID!).addSnapshotListener { (querySnapshot, error) in
-            if (error != nil) {
-                print(error!.localizedDescription)
-                return
-            } else if (querySnapshot!.data() != nil) {
-                let document = querySnapshot!.data()
-                self.user.name = document!["name"] as? String ?? ""
-                self.user.height = document!["height"] as? Int ?? 1
-                self.user.weight = document!["weight"] as? Double ?? 1
-                self.user.metric = document!["metric"] as? Bool ?? false
-                self.user.waterIntake = document!["waterIntake"] as? Double ?? 1
-                self.user.hydration = document!["hydration"] as? [[String: Dictionary<String, Double>]] ?? [["": ["water": 0, "alcohol": 0, "coffee": 0]]]
-                self.saveHydrationDictionaryToUserDefaults(hydrationInTheLoop: self.user.hydration)
-                self.user.isCoffeeDrinker = document!["isCoffeeDrinker"] as? Bool ?? false
-                self.user.userUID = document!["userID"] as? String ?? ""
-                self.enumDocument = .exist
+                    UserDefaults.standard.set(0, forKey: "cups")
+                    UserDefaults.standard.set(document, forKey: "userData")
+                    completionHandler(true, "fetched succesfully")
+                }
                 
-            } else if (querySnapshot?.exists == nil) {
-                self.enumDocument = .doesNotExist
+                if querySnapshot?.exists == false {
+                    self.enumDocument = .doesNotExist
+                    print("no such document")
+                    print("enum document \(self.enumDocument)")
+                    completionHandler(false, "An error occured when fetching your data! Please, try again!")
+                }
             }
-
+            UserDefaults.standard.set(today, forKey: "today")
         }
+//        } else {
+//            getDataFromUserDefaults(completion: { (isLoad, error) in
+//                if isLoad {
+//                    completionHandler(isLoad,error)
+//                    print(error)
+//                }
+//            })
+//        }
     }
+    
+    func getDataFromUserDefaults(completion: @escaping (Bool, String) -> Void) {
+        print("getting info from the userdefaults")
+        format.dateFormat = "MMM d, yyyy"
+        let today = format.string(from: date)
+        let userData = UserDefaults.standard.object(forKey: "userData") as? [String:Any]
+        if userData != nil {
+            self.user.name = userData!["name"] as? String ?? ""
+            self.user.height = userData!["height"] as? Int ?? 1
+            self.user.weight = userData!["weight"] as? Double ?? 1
+            self.user.metric = userData!["metric"] as? Bool ?? false
+            self.user.waterIntake = userData!["waterIntake"] as? Double ?? 1
+            self.user.hydration = getHydrationArrayFromTheUserDefaults()
+            self.user.isCoffeeDrinker = userData!["isCoffeeDrinker"] as? Bool ?? false
+            self.user.userUID = userData!["userID"] as? String ?? ""
+            self.enumDocument = .exist
+            if self.user.name != "" {
+                completion(true, "Loaded from the userDefaults")
+            } else {
+                let currentUserID = Auth.auth().currentUser?.uid
+                print("userdID \(String(describing: currentUserID))")
 
+                db.collection("users").document(currentUserID!).addSnapshotListener { (querySnapshot, error) in
+                    if (error != nil) {
+                        print(error!.localizedDescription)
+                        self.enumDocument = .doesNotExist
+                        print("no such document")
+                        print("enum document \(self.enumDocument)")
+                        completion(false, "An error occured when fetching your data! Please, try again!")
+                        return
+                    } else if (querySnapshot!.data() != nil) {
+                        let document = querySnapshot!.data()
+                        self.user.name = document!["name"] as? String ?? ""
+                        self.user.height = document!["height"] as? Int ?? 1
+                        self.user.weight = document!["weight"] as? Double ?? 1
+                        self.user.metric = document!["metric"] as? Bool ?? false
+                        self.user.waterIntake = document!["waterIntake"] as? Double ?? 1
+                        self.user.hydration = document!["hydration"] as? [[String: Dictionary<String, Double>]] ?? [["": ["water": 0, "alcohol": 0, "coffee": 0]]]
+                        self.saveHydrationDictionaryToUserDefaults(hydrationInTheLoop: self.user.hydration)
+                        self.user.isCoffeeDrinker = document!["isCoffeeDrinker"] as? Bool ?? false
+                        self.user.userUID = document!["userID"] as? String ?? ""
+                        self.enumDocument = .exist
+
+                        UserDefaults.standard.set(0, forKey: "cups")
+                        UserDefaults.standard.set(document, forKey: "userData")
+                        completion(true, "fetched succesfully")
+                    }
+                    
+                    if querySnapshot?.exists == false {
+                        self.enumDocument = .doesNotExist
+                        print("no such document")
+                        print("enum document \(self.enumDocument)")
+                        completion(false, "An error occured when fetching your data! Please, try again!")
+                    }
+                }
+                UserDefaults.standard.set(today, forKey: "today")
+            }
+        }
+
+
+    }
 
     func getUser() -> User {
         let user = user
@@ -142,17 +229,6 @@ class UserDocument: ObservableObject {
             UserDefaults.standard.set(data, forKey: "hydration")
         } catch {
             print("Unable to Encode hydration Array (\(error))")
-        }
-        if let data = UserDefaults.standard.data(forKey: "hydration") {
-            do {
-                // Create JSON Decoder
-                let decoder = JSONDecoder()
-                do {
-//                    print("Hydration in the userdefaults after saving to it: \(try decoder.decode([[String: [String: Double]]].self, from: data).description)")
-                } catch {
-                    print("Unable to Decode hydration after saving it(\(error))")
-                }
-            }
         }
     }
 

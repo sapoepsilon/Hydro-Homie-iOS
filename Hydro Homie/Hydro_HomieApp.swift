@@ -11,14 +11,23 @@
 
        @main
     struct Hydro_HomieApp: App {
+        @Environment(\.scenePhase) var scenePhase
+        @ObservedObject var userRepository: UserRepository = UserRepository()
+        @StateObject var userDocument: UserDocument = UserDocument()
+
+        let persistenceContainer  = PersistenceController.shared
         init() {
                 DisplayLink.sharedInstance.createDisplayLink()
             }
         @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
         var body: some Scene {
             WindowGroup {
-                ContentView(    )
-                    .environmentObject(UserRepository())
+                ContentView()
+                    .environmentObject(userRepository)
+                    .environmentObject(userDocument)
+                    .environment(\.managedObjectContext, persistenceContainer.container.viewContext)
+            }.onChange(of: scenePhase) { _ in
+                persistenceContainer.save()
             }
         }
         

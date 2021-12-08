@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Combine
+import Firebase
+
 
 enum newAlert: String, Identifiable {
     var id: String {
@@ -16,6 +18,8 @@ enum newAlert: String, Identifiable {
     case isCoffee
 }
 struct RegisterView: View {
+    @State private var isError: Bool = false
+    @Binding var isUserExist: Bool
     @State var onCompleteBlock: (() -> Void)
     @Binding var isLoad: Bool
     @Binding var Dashboard: Bool
@@ -66,13 +70,19 @@ struct RegisterView: View {
         ScrollView(.vertical, showsIndicators: false) {
             ZStack(alignment: .top) {
                 GeometryReader { geo in
-                    Color.clear
+                    Color.gray.opacity(0.2)
+                    VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
+                
                 }
                 VStack {
                     Text("Register")
                         .font(.headline)
                         .bold()
                         .padding()
+                    
+                    if isUserExist {
+                        Text("Looks like we are missing some of essential data, so the app works properlt. Please fill these fields up!")
+                    }
                     
                     SATextField(tag: 0, placeholder: "Name", changeHandler: { (name) in
                         self.name = name
@@ -91,6 +101,7 @@ struct RegisterView: View {
                     
                     
                     
+                    if !isUserExist {
                     SATextField(tag: 1, placeholder: "E-mail", changeHandler: { (email) in
                         self.email = email
                     }, onCommitHandler: {
@@ -102,10 +113,8 @@ struct RegisterView: View {
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(self.email == "" ? borderColor : Color.green, lineWidth: 2)
                         )
-                    
-                    
-                    
-                    if !appleLogStatus {
+                    }
+                    if !appleLogStatus && !isUserExist {
                         SATextField(tag: 2, placeholder: "Password", changeHandler: {(password) in
                             self.password = password
                         }, isSecureTextEntry: $isSecureField, onCommitHandler: {
@@ -218,17 +227,21 @@ struct RegisterView: View {
                     }                         .fixedSize(horizontal: false, vertical: true)
                     
                     
-                    
+                    HStack {
                     HStack() {
                         Toggle("Are you a coffee Drinker? ", isOn: $isCoffeeDrinker)
                         //                            .foregroundColor(.gray)
                             .padding()
+                  
+                    }
                         Button(action: {
-                            alert = .isCoffee
+                            isCoffeeMessage = true
+
                         }, label: {
-                            Image(systemName: "info")
-                        }).padding()
-                    } 
+                            Text("Tell me more")
+                        })
+                           
+                    }
                     
                     
                     
@@ -244,12 +257,24 @@ struct RegisterView: View {
                             } else {
                                 self.borderColor = Color.red
                             }
-                        } else {
+                        } else if isUserExist {
+                            if(name != "" && height != 0 && weight != "") {
+                                let weight: Double = Double(weight)!
+                                userCreation.addUserInformation(name: name, weight: weight, height: height, userID: Auth.auth().currentUser!.uid , metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, completionHandler: {isReady in
+                                    if isReady {
+                                        onCompleteBlock()
+                                    }
+                                })
+                            } else {
+                                self.borderColor = Color.red
+                            }
+                        }
+                        else {
                             if(email != "" && name != "" && password != "" && passwordMatch != "" && height != 0 && weight != "" ) {
                                 if(password == passwordMatch) {
                                     registerUser(email: self.email, name: self.name, password: self.password, rePassword: self.passwordMatch, height: self.height, weight: self.weight, metric: self.metric, isCoffeeDrinker: self.isCoffeeDrinker, waterIntake: waterIntake )
                                 } else {
-                                    alert = .isError
+                                    isError = true
                                     self.error = "Passwords do not match"
                                 }
                             } else {
@@ -262,8 +287,9 @@ struct RegisterView: View {
                         .buttonStyle(LoginButton())
                     
                 }.frame(width: UIDevice.current.userInterfaceIdiom == .pad ? UIScreen.main.bounds.width * 0.6 : UIScreen.main.bounds.width * 0.9     , alignment: .center)
+                    .padding(.horizontal)
             }
-        } .clipped()           // << here !!
+        } .clipped()
 
         
         
@@ -281,14 +307,27 @@ struct RegisterView: View {
                 registerViewWidth = 0.6
             }
         }
-        .alert(item:$alert) { alert in
-            switch alert {
-            case .isError:
-                return Alert(title: Text("Error"), message: Text(self.error), dismissButton: .default(Text("OK")))
-            case .isCoffee:
-                return Alert(title: Text("Coffee drinker"), message: Text("Do you consume 2 or more cups of coffeinated drinks per day?"), dismissButton: .default(Text("Ok")))
-            }
+        .alertView(isPresented: $isError,blurRadius:15, overlayView: {
+            VStack {
+                Text(self.error).padding()
+                Button(action: {
+                    isError = false
+                }, label: {
+                    Text("Ok").fontWeight(.bold)
+                }).padding()
         }
+        })
+        .alertView(isPresented: $isCoffeeMessage, blurRadius:15, overlayView: {
+            VStack {
+                Text("Do you consume 2 or more cups of coffeinated drinks per day?").padding()
+                Button(action: {
+                    isCoffeeMessage = false
+                }, label: {
+                    Text("Ok").fontWeight(.bold)
+                }).padding()
+        }
+        })
+   
         
         
     }
@@ -343,7 +382,11 @@ struct RegisterView: View {
         let weight: Double = Double(weight)!
         print("appleUID: \(appleUID)")
         UserDefaults.standard.set(appleUID, forKey: "userID")
-        userCreation.addUserInformation(name: name, weight: weight, height: height, userID: appleUID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake)
+        userCreation.addUserInformation(name: name, weight: weight, height: height, userID: appleUID, metric: metric, isCoffeeDrinker: isCoffeeDrinker, waterIntake: waterIntake, completionHandler: { isReady in
+            if isReady {
+                onCompleteBlock()
+            }
+        })
     }
     
     func registerUser(email: String, name: String, password: String, rePassword: String, height: Double, weight: String, metric: Bool,isCoffeeDrinker: Bool, waterIntake: Double){
@@ -353,7 +396,7 @@ struct RegisterView: View {
                 onCompleteBlock()
             } else {
                 error = errorMessage
-                alert = .isError
+                isError = true
             }
         })
     }

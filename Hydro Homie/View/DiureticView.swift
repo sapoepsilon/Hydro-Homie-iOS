@@ -42,14 +42,13 @@ struct DiureticView: View {
     
     
     var body: some View {
-        
-        ZStack {
+            ZStack {
             Color.gray.opacity(0.2)
             VisualEffectView(effect: UIBlurEffect(style: colorScheme == .dark ? .dark : .light))
         
         GeometryReader { geometry in
 
-            VStack {
+            ScrollView {
                 if UIDevice.current.userInterfaceIdiom == .pad {
                     Spacer().frame(width: geometry.size.width, height: geometry.size.height / spacerAmount, alignment: .center)
                 } else {
@@ -205,10 +204,7 @@ struct DiureticView: View {
                 
             
         }
-   
-        
-        .scaleEffect(scaleEffect)
-       
+        }
         .onAppear {
             if UIDevice.current.userInterfaceIdiom == .pad {
                 scaleEffect = 1.5
@@ -224,7 +220,6 @@ struct DiureticView: View {
         })
 
         Spacer()
-    }
     
     }
     
@@ -390,9 +385,9 @@ struct DiureticView: View {
     
     func spacerCaluclator() -> CGFloat {
         if UIDevice.current.userInterfaceIdiom == .pad {
-            return 4.3
+            return 4.6
         } else {
-            return 5
+            return 5.5
         }
     }
 }
